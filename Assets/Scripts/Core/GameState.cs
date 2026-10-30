@@ -12,4 +12,9 @@ public class GameState
         { "Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy" };
     
     public string DayLabel => $"N{day} — {DayNames[Math.Clamp(day, 1, LastDay) - 1]}";
+    
+    public void NextDay()
+    {
+        day++;
+    }
 }

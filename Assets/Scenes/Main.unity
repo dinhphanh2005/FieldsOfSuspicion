@@ -415,7 +415,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 131099441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1124067742}
+        m_TargetAssemblyTypeName: DayManager, Assembly-CSharp
+        m_MethodName: CloseNotebook
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &131099441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1024,7 +1036,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 353832530}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1124067742}
+        m_TargetAssemblyTypeName: DayManager, Assembly-CSharp
+        m_MethodName: EndPhase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &353832530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1314,7 +1338,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 561771729}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1124067742}
+        m_TargetAssemblyTypeName: DayManager, Assembly-CSharp
+        m_MethodName: EndPhase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &561771729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1435,7 +1471,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 616457457}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1124067742}
+        m_TargetAssemblyTypeName: DayManager, Assembly-CSharp
+        m_MethodName: EndPhase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &616457457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2266,6 +2314,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 958473306}
   m_CullTransparentMesh: 1
+--- !u!1 &1124067741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1124067743}
+  - component: {fileID: 1124067742}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1124067742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124067741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820e135e423cb406dad5e00e92f8b1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayManager
+  newsPanel: {fileID: 2118687455}
+  morningPanel: {fileID: 128258277}
+  afternoonPanel: {fileID: 1897900836}
+  nightPanel: {fileID: 321574070}
+  endingPanel: {fileID: 1344915526}
+  notebookPanel: {fileID: 365270867}
+  newsTitle: {fileID: 1371904572}
+--- !u!4 &1124067743
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124067741}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.51927, y: 3.9598, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1344915526
 GameObject:
   m_ObjectHideFlags: 0
@@ -2854,7 +2953,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2071671104}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1124067742}
+        m_TargetAssemblyTypeName: DayManager, Assembly-CSharp
+        m_MethodName: EndPhase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2071671104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2977,3 +3088,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 877473009}
   - {fileID: 1832713442}
+  - {fileID: 1124067743}
