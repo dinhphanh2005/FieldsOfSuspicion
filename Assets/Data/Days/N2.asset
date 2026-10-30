@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95882f6ac5394bcab16c6fcc67c686ce, type: 3}
+  m_Name: N2
+  m_EditorClassIdentifier: 
+  day: 2
+  news:
+  - {fileID: 11400000, guid: c13a247e215d4b67a6b6ce0673fdc8d3, type: 2}
+  - {fileID: 11400000, guid: 98b2b0eacef04cfb98734ab84c4c38ec, type: 2}
+  board:
+  - {fileID: 11400000, guid: 69748cebdc3b47279785bd62aa78f70d, type: 2}
+  - {fileID: 11400000, guid: 0ae0d36f936b41fe98798c6fcd82cad2, type: 2}
+  - {fileID: 11400000, guid: c2bc3859415945018c6f2a051916bf77, type: 2}
+  visits:
+  - customer: {fileID: 11400000, guid: f3cb2fa764fb435a9453a16dbccbafb6, type: 2}
+    greeting: "Ch\u00e0o c\u1eadu. T\u00f4i l\u00e0 Perrin, qu\u1ea3n gia nh\u00e0 Vaule. B\u1ebfp nh\u00e0 t\u00f4i c\u1ea7n rau s\u1ea1ch, m\u00e0 ngo\u00e0i ch\u1ee3 th\u00ec to\u00e0n rau h\u00e9o."
+    greetingVariants: []
+    askCost: 0
+    sell:
+      tomas: "B\u00e1c c\u1ee9 ch\u1ecdn."
+      reply: "C\u00e0 r\u1ed1t \u0111\u1eb9p \u0111\u1ea5y. \u00d4ng ch\u1ee7 t\u00f4i kh\u00f3 t\u00ednh, nh\u01b0ng ch\u1eafc kh\u00f4ng ch\u00ea \u0111\u01b0\u1ee3c."
+      replyVariants: []
+    discount:
+      tomas: "L\u1ea7n \u0111\u1ea7u b\u00e1c gh\u00e9, t\u00f4i b\u1edbt cho b\u00e1c."
+      reply: "C\u1eadu t\u1ed1t b\u1ee5ng qu\u00e1. T\u00f4i s\u1ebd gh\u00e9 th\u01b0\u1eddng xuy\u00ean, nh\u00e0 t\u00f4i \u0103n nhi\u1ec1u rau l\u1eafm."
+      replyVariants: []
+    ask:
+      tomas: "Nh\u00e0 Vaule d\u1ea1o n\u00e0y c\u00f3 chuy\u1ec7n g\u00ec vui kh\u00f4ng b\u00e1c?"
+      reply: "Vui th\u00ec kh\u00f4ng. \u00d4ng ch\u1ee7 hay ng\u1ed3i m\u1ed9t m\u00ecnh trong th\u01b0 ph\u00f2ng, d\u1eb7n ch\u00fang t\u00f4i \u0111\u1eebng l\u00e0m \u1ed3n. Nh\u00e0 gi\u00e0u c\u0169ng c\u00f3 c\u00e1i kh\u1ed5 c\u1ee7a nh\u00e0 gi\u00e0u."
+      replyVariants: []
+    press:
+      tomas: "\u00d4ng Vaule \u0111ang lo chuy\u1ec7n g\u00ec v\u1eady b\u00e1c?"
+      reply: "C\u1eadu h\u1ecfi nhi\u1ec1u qu\u00e1 \u0111\u1ea5y. Chuy\u1ec7n nh\u00e0 ch\u1ee7, ng\u01b0\u1eddi l\u00e0m nh\u01b0 t\u00f4i kh\u00f4ng d\u00e1m k\u1ec3."
+      replyVariants: []
+    farewell:
+      tomas: "H\u1eb9n b\u00e1c l\u1ea7n sau."
+      reply: "\u1eea, mai m\u1ed1t t\u00f4i gh\u00e9."
+      replyVariants: []
+  - customer: {fileID: 11400000, guid: 7c6e42a34471486bb790148cdbf172ec, type: 2}
+    greeting: "L\u1ea1i l\u00e0 t\u00f4i \u0111\u00e2y. H\u00f4m nay t\u00f4i c\u1ea7n nhi\u1ec1u h\u01a1n, t\u1ed1i nay \u0111\u1ed3n b\u1eadn."
+    greetingVariants: []
+    askCost: 0
+    sell:
+      tomas: "Ch\u1ecb l\u1ea5y m\u1ea5y b\u00f3?"
+      reply: "Ba b\u00f3. T\u1ed1i nay c\u1ea3 \u0111\u1ed3n \u0103n mu\u1ed9n."
+      replyVariants: []
+    discount:
+      tomas: "Ch\u1ecb l\u1ea5y nhi\u1ec1u, t\u00f4i b\u1edbt cho ch\u1ecb."
+      reply: "L\u1ea1i b\u1edbt? C\u1eadu \u0111\u1ecbnh l\u1ea5y l\u00f2ng l\u00ednh \u0111\u1ed3n \u00e0?"
+      replyVariants: []
+    ask:
+      tomas: "T\u1ed1i nay \u0111\u1ed3n c\u00f3 vi\u1ec7c g\u00ec m\u00e0 b\u1eadn th\u1ebf ch\u1ecb?"
+      reply: "C\u00e1i {{\u0111o\u00e0n xe qu\u00e2n nhu|F01}} cu\u1ed1i c\u00f9ng c\u0169ng t\u1edbi. Xe s\u1ebd qua {{c\u1ea7u B\u1eafc ngay \u0111\u00eam nay|F02}}, n\u00ean c\u1ea3 \u0111\u1ed9i ph\u1ea3i th\u1ee9c canh."
+      replyVariants: []
+    press:
+      tomas: "Xe qua l\u00fac m\u1ea5y gi\u1edd h\u1ea3 ch\u1ecb?"
+      reply: "C\u1eadu h\u1ecfi nhi\u1ec1u qu\u00e1 \u0111\u1ea5y. C\u1eadu tr\u1ed3ng rau hay \u0111\u1ebfm xe?"
+      replyVariants: []
+    farewell:
+      tomas: "Ch\u1ecb tr\u1ef1c \u0111\u00eam v\u1ea5t v\u1ea3 r\u1ed3i."
+      reply: "\u1eea. C\u1ea7u cho \u0111\u00eam nay y\u00ean."
+      replyVariants: []
+  - customer: {fileID: 11400000, guid: 98d534f261fe4af994e75aef739a4b3a, type: 2}
+    greeting: "Ch\u00e0o anh n\u00f4ng d\u00e2n! T\u00f4i c\u00f3 kim ch\u1ec9, x\u00e0 ph\u00f2ng, v\u00e0 c\u1ea3 tin t\u1ee9c. Th\u1ee9 cu\u1ed1i c\u00f9ng th\u00ec \u0111\u1eaft h\u01a1n m\u1ed9t ch\u00fat."
+    greetingVariants: []
+    askCost: 5
+    sell:
+      tomas: "C\u00f4 mua \u00edt c\u00e0 r\u1ed1t kh\u00f4ng?"
+      reply: "T\u00f4i kh\u00f4ng \u0103n c\u00e0 r\u1ed1t, nh\u01b0ng mua m\u1ed9t b\u00f3 \u0111\u1ec3 l\u1ea5y l\u00f2ng anh v\u1eady."
+      replyVariants: []
+    discount:
+      tomas: "T\u00f4i b\u1edbt cho c\u00f4 n\u1eeda gi\u00e1."
+      reply: "Anh h\u00e0o ph\u00f3ng th\u1eadt. V\u1eady t\u00f4i t\u1eb7ng anh m\u1ed9t tin mi\u1ec5n ph\u00ed: {{kho th\u00f3c ph\u00eda T\u00e2y \u0111\u00e3 tr\u1ed1ng, kh\u00f4ng ai canh|F03}}. L\u00ednh Lenmar r\u00fat \u0111i t\u1eeb h\u00f4m kia."
+      replyVariants: []
+    ask:
+      tomas: "H\u00f4m nay c\u00f3 tin g\u00ec \u0111\u00e1ng ti\u1ec1n kh\u00f4ng?"
+      reply: "N\u0103m xu. ...C\u1ea3m \u01a1n. {{Kho th\u00f3c ph\u00eda T\u00e2y \u0111\u00e3 tr\u1ed1ng, kh\u00f4ng ai canh|F03}}. Ai mu\u1ed1n l\u1ea5y l\u1ea1i ch\u00fat th\u00f3c th\u00ec \u0111\u00e2y l\u00e0 l\u00fac."
+      replyVariants: []
+    press:
+      tomas: "C\u00f4 nghe tin \u0111\u00f3 \u1edf \u0111\u00e2u?"
+      reply: "Ng\u01b0\u1eddi b\u00e1n tin m\u00e0 khai ngu\u1ed3n th\u00ec c\u00f2n b\u00e1n \u0111\u01b0\u1ee3c cho ai n\u1eefa? Anh h\u1ecfi nhi\u1ec1u qu\u00e1 \u0111\u1ea5y."
+      replyVariants: []
+    farewell:
+      tomas: "C\u00f4 \u0111i c\u1ea9n th\u1eadn."
+      reply: "T\u00f4i l\u00fac n\u00e0o c\u0169ng c\u1ea9n th\u1eadn. Anh m\u1edbi l\u00e0 ng\u01b0\u1eddi n\u00ean c\u1ea9n th\u1eadn."
+      replyVariants: []

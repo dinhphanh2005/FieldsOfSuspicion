@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: F03
+  m_EditorClassIdentifier: 
+  id: F03
+  text: "Kho th\u00f3c ph\u00eda T\u00e2y \u0111\u00e3 tr\u1ed1ng, kh\u00f4ng ai canh"
+  thread: 1
+  source: "Sable \u00b7 N2"
+  isTrue: 0
+  onlyLastNight: 0

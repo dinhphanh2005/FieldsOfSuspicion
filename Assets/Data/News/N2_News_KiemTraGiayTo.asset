@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N2_News_KiemTraGiayTo
+  m_EditorClassIdentifier: 
+  headline: "L\u00ednh \u0111\u1ed3n Lenmar ki\u1ec3m tra gi\u1ea5y t\u1edd tr\u00ean \u0111\u01b0\u1eddng c\u00e1i"
+  sub: "C\u00f3 tin ph\u00eda Straka cho ng\u01b0\u1eddi theo d\u00f5i \u0111\u01b0\u1eddng l\u00ean \u0111\u1ed3n."
+  isSide: 0
+  priority: 10
+  condition: 1
+  param: "F01"

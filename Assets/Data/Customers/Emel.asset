@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185d3a360f9c4d2dbf07d4bcd69b693d, type: 3}
+  m_Name: Emel
+  m_EditorClassIdentifier: 
+  displayName: Emel
+  portrait: {fileID: 8738808978636539197, guid: 3f71aa29fb89c441486423206fe5ed02, type: 3}

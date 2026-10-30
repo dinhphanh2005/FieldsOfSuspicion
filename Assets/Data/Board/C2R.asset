@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ab85159bff49b3a8ae00f740ba3f8b, type: 3}
+  m_Name: C2R
+  m_EditorClassIdentifier: 
+  handler: 1
+  title: "B\u00e1n xe c\u00fat k\u00edt c\u0169"
+  body: "Gia \u0111\u00ecnh t\u00f4i chuy\u1ec3n \u0111i n\u00ean c\u1ea7n b\u00e1n \u0111\u1ed3. \u00cdt khi d\u00f9ng t\u1edbi, c\u00f2n r\u1ea5t ch\u1eafc. Ai c\u1ea7n ch\u1edf ph\u00e2n, ch\u1edf r\u01a1m \u0111\u1ec1u h\u1ee3p. \u1ede ngay \u0111\u1ea7u x\u00f3m B\u1eafc. Xem h\u00e0ng bu\u1ed5i s\u00e1ng l\u00e0 ti\u1ec7n nh\u1ea5t. Em trai t\u00f4i s\u1ebd ch\u1edf t\u1edbi t\u1eadn nh\u00e0."
+  signature: "Li\u00ean h\u1ec7: b\u00e0 Rosa, x\u00f3m B\u1eafc"
+  answer: "GIAO XE"
+  condition: 0
+  param: ""
