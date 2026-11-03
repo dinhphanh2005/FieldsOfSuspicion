@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Perrin
   portrait: {fileID: 5448559193971070887, guid: 74cce05653cdf4b65b4d01c09beaf79a, type: 3}
+  channel: 1

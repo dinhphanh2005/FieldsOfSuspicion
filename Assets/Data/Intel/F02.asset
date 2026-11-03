@@ -18,3 +18,5 @@ MonoBehaviour:
   source: "Emel \u00b7 N2"
   isTrue: 1
   onlyLastNight: 0
+  leakSuspicion: 2
+  leakChannel: 0

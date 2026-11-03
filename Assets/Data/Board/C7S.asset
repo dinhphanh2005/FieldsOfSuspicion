@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ab85159bff49b3a8ae00f740ba3f8b, type: 3}
+  m_Name: C7S
+  m_EditorClassIdentifier: 
+  handler: 2
+  title: "B\u00e1n g\u1ea1ch v\u1ee1"
+  body: "B\u00e1n g\u1ea1ch v\u1ee1 l\u00e0m n\u1ec1n. Ai c\u1ea7n l\u00e1t s\u00e2n, l\u1ea5p h\u1ed1 \u0111\u1ec1u \u0111\u01b0\u1ee3c. \u1ede l\u00f2 g\u1ea1ch, sau gi\u1edd tr\u01b0a. R\u1ebb h\u01a1n g\u1ea1ch m\u1edbi m\u1ed9t n\u1eeda. \u00d4ng Sev ch\u1edf gi\u00fap n\u1ebfu mua nhi\u1ec1u. \u1ede xa c\u0169ng ch\u1edf, th\u00eam ch\u00fat c\u00f4ng. Kh\u00f4ng nh\u1eadn \u0111\u1ed5i tr\u1ea3."
+  signature: "Li\u00ean h\u1ec7: \u00f4ng Sev, l\u00f2 g\u1ea1ch"
+  answer: "BAO ROOK"
+  condition: 0
+  param: ""

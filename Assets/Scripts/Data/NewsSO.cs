@@ -7,9 +7,17 @@ using UnityEngine;
 public class NewsSO : ScriptableObject
 {
     public string headline;
-    [TextArea(2, 4)] public string sub;
+    [TextArea(2, 12)] public string sub;
     public bool isSide;
     public int priority;
     public ShowCondition condition;
     public string param;
+
+    [Tooltip("Khi tin này hiện, tự thêm mảnh tin này vào sổ tay (F12 ở N6)")]
+    public string grantsIntel;
+
+    [Tooltip("Lá thư (đọc riêng trên tờ giấy thư, trước tờ báo) thay vì một mục trên báo")]
+    public bool isLetter;
+    [Tooltip("Dòng nhỏ dưới tiêu đề thư, ví dụ: Không đề tên người gửi")]
+    public string letterNote;
 }

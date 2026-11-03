@@ -4,9 +4,12 @@ using UnityEngine;
 // Sự kiện của vòng chơi. Sprint 3: TelemetryLogger đăng ký các sự kiện này để ghi CSV.
 public static class GameEvents
 {
-    public static event Action<string> IntelCaptured;      // mã mảnh tin vừa ghi
-    public static event Action<DropRecord> DropDelivered;  // đêm vừa giao tin
-    public static event Action<int> DayResolved;           // ngày vừa tổng kết
+    public static event Action<string> IntelCaptured;       // mã mảnh tin vừa ghi
+    public static event Action<DropRecord> DropDelivered;   // đêm vừa giao tin
+    public static event Action<int, string> SuspicionAdded; // điểm, lý do
+    public static event Action<int> DayResolved;            // ngày vừa tổng kết
+    public static event Action<EndingId> EndingReached;
+    public static event Action<string, Handler, bool> HandlerOrderResolved;
 
     public static void RaiseIntelCaptured(string id)
     {
@@ -20,9 +23,27 @@ public static class GameEvents
         DropDelivered?.Invoke(drop);
     }
 
+    public static void RaiseSuspicionAdded(int points, string reason)
+    {
+        Debug.Log($"[Nghi ngờ] +{points} ({reason})");
+        SuspicionAdded?.Invoke(points, reason);
+    }
+
     public static void RaiseDayResolved(int day)
     {
         Debug.Log($"[Sự kiện] DayResolved N{day}");
         DayResolved?.Invoke(day);
+    }
+
+    public static void RaiseEndingReached(EndingId id)
+    {
+        Debug.Log($"[Sự kiện] EndingReached {id}");
+        EndingReached?.Invoke(id);
+    }
+
+    public static void RaiseHandlerOrderResolved(string messageId, Handler handler, bool followed)
+    {
+        Debug.Log($"[Lệnh handler] {messageId} ({handler}): {(followed ? "đã làm theo" : "không làm theo")}");
+        HandlerOrderResolved?.Invoke(messageId, handler, followed);
     }
 }

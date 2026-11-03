@@ -18,3 +18,4 @@ MonoBehaviour:
   priority: 10
   condition: 1
   param: "F02"
+  grantsIntel: ""

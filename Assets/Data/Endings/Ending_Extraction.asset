@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4daa1567dbf44a59d24b736a4ae83b3, type: 3}
+  m_Name: Ending_Extraction
+  m_EditorClassIdentifier: 
+  id: 3
+  title: "\u0110\u01b0\u1ee3c r\u00fat v\u1ec1"
+  text: "Hai \u0111\u00eam sau, m\u1ed9t chi\u1ebfc xe ch\u1edf r\u01a1m d\u1eebng tr\u01b0\u1edbc c\u1eeda nh\u00e0. Ng\u01b0\u1eddi \u0111\u00e1nh xe n\u00f3i \u0111\u00fang c\u00e2u m\u1eadt kh\u1ea9u.\n\n\u1ede bi\u00ean gi\u1edbi, Rook \u0111\u1ee3i c\u1eadu v\u1edbi m\u1ed9t t\u00e1ch tr\u00e0 \u0111\u00e3 ngu\u1ed9i. \"Ch\u00fang t\u00f4i b\u1eaft \u0111\u01b0\u1ee3c Shrike \u1edf l\u00f2 g\u1ea1ch,\" b\u00e0 n\u00f3i. \"C\u1eadu l\u00e0m t\u1ed1t l\u1eafm, Wren. Gi\u1edd th\u00ec ngh\u1ec9 \u0111i. M\u1ea3nh ru\u1ed9ng \u0111\u00f3 \u0111\u1ec3 ng\u01b0\u1eddi kh\u00e1c lo.\""

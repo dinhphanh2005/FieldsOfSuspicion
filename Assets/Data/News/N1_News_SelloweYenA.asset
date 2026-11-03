@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N1_News_SelloweYenA
+  m_EditorClassIdentifier: 
+  headline: "Sellowe y\u00ean \u1ea3 sau m\u00f9a g\u1eb7t"
+  sub: "\u0110\u1ed3n Lenmar nh\u1eafc l\u1ea1i l\u1ec7nh gi\u1edbi nghi\u00eam. Ch\u1ee3 phi\u00ean th\u1ee9 B\u1ea3y v\u1eabn h\u1ecdp nh\u01b0 th\u01b0\u1eddng."
+  isSide: 0
+  priority: 0
+  condition: 0
+  param: ""
+  grantsIntel: ""

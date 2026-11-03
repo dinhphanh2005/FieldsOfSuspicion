@@ -18,3 +18,5 @@ MonoBehaviour:
   source: "Perrin \u00b7 N3"
   isTrue: 1
   onlyLastNight: 0
+  leakSuspicion: 2
+  leakChannel: 1

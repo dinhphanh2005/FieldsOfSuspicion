@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: F11
+  m_EditorClassIdentifier: 
+  id: F11
+  text: "Kh\u00e1ch \u0111\u1ec3 qu\u00ean kh\u0103n tay th\u00eau h\u00ecnh chim b\u00e1ch thanh"
+  thread: 4
+  source: "Perrin \u00b7 N6"
+  isTrue: 1
+  onlyLastNight: 0
+  leakSuspicion: 0
+  leakChannel: 3

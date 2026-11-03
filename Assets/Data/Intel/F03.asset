@@ -18,3 +18,5 @@ MonoBehaviour:
   source: "Sable \u00b7 N2"
   isTrue: 0
   onlyLastNight: 0
+  leakSuspicion: 0
+  leakChannel: 3

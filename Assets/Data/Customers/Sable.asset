@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Sable
   portrait: {fileID: 1682643505837673970, guid: a1fdfcf470087447eb091edf1fbc8967, type: 3}
+  channel: 2

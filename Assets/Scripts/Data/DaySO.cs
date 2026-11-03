@@ -16,4 +16,7 @@ public class DaySO : ScriptableObject
 
     [Tooltip("Khách ghé tiệm buổi chiều, theo thứ tự")]
     public List<CustomerVisit> visits = new();
+
+    [Tooltip("Luật bản đồ đêm của ngày này (ghi đè bảng đường gốc)")]
+    public List<RouteRule> night = new();
 }

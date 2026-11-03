@@ -1,2 +1,25 @@
 fileFormatVersion: 2
 guid: 820e135e423cb406dad5e00e92f8b1ca
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - newsPanel: {instanceID: 0}
+  - morningPanel: {instanceID: 0}
+  - afternoonPanel: {instanceID: 0}
+  - nightPanel: {instanceID: 0}
+  - endingPanel: {instanceID: 0}
+  - notebookPanel: {instanceID: 0}
+  - newsTitle: {instanceID: 0}
+  - bgNews: {instanceID: 0}
+  - bgBoard: {instanceID: 0}
+  - bgShop: {instanceID: 0}
+  - bgNight: {instanceID: 0}
+  - bgNotebook: {instanceID: 0}
+  - bgEnding: {instanceID: 0}
+  - titleFont: {fileID: 12800000, guid: 721d2ac41a214809ad4b21a9e8c04c75, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData:
+  assetBundleName:
+  assetBundleVariant:

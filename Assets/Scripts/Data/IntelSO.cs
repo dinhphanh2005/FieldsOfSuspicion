@@ -10,5 +10,9 @@ public class IntelSO : ScriptableObject
     public IntelThread thread;
     public string source;                   // "Emel · N2"
     public bool isTrue;                     // người chơi không thấy
-    public bool onlyLastNight;              // chỉ B1, B2
+    public bool onlyLastNight;              // chỉ B1, B2: tự có trong danh sách giao tin đêm N7
+
+    [Tooltip("Điểm nghi ngờ cộng thêm khi giao mảnh này (tin rò rỉ khiến Lenmar lần theo). F02/F06/F07 = 2")]
+    public int leakSuspicion;
+    public SuspicionChannel leakChannel;    // F02 → Emel (đồn), F06/F07 → Perrin (nhà Vaule)
 }

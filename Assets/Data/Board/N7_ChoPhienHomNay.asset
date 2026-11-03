@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ab85159bff49b3a8ae00f740ba3f8b, type: 3}
+  m_Name: N7_ChoPhienHomNay
+  m_EditorClassIdentifier: 
+  handler: 0
+  title: "Ch\u1ee3 phi\u00ean h\u00f4m nay"
+  body: "Ch\u1ee3 phi\u00ean h\u1ecdp t\u1eeb s\u00e1ng s\u1edbm. L\u00ednh \u0111\u1ed3n s\u1ebd \u0111\u1ee9ng g\u00e1c \u1edf qu\u1ea3ng tr\u01b0\u1eddng."
+  signature: "Ban ch\u1ee3"
+  answer: ""
+  condition: 0
+  param: ""

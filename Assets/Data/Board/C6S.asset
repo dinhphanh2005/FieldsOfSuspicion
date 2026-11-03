@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ab85159bff49b3a8ae00f740ba3f8b, type: 3}
+  m_Name: C6S
+  m_EditorClassIdentifier: 
+  handler: 2
+  title: "B\u00e1n r\u01a1m kh\u00f4"
+  body: "R\u01a1m kh\u00f4 c\u00f2n nhi\u1ec1u, xin b\u00e1n r\u1ebb. \u1ede s\u00e2n l\u00f2 g\u1ea1ch, c\u1ee9 t\u1ef1 l\u1ea5y. \u00d4ng Sev ch\u1ec9 l\u1ea5y n\u1eeda gi\u00e1. K\u1ebbo m\u01b0a xu\u1ed1ng th\u00ec \u1ea9m h\u1ebft. Ph\u1ea3i ch\u1edf tr\u01b0\u1edbc th\u1ee9 B\u1ea3y. H\u1ebft r\u01a1m th\u00ec th\u00f4i, kh\u00f4ng gi\u1eef ch\u1ed7. Ai c\u1ea7n nhi\u1ec1u xin b\u00e1o tr\u01b0\u1edbc. Nh\u00e0 xa th\u00ec c\u00f3 xe gi\u00fap ch\u1edf."
+  signature: "Li\u00ean h\u1ec7: \u00f4ng Sev, l\u00f2 g\u1ea1ch"
+  answer: "ROOK PHAN"
+  condition: 0
+  param: ""

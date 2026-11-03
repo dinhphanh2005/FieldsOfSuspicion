@@ -17,7 +17,7 @@ public static class IntelMarkup
             string id = m.Groups[2].Value;
             return s.HasFragment(id)
                 ? $"<color=#{CapturedColor}>{phrase}</color>"
-                : $"<link=\"{id}\"><color=#{FreshColor}>{phrase}</color></link>";
+                : $"<link=\"{id}\"><color=#{FreshColor}><u>{phrase}</u></color></link>";
         });
     }
 }

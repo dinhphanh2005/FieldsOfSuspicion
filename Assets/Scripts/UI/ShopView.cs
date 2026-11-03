@@ -1,69 +1,217 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Tiệm buổi chiều: khách lần lượt ghé, mọi tương tác nằm trong khung thoại.
-// Bán hàng / Bớt giá: 1 lần mỗi khách (chọn một trong hai).
-// Hỏi chuyện: lần 1 = Hỏi chuyện, lần 2 = Hỏi dồn. Sable thu tiền ở lần hỏi đầu.
-// Tiễn khách: hiện câu chào tạm biệt, bấm lần nữa thì mời khách sau.
-// Tiền: Bán hàng +10 xu, Bớt giá +6 xu (số tạm, chỉnh khi playtest). Nghi ngờ khi hỏi dồn: Sprint 2.
+// Tiệm buổi chiều — bố cục kiểu visual novel:
+//   nhân vật đứng sau quầy (giữa trái), bảng "Khách chiều nay" góc trên phải,
+//   khung thoại ngang dưới đáy có thẻ tên; lựa chọn nằm trong khung thoại, cột bên phải.
+//   Thanh nút dưới: "Sổ tay" (trái) · "Sang buổi tối" (phải).
+//
+// Một lượt khách: dẫn truyện khách bước vào → câu chào → các lượt hỏi–đáp → câu chào về → dẫn truyện khách rời đi.
+// Khung thoại GIỮ CẢ CUỘC TRÒ CHUYỆN (cuộn được), đoạn cũ in mờ hơn. Hết việc để làm thì khách tự chào về.
+//   - Bán hàng / Bớt giá: 1 lần mỗi khách (chọn một trong hai), tốn 1 bó rau.
+//   - Hỏi chuyện: lần 1 = Hỏi chuyện, lần 2 = Hỏi dồn (cộng nghi ngờ vào kênh của khách).
+//   - Tiễn khách: kết thúc sớm.
 public class ShopView : MonoBehaviour
 {
-    const int SellPrice = 10;       // số tạm — chỉnh khi playtest
-    const int DiscountPrice = 6;
+    enum Mode { Prompt, Closed, Open }
+
+    // Một nút lựa chọn: chữ bên trái, ghi chú nhỏ bên phải
+    class Choice
+    {
+        public Button button;
+        public TextMeshProUGUI label, note;
+    }
+
+    const string NarrationColor = "7A6A5A";
+    const string OldAlpha = "<alpha=#8C>";
 
     DayManager dm;
     Image portrait;
-    TextMeshProUGUI nameText, dialogue, moneyText;
-    Button sellBtn, discountBtn, askBtn, farewellBtn;
+    RectTransform queueList, nameTag;
+    TextMeshProUGUI nameText, dialogue, queueFoot;
+    ScrollRect scroll;
+    Choice[] choices;
+    Button notebookBtn;
 
+    Mode mode;
     DaySO day;
+    List<CustomerVisit> activeVisits = new List<CustomerVisit>();
     int index;          // khách thứ mấy trong ngày
     int askCount;       // 0 chưa hỏi, 1 đã hỏi chuyện, 2 đã hỏi dồn
     bool traded;        // đã bán hoặc bớt giá
-    bool leaving;       // đã bấm Tiễn khách
-    string tomasLine;   // câu thô (còn {{...}})
-    string replyLine;
-    string note;        // dòng ghi chú nhỏ dưới thoại, ví dụ "+10 xu"
+    bool leaving;       // khách đã chào về
+    readonly List<string> log = new List<string>();   // các đoạn thô (còn {{...}}), hiện nối tiếp nhau
+    int fresh;          // log[fresh..] là lượt mới nhất (in đậm), trước đó in mờ
 
     GameState S => dm.State;
-    CustomerVisit Visit => day && index < day.visits.Count ? day.visits[index] : null;
+    CustomerVisit Visit => day && index < activeVisits.Count ? activeVisits[index] : null;
+    string Speaker => Visit != null && Visit.customer ? Visit.customer.displayName : "";
 
     public void Init(DayManager manager)
     {
         dm = manager;
-        var img = transform.Find("Img_Customer");
-        portrait = img ? img.GetComponent<Image>() : null;
+        var stage = UIFactory.MakeStage(transform);
 
-        moneyText = UIFactory.MakeText(UIFactory.MakeRect(transform, "Shop_Money", new Vector2(0.72f, 0.88f), new Vector2(0.96f, 0.95f)),
-                                       "", 22, UIFactory.Ink, TextAlignmentOptions.Right);
+        BuildQueue(stage);
 
-        var box = UIFactory.MakeRect(transform, "Shop_DialogueBox", new Vector2(0.42f, 0.12f), new Vector2(0.96f, 0.78f));
-        UIFactory.MakeBox(box, UIFactory.Paper);
+        // Nhân vật: chân chạm mặt quầy
+        var pr = UIFactory.Place(stage, "Shop_Portrait", 250, 28, 330, 360);
+        portrait = pr.gameObject.AddComponent<Image>();
+        portrait.preserveAspect = true;
+        portrait.raycastTarget = false;
+        portrait.enabled = false;
 
-        nameText = UIFactory.MakeText(UIFactory.MakeRect(box, "Name", new Vector2(0, 0.86f), new Vector2(1, 1), 16),
-                                      "", 26, UIFactory.Ink, TextAlignmentOptions.Left);
-        nameText.fontStyle = FontStyles.Bold;
+        // Mặt quầy gỗ chạy ngang, che phần dưới nhân vật
+        var counter = UIFactory.Place(stage, "Shop_Counter", 0, 372, 1280, 40);
+        UIFactory.MakeBox(counter, UIFactory.Hex("5A3D29"), false);
+        var edge = UIFactory.Place(counter, "Edge", 0, 0, 1280, 4);
+        UIFactory.MakeBox(edge, UIFactory.Hex("82603F"), false);
 
-        dialogue = UIFactory.MakeText(UIFactory.MakeRect(box, "Dialogue", new Vector2(0, 0.24f), new Vector2(1, 0.86f), 20),
-                                      "", 23, UIFactory.Ink);
+        BuildDialogueBox(stage);
+
+        var bar = UIFactory.MakeActionBar(transform);
+        notebookBtn = UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook());
+        UIFactory.BarHint(bar, "Bấm cụm từ gạch chân màu đỏ trong lời khách để ghi vào sổ tay");
+        UIFactory.BarSpacer(bar);
+        UIFactory.BarButton(bar, "Sang buổi tối", () => dm.EndPhase(), primary: true);
+    }
+
+    void BuildQueue(RectTransform stage)
+    {
+        var q = UIFactory.Place(stage, "Shop_Queue", 880, 24, 376, 0);
+        UIFactory.MakeSurface(q, new Color(0.165f, 0.133f, 0.11f, 0.94f), 8);
+        UIFactory.AutoHeight(q, 22, 18, 18, 0);
+        UIFactory.MakeLabel(UIFactory.MakeRect(q, "Title", Vector2.zero, Vector2.one), "KHÁCH CHIỀU NAY", UIFactory.Gold, 16);
+        UIFactory.Size(UIFactory.MakeRect(q, "Gap", Vector2.zero, Vector2.one), 8);
+
+        queueList = UIFactory.MakeRect(q, "Rows", Vector2.zero, Vector2.one);
+        UIFactory.VList(queueList, 0, 0);
+
+        UIFactory.Size(UIFactory.MakeRect(q, "Gap", Vector2.zero, Vector2.one), 10);
+        queueFoot = UIFactory.AddLine(q, "", 14, UIFactory.Hex("9C8C7B"));
+        queueFoot.lineSpacing = 6;
+    }
+
+    void BuildDialogueBox(RectTransform stage)
+    {
+        var box = UIFactory.Place(stage, "Shop_DialogueBox", 24, 376, 1232, 220);
+        UIFactory.MakeSurface(box, new Color(0.957f, 0.925f, 0.847f, 0.99f), 8);
+        UIFactory.Skin(box.GetComponent<Image>(), "dialogue_box");
+        UIFactory.AddShadow(box, 8);
+
+        // Thẻ tên dính mép trên trái khung thoại, rộng theo chữ
+        nameTag = UIFactory.Place(stage, "Shop_NameTag", 52, 380, 0, 38);
+        UIFactory.MakeSurface(nameTag, UIFactory.Hex("5B3A29"), 5, false);
+        UIFactory.Skin(nameTag.GetComponent<Image>(), "name_tag");
+        var h = UIFactory.HList(nameTag, 0, 0);
+        h.padding = new RectOffset(26, 26, 0, 0);
+        nameTag.gameObject.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        nameText = UIFactory.MakeTitle(UIFactory.MakeRect(nameTag, "Text", Vector2.zero, Vector2.one), "", 19, UIFactory.Light, TextAlignmentOptions.Midline);
+        nameText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        // Lời thoại: bên trái, cuộn được
+        var scrollRoot = UIFactory.MakeRect(box, "Dialogue_Scroll", Vector2.zero, Vector2.one);
+        scrollRoot.offsetMin = new Vector2(30, 14);
+        scrollRoot.offsetMax = new Vector2(-330, -28);
+        var content = UIFactory.MakeScroll(scrollRoot, out scroll);
+        dialogue = UIFactory.MakeText(UIFactory.MakeRect(content, "Dialogue", Vector2.zero, Vector2.one), "", 17, UIFactory.Ink);
+        dialogue.lineSpacing = 10;
+        dialogue.paragraphSpacing = 10;
+        dialogue.raycastTarget = true;   // để bấm được cụm từ màu
         dialogue.gameObject.AddComponent<ClickableText>().LinkClicked += OnIntelClicked;
 
-        var row = UIFactory.MakeRect(box, "Choices", new Vector2(0, 0), new Vector2(1, 0.22f), 14);
-        UIFactory.HList(row, 10, 0);
-        sellBtn     = UIFactory.MakeButton(row, "Btn_Sell", "Bán hàng", OnSell, 20);
-        discountBtn = UIFactory.MakeButton(row, "Btn_Discount", "Bớt giá", OnDiscount, 20);
-        askBtn      = UIFactory.MakeButton(row, "Btn_Ask", "Hỏi chuyện", OnAsk, 20);
-        farewellBtn = UIFactory.MakeButton(row, "Btn_Farewell", "Tiễn khách", OnFarewell, 20);
-        foreach (var b in new[] { sellBtn, discountBtn, askBtn, farewellBtn })
-            UIFactory.SetColor(b, UIFactory.ButtonTan);
+        // Đường kẻ dọc + cột lựa chọn bên phải
+        var vr = UIFactory.MakeRect(box, "Divider", new Vector2(1, 0), new Vector2(1, 1));
+        vr.sizeDelta = new Vector2(1, -28);
+        vr.anchoredPosition = new Vector2(-300, 0);
+        UIFactory.MakeBox(vr, new Color(0.23f, 0.18f, 0.15f, 0.2f), false);
+
+        var col = UIFactory.MakeRect(box, "Choices", new Vector2(1, 0), new Vector2(1, 1));
+        col.pivot = new Vector2(1, 0.5f);
+        col.sizeDelta = new Vector2(300, 0);
+        var v = UIFactory.VList(col, 5, 0);
+        v.padding = new RectOffset(12, 12, 8, 8);
+        v.childAlignment = TextAnchor.MiddleCenter;
+
+        choices = new Choice[4];
+        for (int i = 0; i < choices.Length; i++)
+        {
+            int k = i;
+            choices[i] = MakeChoice(col, () => OnChoice(k));
+        }
     }
+
+    Choice MakeChoice(RectTransform col, UnityEngine.Events.UnityAction onClick)
+    {
+        var b = UIFactory.MakeButton(col, "Choice", "", onClick, 16);
+        UIFactory.Size(b, 34);
+        var label = b.GetComponentInChildren<TextMeshProUGUI>();
+        label.alignment = TextAlignmentOptions.MidlineLeft;
+        label.rectTransform.offsetMin = new Vector2(14, 0);
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.enableAutoSizing = true;
+        label.fontSizeMin = 12;
+        label.fontSizeMax = 16;
+        label.overflowMode = TextOverflowModes.Ellipsis;
+        label.rectTransform.offsetMax = new Vector2(-112, 0);
+        var note = UIFactory.MakeText(UIFactory.MakeRect(b.transform, "Note", Vector2.zero, Vector2.one), "", 14,
+                                      UIFactory.Hex(NarrationColor), TextAlignmentOptions.MidlineRight);
+        note.fontSize = 12;
+        note.textWrappingMode = TextWrappingModes.NoWrap;
+        note.overflowMode = TextOverflowModes.Ellipsis;
+        note.rectTransform.anchorMin = new Vector2(1, 0);
+        note.rectTransform.anchorMax = new Vector2(1, 1);
+        note.rectTransform.pivot = new Vector2(1, 0.5f);
+        note.rectTransform.sizeDelta = new Vector2(94, 0);
+        note.rectTransform.anchoredPosition = new Vector2(-14, 0);
+        return new Choice { button = b, label = label, note = note };
+    }
+
+    // ---------------- Luồng ----------------
 
     public void Begin(DaySO today)
     {
         day = today;
+        int expectedMomentum = PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
+        activeVisits = day && day.visits != null
+            ? day.visits.Where(v => v != null && v.requiredMomentum <= expectedMomentum).ToList()
+            : new List<CustomerVisit>();
         index = 0;
+        mode = Mode.Prompt;
+        log.Clear();
+        fresh = 0;
+
+        portrait.enabled = false;
+        nameText.text = "Tomas";
+        log.Add(Narration("Buổi chiều. Tomas lau quầy, nhìn ra con phố vắng."));
+        log.Add($"Mở tiệm thì mất {EconomyRules.OpenShopEnergy} năng lượng (còn {S.energy}). Trong kho còn {S.stock} bó rau." +
+                (activeVisits.Count > 0 ? "" : "\n" + Narration("(Hôm nay không có khách ghé tiệm.)")));
+        Render();
+    }
+
+    void OpenShop()
+    {
+        S.energy -= EconomyRules.OpenShopEnergy;
+        S.shopOpenedToday = true;
+        int expectedMomentum = PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
+        activeVisits = day && day.visits != null
+            ? day.visits.Where(v => v != null && v.requiredMomentum <= expectedMomentum).ToList()
+            : new List<CustomerVisit>();
+        mode = Mode.Open;
         StartVisit();
+    }
+
+    void StayClosed()
+    {
+        mode = Mode.Closed;
+        S.energy = Mathf.Min(EconomyRules.MaxEnergy, S.energy + EconomyRules.OpenShopEnergy);
+        log.Clear();
+        fresh = 0;
+        log.Add(Narration("Tomas treo tấm biển \"Hôm nay nghỉ\" lên cửa. Chiều nay không có khách, cũng không có tin."));
+        Render();
     }
 
     void StartVisit()
@@ -71,79 +219,194 @@ public class ShopView : MonoBehaviour
         askCount = 0;
         traded = false;
         leaving = false;
-        tomasLine = null;
-        note = null;
+        log.Clear();
+        fresh = 0;
 
         var v = Visit;
         bool hasCustomer = v != null && v.customer;
-        if (portrait) portrait.enabled = hasCustomer;
-        sellBtn.transform.parent.gameObject.SetActive(hasCustomer);
+        portrait.enabled = hasCustomer && v.customer.portrait;
 
         if (!hasCustomer)
         {
-            nameText.text = "Tiệm vắng";
-            replyLine = "Hôm nay không còn khách nào. Bấm Tiếp để sang buổi tối.";
+            nameText.text = "Tomas";
+            log.Add(Narration("Con phố đã vắng người. Tomas kéo cửa tiệm xuống, chờ trời tối."));
             Render();
             return;
         }
 
-        if (portrait) portrait.sprite = v.customer.portrait;
+        if (portrait.enabled) portrait.sprite = v.customer.portrait;
         nameText.text = v.customer.displayName;
-        replyLine = Conditions.Pick(S, v.greeting, v.greetingVariants);
+
+        string entrance = Conditions.Pick(S, v.entrance, v.entranceVariants);
+        if (!string.IsNullOrEmpty(entrance)) log.Add(Narration(entrance));
+        log.Add($"<b>{Speaker}:</b> {Conditions.Pick(S, v.greeting, v.greetingVariants)}");
         Render();
     }
 
-    void Choose(DialogueLine line, string noteText = null)
+    // Thêm một lượt hỏi–đáp vào cuối cuộc trò chuyện
+    void Say(DialogueLine line, string note = null)
     {
-        note = noteText;
-        tomasLine = line.tomas;
-        replyLine = Conditions.Pick(S, line.reply, line.replyVariants);
+        fresh = log.Count;
+        log.Add($"<b>Tomas:</b> {line.tomas}");
+        log.Add($"<b>{Speaker}:</b> {Conditions.Pick(S, line.reply, line.replyVariants)}" +
+                (note != null ? $"  <size=85%><color=#{NarrationColor}>({note})</color></size>" : ""));
+    }
+
+    // Khách chào về + dẫn truyện rời đi
+    void Leave()
+    {
+        leaving = true;
+        Say(Visit.farewell);
+        string exit = Conditions.Pick(S, Visit.exit, Visit.exitVariants);
+        if (!string.IsNullOrEmpty(exit)) log.Add(Narration(exit));
+    }
+
+    // Sau mỗi lựa chọn: nếu không còn gì để làm thì khách tự chào về
+    void AfterAction()
+    {
+        if (!leaving && !CanTrade && !CanAsk) Leave();
         Render();
     }
+
+    bool HasStockFor(int quantity) => quantity < 0 ? S.stock > 0 : quantity == 0 || S.stock >= quantity;
+    int QuantityAvailable(int requested) => requested < 0 ? S.stock : requested;
+    bool CanSell => !traded && Visit != null && Visit.sellQuantity > 0 && HasStockFor(Visit.sellQuantity);
+    bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(Visit.discountQuantity);
+    bool CanTrade => CanSell || CanDiscount;
+    bool CanAsk => askCount < 2 && (askCount > 0 || S.money >= Visit.askCost);
+
+    static string Narration(string text) => $"<i><color=#{NarrationColor}>{text}</color></i>";
 
     void Render()
     {
-        string speaker = Visit != null && Visit.customer ? Visit.customer.displayName : "";
-        string text = tomasLine != null ? $"<b>Tomas:</b> {tomasLine}\n\n" : "";
-        text += speaker != "" ? $"<b>{speaker}:</b> " : "";
-        text += IntelMarkup.ToRichText(replyLine, S);
-        if (note != null) text += $"\n\n<color=#8C7B6B><i>{note}</i></color>";
-        dialogue.text = text;
-        moneyText.text = $"Tiền: {S.money} xu";
-        RefreshButtons();
+        var parts = new List<string>();
+        for (int i = 0; i < log.Count; i++)
+        {
+            string rich = IntelMarkup.ToRichText(log[i], S);
+            parts.Add(i < fresh ? OldAlpha + rich + "<alpha=#FF>" : rich);
+        }
+        dialogue.text = string.Join("\n", parts);
+        RefreshChoices();
+        RefreshQueue();
+        UIFactory.SetLabel(notebookBtn, $"Sổ tay  ·  {S.fragments.Count} tin");
+        UIFactory.ScrollToBottom(scroll);
     }
 
-    void RefreshButtons()
+    // ---------------- Lựa chọn ----------------
+
+    // Mỗi chế độ dùng các ô lựa chọn theo thứ tự; ô thừa thì ẩn
+    void SetChoice(int i, string label, string note = "", bool on = true, bool gold = false)
     {
+        var c = choices[i];
+        c.button.gameObject.SetActive(true);
+        c.label.text = label;
+        c.note.text = note;
+        c.note.gameObject.SetActive(!string.IsNullOrEmpty(note));
+        c.label.rectTransform.offsetMax = new Vector2(string.IsNullOrEmpty(note) ? -14 : -112, 0);
+        UIFactory.SetColor(c.button, gold ? UIFactory.Gold : UIFactory.ButtonTan);
+        UIFactory.SetInteractable(c.button, on);
+    }
+
+    void RefreshChoices()
+    {
+        foreach (var c in choices) c.button.gameObject.SetActive(false);
+
+        switch (mode)
+        {
+            case Mode.Prompt:
+                SetChoice(0, $"Giá bán · {PricingSystem.Name(S.shopPriceLevel)}", "bấm để đổi mức giá");
+                SetChoice(1, "Mở tiệm", $"−{EconomyRules.OpenShopEnergy} năng lượng", S.energy >= EconomyRules.OpenShopEnergy, gold: true);
+                SetChoice(2, "Nghỉ chiều nay");
+                return;
+            case Mode.Closed:
+                SetChoice(0, "Sang buổi tối", "", true, gold: true);
+                return;
+        }
+
         var v = Visit;
-        if (v == null) return;
+        if (v == null || !v.customer) { SetChoice(0, "Sang buổi tối", "", true, gold: true); return; }
 
-        UIFactory.SetInteractable(sellBtn, !traded && !leaving);
-        UIFactory.SetInteractable(discountBtn, !traded && !leaving);
+        if (leaving)
+        {
+            SetChoice(0, index + 1 < activeVisits.Count ? "Mời khách sau" : "Đóng tiệm", "", true, gold: true);
+            return;
+        }
 
-        bool canPay = askCount > 0 || S.money >= v.askCost;
-        UIFactory.SetInteractable(askBtn, askCount < 2 && !leaving && canPay);
-        UIFactory.SetLabel(askBtn, askCount == 0
-            ? (v.askCost > 0 ? $"Hỏi chuyện ({v.askCost} xu)" : "Hỏi chuyện")
-            : "Hỏi dồn");
+        string sellLabel = traded ? "Đã giao dịch" : v.sellQuantity == 0 ? "Khách không mua rau" :
+            v.sellQuantity < 0 ? $"Bán hết kho ({S.stock} bó)" : $"Bán {v.sellQuantity} bó";
+        int sellCount = QuantityAvailable(v.sellQuantity);
+        int sellRevenue = PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum) * Mathf.Max(0, sellCount);
+        SetChoice(0, sellLabel, sellRevenue > 0 ? $"+{sellRevenue} xu" : "", CanSell);
+        int discountCount = QuantityAvailable(v.discountQuantity);
+        int discountRevenue = DiscountUnitPrice(v) * Mathf.Max(0, discountCount);
+        string discountLabel = string.IsNullOrEmpty(v.discountActionLabel)
+            ? v.discountAccepted ? "Bớt giá" : "Đề nghị bớt giá"
+            : v.discountActionLabel;
+        SetChoice(1, discountLabel, discountRevenue > 0 ? $"+{discountRevenue} xu" : "", CanDiscount);
+        SetChoice(2, askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn",
+                  askCount == 0 ? (v.askCost > 0 ? $"−{v.askCost} xu" : "") : "dễ bị để ý", CanAsk);
+        SetChoice(3, "Tiễn khách");
+    }
 
-        bool hasNext = index + 1 < day.visits.Count;
-        UIFactory.SetLabel(farewellBtn, !leaving ? "Tiễn khách" : (hasNext ? "Mời khách sau" : "Hết khách"));
+    void OnChoice(int i)
+    {
+        switch (mode)
+        {
+            case Mode.Prompt:
+                if (i == 0) CyclePrice();
+                else if (i == 1) OpenShop();
+                else StayClosed();
+                return;
+            case Mode.Closed:
+                dm.EndPhase();
+                return;
+        }
+
+        var v = Visit;
+        if (v == null || !v.customer) { dm.EndPhase(); return; }
+        if (leaving) { index++; StartVisit(); return; }
+
+        switch (i)
+        {
+            case 0: OnSell(); break;
+            case 1: OnDiscount(); break;
+            case 2: OnAsk(); break;
+            case 3: Leave(); Render(); break;
+        }
     }
 
     void OnSell()
     {
+        var v = Visit;
+        if (!CanSell) return;
         traded = true;
-        S.money += SellPrice;
-        Choose(Visit.sell, $"+{SellPrice} xu");
+        int quantity = QuantityAvailable(v.sellQuantity);
+        int revenue = PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum) * quantity;
+        S.stock -= quantity;
+        if (v.sellPrice > 0) S.salesToday += quantity;
+        S.money += revenue;
+        Say(v.sell, $"{quantity} bó rau · +{revenue} xu");
+        AfterAction();
     }
 
     void OnDiscount()
     {
+        var v = Visit;
+        if (!CanDiscount) return;
         traded = true;
-        S.money += DiscountPrice;
-        Choose(Visit.discount, $"+{DiscountPrice} xu (đã bớt giá)");
+        int quantity = QuantityAvailable(v.discountQuantity);
+        int revenue = DiscountUnitPrice(v) * quantity;
+        S.stock -= quantity;
+        if (v.discountPrice > 0) S.salesToday += quantity;
+        S.money += revenue;
+        string outcome = quantity > 0 ? $"{quantity} bó rau · +{revenue} xu" : "không xuất rau · không thu tiền";
+        Say(v.discount, outcome);
+        AfterAction();
     }
+
+    int DiscountUnitPrice(CustomerVisit visit) => visit.discountAccepted
+        ? PricingSystem.Revenue(visit.discountPrice, ShopPriceLevel.Low, S.customerBaseMomentum)
+        : PricingSystem.Revenue(visit.sellPrice, S.shopPriceLevel, S.customerBaseMomentum);
 
     void OnAsk()
     {
@@ -153,30 +416,89 @@ public class ShopView : MonoBehaviour
             if (S.money < v.askCost) return;
             S.money -= v.askCost;
             askCount = 1;
-            Choose(v.ask, v.askCost > 0 ? $"-{v.askCost} xu" : null);
+            Say(v.ask, v.askCost > 0 ? $"−{v.askCost} xu" : null);
         }
         else if (askCount == 1)
         {
             askCount = 2;
-            Choose(v.press);
+            S.AddSuspicion(v.customer.channel, v.pressSuspicion, $"hỏi dồn {Speaker}");
+            Say(v.press, $"{Speaker} có vẻ bắt đầu để ý tới cậu");
         }
-    }
-
-    void OnFarewell()
-    {
-        if (!leaving)
-        {
-            leaving = true;
-            Choose(Visit.farewell);
-            return;
-        }
-        index++;
-        StartVisit();
+        AfterAction();
     }
 
     void OnIntelClicked(string id)
     {
-        if (S.AddFragment(id)) GameEvents.RaiseIntelCaptured(id);
+        dm.CaptureIntel(id);
         Render();
+    }
+
+    void CyclePrice()
+    {
+        S.shopPriceLevel = (ShopPriceLevel)(((int)S.shopPriceLevel + 1) % 3);
+        Render();
+    }
+
+    // ---------------- Bảng khách ----------------
+
+    void RefreshQueue()
+    {
+        UIFactory.Clear(queueList);
+        int projectedMomentum = mode == Mode.Closed
+            ? S.customerBaseMomentum
+            : PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
+        var queue = day && day.visits != null
+            ? day.visits.Where(v => v != null && v.requiredMomentum <= projectedMomentum).ToList()
+            : new List<CustomerVisit>();
+        int count = queue.Count;
+
+        if (mode == Mode.Prompt)
+        {
+            QueueRow("Chưa mở tiệm", count > 0 ? $"{count} người hay ghé" : "", false);
+            queueFoot.text = $"{PricingSystem.Name(S.shopPriceLevel)} · đà khách quen {S.customerBaseMomentum}/5. Mở tiệm tốn {EconomyRules.OpenShopEnergy} năng lượng.";
+            return;
+        }
+        if (mode == Mode.Closed)
+        {
+            QueueRow("Tiệm nghỉ chiều nay", "", false);
+            queueFoot.text = "Không bán được rau, cũng không nghe được tin gì.";
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            var visit = mode == Mode.Open ? activeVisits[i] : queue[i];
+            var c = visit.customer;
+            if (!c) continue;
+            string status = i < index || (i == index && leaving) ? "đã về" : i == index ? "đang ở quầy" : "đang chờ";
+            QueueRow($"{i + 1}. {c.displayName}", status, i == index && !leaving);
+        }
+        var v = Visit;
+        queueFoot.text = v != null
+            ? $"{(v.sellQuantity > 0 ? $"Khách lấy {v.sellQuantity} bó" : v.sellQuantity < 0 ? "Khách lấy hết kho" : "Khách không mua rau")} · giá thường {PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum)} xu/bó\nĐà khách quen {S.customerBaseMomentum}/5 · trong kho {S.stock} bó rau."
+            : $"Hết khách. Trong kho còn {S.stock} bó rau.";
+    }
+
+    void QueueRow(string left, string right, bool current)
+    {
+        var row = UIFactory.MakeRect(queueList, "Row", Vector2.zero, Vector2.one);
+        UIFactory.Size(row, 34);
+        var line = UIFactory.MakeRect(row, "Line", new Vector2(0, 1), Vector2.one);
+        line.pivot = new Vector2(0.5f, 1);
+        line.sizeDelta = new Vector2(0, 1);
+        UIFactory.MakeBox(line, new Color(0.93f, 0.89f, 0.82f, 0.12f), false);
+        var leftRect = UIFactory.MakeRect(row, "L", Vector2.zero, Vector2.one);
+        leftRect.anchorMax = new Vector2(0.62f, 1);
+        leftRect.offsetMin = new Vector2(0, 0);
+        leftRect.offsetMax = new Vector2(-8, 0);
+        var leftText = UIFactory.MakeText(leftRect, left, 15,
+                                          current ? Color.white : UIFactory.Light, TextAlignmentOptions.MidlineLeft);
+        leftText.textWrappingMode = TextWrappingModes.NoWrap;
+        leftText.overflowMode = TextOverflowModes.Ellipsis;
+        var rightRect = UIFactory.MakeRect(row, "R", new Vector2(0.62f, 0), Vector2.one);
+        var rightText = UIFactory.MakeText(rightRect, right, 14,
+                                           current ? UIFactory.Gold : UIFactory.Hex("9C8C7B"), TextAlignmentOptions.MidlineRight);
+        rightText.textWrappingMode = TextWrappingModes.NoWrap;
+        rightText.overflowMode = TextOverflowModes.Ellipsis;
     }
 }

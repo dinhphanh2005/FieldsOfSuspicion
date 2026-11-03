@@ -18,3 +18,4 @@ MonoBehaviour:
   priority: 0
   condition: 0
   param: ""
+  grantsIntel: ""
