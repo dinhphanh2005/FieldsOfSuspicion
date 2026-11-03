@@ -24,14 +24,16 @@ public sealed class FoSContentCatalogBuilder : IPreprocessBuildWithReport
 
         catalog.days = LoadAll<DaySO>();
         catalog.intel = LoadAll<IntelSO>();
+        catalog.cases = LoadAll<CaseSO>();
         catalog.endings = LoadAll<EndingSO>();
         catalog.crops = LoadAll<CropSO>();
-        catalog.bgNews = LoadSprite("bg_ending");
-        catalog.bgBoard = LoadSprite("bg_shop");
-        catalog.bgShop = LoadSprite("bg_board");
-        catalog.bgNight = LoadSprite("bg_notebook");
-        catalog.bgNotebook = LoadSprite("bg_night");
-        catalog.bgEnding = LoadSprite("bg_news");
+        // Tên file khớp đúng cảnh (trước đây bị tráo: tiệm hiện ảnh bảng tin, đêm hiện ảnh mặt bàn...)
+        catalog.bgNews = LoadSprite("bg_news");
+        catalog.bgBoard = LoadSprite("bg_board");
+        catalog.bgShop = LoadSprite("bg_shop");
+        catalog.bgNight = LoadSprite("bg_night");
+        catalog.bgNotebook = LoadSprite("bg_notebook");
+        catalog.bgEnding = LoadSprite("bg_ending");
         catalog.interfaceSprites = AssetDatabase.FindAssets("t:Sprite", new[] { "Assets/Sprites" })
             .Select(guid => AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(guid)))
             .Where(sprite => sprite && !AssetDatabase.GetAssetPath(sprite).StartsWith("Assets/Sprites/Characters/"))

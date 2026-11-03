@@ -373,16 +373,17 @@ public static class UIFactory
 
     static string IconFor(string label)
     {
+        // Thứ tự quan trọng: cụm cụ thể trước, cụm chung sau ("bảng tin" phải xét trước "tin",
+        // "giao tin"/"hốc cây" là việc ban đêm chứ không phải đọc thư).
         string s = (label ?? string.Empty).ToLowerInvariant();
-        if (s.Contains("ruộng") || s.Contains("rau") || s.Contains("thu hoạch")) return "icon_carrot";
+        if (s.Contains("ruộng") || s.Contains("thu hoạch")) return "icon_carrot";
         if (s.Contains("sổ tay") || s.Contains("gấp sổ")) return "icon_notebook";
-        if (s.Contains("đọc") || s.Contains("lệnh") || s.Contains("tin")) return "icon_letter";
         if (s.Contains("bảng tin")) return "icon_board";
-        if (s.Contains("nhà") && s.Contains("tiền")) return "icon_rent";
-        if (s.Contains("tiệm") || s.Contains("bán") || s.Contains("xu")) return "icon_coin";
-        if (s.Contains("đêm") || s.Contains("lộ trình") || s.Contains("giao")) return "icon_lantern";
-        if (s.Contains("nghỉ") || s.Contains("ở nhà")) return "icon_stay_home";
-        if (s.Contains("tiếp tục") || s.Contains("buổi sáng")) return "icon_sun";
+        if (s.Contains("ở nhà") || s.Contains("nghỉ")) return "icon_stay_home";
+        if (s.Contains("giao") || s.Contains("hốc cây") || s.Contains("đêm") || s.Contains("buổi tối") || s.Contains("lộ trình")) return "icon_lantern";
+        if (s.Contains("tiệm") || s.Contains("bán")) return "icon_coin";
+        if (s.Contains("thư") || s.Contains("báo") || s.Contains("lệnh")) return "icon_letter";
+        if (s.Contains("chơi lại") || s.Contains("tiếp tục")) return "icon_sun";
         return null;
     }
 

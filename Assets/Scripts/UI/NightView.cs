@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Ban đêm: lên lộ trình trên bản đồ → chọn mảnh tin → "Đi giao tin". Hoặc "Ở nhà tối nay".
-// Bố cục: bản đồ giấy da bên trái, bảng đen bên phải (Đêm nay / Lộ trình / Mảnh tin), nút ở thanh dưới.
+// Ban đêm: lên lộ trình trên bản đồ → chọn MỘT bản báo cáo đã ghép xong → "Đi giao tin". Hoặc "Ở nhà tối nay".
+// Bố cục: bản đồ bên trái, bảng tối bên phải (Đêm nay / Lộ trình / Báo cáo), nút ở thanh dưới.
+// Ra hốc cây mà không chọn báo cáo cũng được (vd. làm theo lệnh "Qua cầu") — chỉ là không gửi gì.
 // Luật lộ trình: bắt đầu ở Nhà, chỉ đi theo cạnh nối và đang mở, không quay lại nút cũ,
 // tối đa 4 bước, kết thúc ở Hốc cây sồi. Bấm lại nút cuối của lộ trình = bỏ bước đó.
 //
@@ -58,14 +59,12 @@ public class NightView : MonoBehaviour
     RectTransform side, intelList;
     ScrollRect intelScroll;
     Button goBtn;
-    Button modeButton;
 
     readonly List<EdgeState> edges = new List<EdgeState>();
     readonly Dictionary<string, Button> nodeButtons = new Dictionary<string, Button>();
     readonly List<string> route = new List<string>();
-    readonly Dictionary<string, Button> intelButtons = new Dictionary<string, Button>();
-    string selectedIntel;
-    DeliveryMode selectedMode;
+    readonly Dictionary<string, Button> reportButtons = new Dictionary<string, Button>();
+    string selectedCase;
 
     GameState S => dm.State;
     string Last => route[route.Count - 1];
@@ -78,6 +77,7 @@ public class NightView : MonoBehaviour
         BuildSidePanel(stage);
 
         var bar = UIFactory.MakeActionBar(transform);
+        UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook(true));
         UIFactory.BarButton(bar, "Làm lại lộ trình", ResetRoute);
         UIFactory.BarButton(bar, "Ở nhà tối nay", () => dm.CompleteNight(null));
         barHint = UIFactory.BarHint(bar, "");
@@ -128,7 +128,10 @@ public class NightView : MonoBehaviour
             string id = n.id;
             var b = UIFactory.MakeButton(rt, "Button", n.name, () => OnNode(id), 16);
             UIFactory.Skin((Image)b.targetGraphic, n.id == "home" ? "node_plate_home" : "node_plate_normal");
-            string nodeIcon = n.id == "home" ? "icon_home" : n.id == "well" ? "icon_bell" : n.id == "market" ? "icon_coins" : n.id == "church" ? "icon_shrike" : n.id == "bridge" ? "icon_handkerchief" : n.id == "river" ? "icon_lantern" : "icon_oak";
+            // Biểu tượng trung tính cho từng địa điểm (không dùng hình chim bách thanh / khăn tay:
+            // đó là manh mối của cốt truyện, đặt lên bản đồ sẽ lộ đáp án).
+            string nodeIcon = n.id == "home" ? "icon_home" : n.id == "well" ? "icon_bell" : n.id == "market" ? "icon_coins" :
+                              n.id == "church" ? "icon_calendar" : n.id == "bridge" ? "icon_moon" : n.id == "river" ? "icon_lantern" : "icon_oak";
             var nodeIconRt = UIFactory.MakeRect(b.transform, "LocationIcon", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
             nodeIconRt.pivot = new Vector2(0, 0.5f);
             nodeIconRt.sizeDelta = new Vector2(22, 22);
@@ -198,12 +201,8 @@ public class NightView : MonoBehaviour
         routeText.lineSpacing = 6;
         Gap(14);
 
-        UIFactory.MakeLabel(UIFactory.MakeRect(side, "IntelLabel", Vector2.zero, Vector2.one), "MẢNH TIN GIAO ĐÊM NAY", UIFactory.Gold);
+        UIFactory.MakeLabel(UIFactory.MakeRect(side, "IntelLabel", Vector2.zero, Vector2.one), "BÁO CÁO GỬI ĐÊM NAY", UIFactory.Gold);
         Gap(4);
-        modeButton = UIFactory.MakeButton(side, "DeliveryMode", "", CycleDeliveryMode, 14);
-        UIFactory.Size(modeButton, 34);
-        UIFactory.SetColor(modeButton, UIFactory.Hex("DCCBA8"));
-        UIFactory.Skin((Image)modeButton.targetGraphic, "btn_night");
         var listRoot = UIFactory.MakeRect(side, "IntelList", Vector2.zero, Vector2.one);
         UIFactory.Flexible(listRoot, 90);           // ăn hết chỗ còn lại, quá dài thì cuộn
         intelList = UIFactory.MakeScroll(listRoot, out intelScroll);
@@ -215,10 +214,10 @@ public class NightView : MonoBehaviour
     public void Begin()
     {
         ApplyDayRules();
-        selectedIntel = null;
-        selectedMode = DeliveryMode.Truthful;
-        BuildIntelList();
-        ResetRoute();
+        selectedCase = null;
+        route.Clear();
+        route.Add("home");
+        Refresh();
     }
 
     // Bảng gốc + luật của ngày → rủi ro thật / rủi ro người chơi thấy / đóng
@@ -253,63 +252,68 @@ public class NightView : MonoBehaviour
         notesText.text = notes.Count > 0 ? string.Join("\n", notes) : "<color=#9C8C7B>Không nghe nói có gì bất thường.</color>";
     }
 
-    void BuildIntelList()
+    // Danh sách báo cáo gửi được đêm nay: hồ sơ đã mở, chưa gửi, còn trong hạn, đã ghép đủ ô.
+    // Hồ sơ còn thiếu ô thì hiện mờ kèm lời nhắc mở sổ tay.
+    void BuildReportList()
     {
         UIFactory.Clear(intelList);
-        intelButtons.Clear();
+        reportButtons.Clear();
+        int shown = 0;
 
-        var ids = new List<string>(S.fragments);
-        if (S.IsLastDay)   // đêm cuối: thêm 2 mảnh báo cáo B1 / B2
-            foreach (var i in dm.AllIntel)
-                if (i && i.onlyLastNight && !ids.Contains(i.id)) ids.Add(i.id);
-
-        foreach (var id in ids)
+        foreach (var c in dm.AllCases)
         {
-            var intel = dm.FindIntel(id);
-            if (!intel) continue;
-            if (intel.onlyLastNight && !S.IsLastDay) continue;
-            if (S.deliveredDrops.Exists(d => d.intelId == id)) continue;   // đã giao thì không giao lại
-
-            string captured = id;
-            var b = UIFactory.MakeButton(intelList, "Intel_" + id,
-                $"<size=80%><color=#7A6A5A>{IntelThreadNames.Of(intel.thread)}</color></size>\n{intel.text}", () => SelectIntel(captured), 15);
-            if (intel.thread == IntelThread.Traitor) UIFactory.AddButtonIcon(b, "icon_seal_straka");
-            else if (intel.thread == IntelThread.Report) UIFactory.AddButtonIcon(b, "icon_seal_shrike");
+            if (!CaseEvaluator.IsOpen(c, S) || S.CaseDelivered(c.id) || !CaseEvaluator.InWindow(c, S.day)) continue;
+            var answers = S.Draft(c).answers;
+            bool complete = CaseEvaluator.IsComplete(c, answers);
+            string id = c.id;
+            string body = CaseEvaluator.Sentence(c, answers, dm.FindIntel, "<b>{0}</b>", "<color=#A89A88>[{0}?]</color>");
+            string deadline = c.lastNight == S.day ? "  <color=#B8442E>hạn chót đêm nay</color>" : "";
+            var b = UIFactory.MakeButton(intelList, "Report_" + id,
+                $"<size=80%><color=#7A6A5A>{c.title.ToUpper()}</color>{deadline}</size>\n{body}",
+                () => SelectReport(id, complete), 15);
+            if (c.isFinal) UIFactory.AddButtonIcon(b, "icon_seal_straka");
             var t = b.GetComponentInChildren<TextMeshProUGUI>();
             t.alignment = TextAlignmentOptions.MidlineLeft;
             t.rectTransform.offsetMin = new Vector2(14, 6);
             t.rectTransform.offsetMax = new Vector2(-10, -6);
-            t.enableAutoSizing = true;      // tin dài 3 dòng thì chữ tự nhỏ lại cho vừa nút
-            t.fontSizeMin = 12;
+            t.enableAutoSizing = true;      // câu dài thì chữ tự nhỏ lại cho vừa nút
+            t.fontSizeMin = 11;
             t.fontSizeMax = 15;
-            UIFactory.Size(b, 58);
-            intelButtons[id] = b;
+            UIFactory.Size(b, 74);
+            if (!complete) t.alpha = 0.6f;
+            reportButtons[id] = b;
+            shown++;
         }
 
-        if (intelButtons.Count == 0)
+        if (shown == 0)
             UIFactory.MakeText(UIFactory.MakeRect(intelList, "Empty", Vector2.zero, Vector2.one),
-                               "Sổ tay chưa có tin nào. Buổi chiều, bấm cụm từ gạch chân trong lời khách để ghi tin.", 15, UIFactory.Hex("9C8C7B"));
+                "Đêm nay không có hồ sơ nào cần gửi. Có thể ở nhà — hoặc vẫn ra hốc cây sồi mà không gửi gì.",
+                15, UIFactory.Hex("9C8C7B"));
+        else
+            UIFactory.MakeText(UIFactory.MakeRect(intelList, "Tip", Vector2.zero, Vector2.one),
+                "Bản báo cáo còn thiếu ô thì mở Sổ tay → Hồ sơ để ghép tiếp.", 13, UIFactory.Hex("9C8C7B"));
         intelScroll.verticalNormalizedPosition = 1;
     }
 
-    void SelectIntel(string id)
+    void SelectReport(string id, bool complete)
     {
-        selectedIntel = id;
-        Refresh();
+        if (!complete) { dm.OpenNotebook(true, id); return; }
+        selectedCase = selectedCase == id ? null : id;   // bấm lần nữa để bỏ chọn
+        RefreshMapAndPanel();
     }
 
     void ResetRoute()
     {
         route.Clear();
         route.Add("home");
-        Refresh();
+        RefreshMapAndPanel();
     }
 
     void OnNode(string id)
     {
         if (route.Count > 1 && id == Last) route.RemoveAt(route.Count - 1);   // bỏ bước cuối
         else if (CanAdd(id)) route.Add(id);
-        Refresh();
+        RefreshMapAndPanel();
     }
 
     // Số bước tối đa đêm nay: 4, nhưng không quá số năng lượng còn lại
@@ -318,7 +322,17 @@ public class NightView : MonoBehaviour
     bool CanAdd(string id) =>
         Last != "oak" && route.Count - 1 < StepLimit && !route.Contains(id) && OpenEdge(Last, id) != null;
 
-    void Refresh()
+    // Gọi lại khi gấp sổ tay (bản nháp báo cáo có thể vừa đổi)
+    public void Refresh()
+    {
+        BuildReportList();
+        if (selectedCase != null && !reportButtons.ContainsKey(selectedCase)) selectedCase = null;
+        if (selectedCase != null && !CaseEvaluator.IsComplete(dm.FindCase(selectedCase), S.Draft(dm.FindCase(selectedCase)).answers))
+            selectedCase = null;
+        RefreshMapAndPanel();
+    }
+
+    void RefreshMapAndPanel()
     {
         foreach (var n in Nodes)
         {
@@ -329,9 +343,8 @@ public class NightView : MonoBehaviour
             UIFactory.SetColor(b, Color.white);
         }
 
-        foreach (var kv in intelButtons)
-            UIFactory.SetColor(kv.Value, kv.Key == selectedIntel ? UIFactory.Hex("F6DFA0") : UIFactory.Paper);
-        UIFactory.SetLabel(modeButton, ModeLabel(selectedMode));
+        foreach (var kv in reportButtons)
+            UIFactory.SetColor(kv.Value, kv.Key == selectedCase ? UIFactory.Hex("F6DFA0") : UIFactory.Paper);
 
         int steps = route.Count - 1;
         mapSub.text = $"Từ Nhà tới Hốc cây sồi · tối đa {StepLimit} bước (còn {S.energy} năng lượng)";
@@ -343,28 +356,15 @@ public class NightView : MonoBehaviour
                 : $"Bấm các điểm nối tiếp nhau. Mỗi bước −{EconomyRules.StepEnergy} năng lượng; bấm lại điểm cuối để lùi.") +
             "</color></size>";
 
-        bool ready = Last == "oak" && selectedIntel != null;
+        bool ready = Last == "oak";
         UIFactory.SetInteractable(goBtn, ready);
-        barHint.text = ready ? "" : Last != "oak" ? "Chọn đường tới Hốc cây sồi" : "Chọn một mảnh tin để giao";
+        UIFactory.SetLabel(goBtn, selectedCase != null ? "Đi giao báo cáo" : "Ra hốc cây sồi");
+        barHint.text = !ready ? "Bấm các điểm trên bản đồ để đi tới Hốc cây sồi"
+                     : selectedCase == null ? "Chưa chọn báo cáo: ra hốc cây sồi mà không gửi gì"
+                     : "";
 
         // Chữ đổi độ dài → dựng lại layout ngay, tránh đè lên nhau
         LayoutRebuilder.ForceRebuildLayoutImmediate(side);
-    }
-
-    void CycleDeliveryMode()
-    {
-        selectedMode = (DeliveryMode)(((int)selectedMode + 1) % 3);
-        Refresh();
-    }
-
-    static string ModeLabel(DeliveryMode mode)
-    {
-        switch (mode)
-        {
-            case DeliveryMode.Scrambled: return "Chế độ: xáo trộn · giảm rò rỉ";
-            case DeliveryMode.False: return "Chế độ: tin giả · thăm dò handler";
-            default: return "Chế độ: chuyển nguyên văn";
-        }
     }
 
     void OnGo()
@@ -377,12 +377,13 @@ public class NightView : MonoBehaviour
                            SuspicionRules.Points(es.actual), $"đi qua {FindNode(es.edge.a).name} – {FindNode(es.edge.b).name}");
         S.energy -= (route.Count - 1) * EconomyRules.StepEnergy;
 
+        var c = dm.FindCase(selectedCase);
         dm.CompleteNight(new DropRecord
         {
             day = S.day,
-            intelId = selectedIntel,
+            caseId = c ? c.id : "",
+            answers = c ? new List<string>(S.Draft(c).answers) : new List<string>(),
             route = new List<string>(route),
-            mode = selectedMode,
         });
     }
 

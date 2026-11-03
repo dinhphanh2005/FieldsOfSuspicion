@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Toàn bộ trạng thái của một ván. Class thuần [Serializable] để JsonUtility lưu được:
+// chỉ chứa số, chuỗi, list — tham chiếu tới nội dung (ScriptableObject) lưu bằng mã id.
 [Serializable]
 public class GameState
 {
     public const int LastDay = 7;
-    public int day = 1;   // N1 = Sunday.
+    public int day = 1;   // N1 = Chủ Nhật.
     public bool IsLastDay => day >= LastDay;
 
     // ---- Kinh tế ----
@@ -17,24 +19,25 @@ public class GameState
     public ShopPriceLevel shopPriceLevel = ShopPriceLevel.Fair;
     public int customerBaseMomentum;
     public int salesToday;
-    public bool harvestedToday;
     public bool shopOpenedToday;
     public int growthProcessedDay;
     public string playerName = "Wren";
     public List<string> capturedToday = new();
     public int rentWarnings;                         // số lần đã thiếu tiền nhà (không reset)
     public int lastRentMissDay = -1;                 // đêm gần nhất thiếu tiền nhà
+    public int lastRentPaidDay = -1;                 // đêm gần nhất trả đủ tiền nhà (để báo lại buổi sáng)
 
-    // Mã các mảnh tin đã ghi vào sổ tay ("F02"...).
-    // Lưu mã (string) chứ không lưu IntelSO, để JsonUtility lưu game được.
+    // ---- Sổ tay ----
+    // Mã các manh mối đã ghi ("K02"...). Lưu mã chứ không lưu IntelSO, để JsonUtility lưu game được.
     public List<string> fragments = new();
+    // Bản nháp báo cáo người chơi đang ghép, mỗi hồ sơ một bản.
+    public List<ReportDraft> drafts = new();
     public List<string> shownMessageIds = new();
     public List<FarmPlotState> farmPlots = FarmSystem.CreateStartingPlots();
 
-    // Các đêm đã đi giao tin (đêm ở nhà thì không có bản ghi).
+    // Các đêm đã ra hốc cây sồi (đêm ở nhà thì không có bản ghi).
     public List<DropRecord> deliveredDrops = new();
     public List<HandlerOrderResult> handlerOrderResults = new();
-    public List<IntelEvidenceState> intelEvidence = new();
 
     // ---- Nghi ngờ (cửa sổ trượt, nhiều kênh) ----
     // Tổng có trọng số của từng đêm đã tổng kết: phần tử i = đêm N(i+1).
@@ -45,12 +48,13 @@ public class GameState
     public int[] pendingByChannel = new int[4];
 
     public string ending;   // tên EndingId khi ván kết thúc
-    public float burnProbability = -1f; // -1 khi chưa được cấu hình trọng số mô hình offline
+    public float burnProbability = -1f; // -1 khi chưa cấu hình trọng số mô hình offline
 
     static readonly string[] DayNames =
         { "Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy" };
 
     public string Weekday => DayNames[Math.Clamp(day, 1, LastDay) - 1];
+    public static string WeekdayOf(int d) => DayNames[Math.Clamp(d, 1, LastDay) - 1];
     public string DayLabel => $"N{day} — {Weekday}";
 
     public void NextDay()
@@ -58,23 +62,40 @@ public class GameState
         day++;
         energy = EconomyRules.MaxEnergy;
         actionPoints = EconomyRules.MaxActionPoints;
-        harvestedToday = false;
         shopOpenedToday = false;
         salesToday = 0;
         capturedToday.Clear();
     }
 
-    public bool HasFragment(string id) => fragments.Contains(id);
+    // ---- Manh mối ----
+    public bool HasFragment(string id) => !string.IsNullOrEmpty(id) && fragments.Contains(id);
 
-    // Trả về true nếu là mảnh tin MỚI (để UI biết vừa ghi được tin).
+    // Trả về true nếu là manh mối MỚI (để UI biết vừa ghi được).
     public bool AddFragment(string id)
     {
-        if (HasFragment(id)) return false;
+        if (string.IsNullOrEmpty(id) || HasFragment(id)) return false;
         fragments.Add(id);
-        if (intelEvidence.Find(e => e.intelId == id) == null)
-            intelEvidence.Add(new IntelEvidenceState { intelId = id, truthStatus = IntelTruthStatus.Unverified });
         return true;
     }
+
+    // ---- Bản nháp báo cáo ----
+    public ReportDraft Draft(CaseSO c)
+    {
+        var d = drafts.Find(x => x.caseId == c.id);
+        if (d == null) drafts.Add(d = new ReportDraft { caseId = c.id });
+        while (d.answers.Count < c.slots.Count) d.answers.Add("");
+        return d;
+    }
+
+    public void SetAnswer(CaseSO c, int slot, string clueId)
+    {
+        if (CaseDelivered(c.id)) return;   // đã gửi thì không sửa được
+        var d = Draft(c);
+        if (slot >= 0 && slot < d.answers.Count) d.answers[slot] = clueId ?? "";
+    }
+
+    public bool CaseDelivered(string caseId) => deliveredDrops.Exists(d => d.caseId == caseId);
+    public DropRecord DropFor(string caseId) => deliveredDrops.Find(d => d.caseId == caseId);
 
     public bool WasMessageShown(string id) => shownMessageIds.Contains(id);
 
@@ -83,43 +104,13 @@ public class GameState
         if (!string.IsNullOrEmpty(id) && !shownMessageIds.Contains(id)) shownMessageIds.Add(id);
     }
 
-    public bool WasDelivered(string id) => deliveredDrops.Exists(d => d.intelId == id);
-
-    public IntelTruthStatus TruthStatus(string id)
-    {
-        var evidence = intelEvidence.Find(e => e.intelId == id);
-        return evidence == null ? IntelTruthStatus.Unverified : evidence.truthStatus;
-    }
-
-    public void ReconcileEvidence()
-    {
-        bool hasFalseGranary = HasFragment("F03");
-        bool hasTrueGranary = HasFragment("F04");
-        if (hasFalseGranary && hasTrueGranary)
-        {
-            SetTruthStatus("F03", IntelTruthStatus.Contradicted);
-            SetTruthStatus("F04", IntelTruthStatus.Confirmed);
-        }
-
-        int vauleClues = (HasFragment("F05") ? 1 : 0) + (HasFragment("F06") ? 1 : 0) + (HasFragment("F07") ? 1 : 0);
-        if (vauleClues >= 2)
-            foreach (string id in new[] { "F05", "F06", "F07" })
-                if (HasFragment(id)) SetTruthStatus(id, IntelTruthStatus.Confirmed);
-    }
-
-    void SetTruthStatus(string id, IntelTruthStatus status)
-    {
-        var evidence = intelEvidence.Find(e => e.intelId == id);
-        if (evidence == null) intelEvidence.Add(evidence = new IntelEvidenceState { intelId = id });
-        evidence.truthStatus = status;
-    }
-
-    // Bản ghi giao tin của đêm hôm qua; null nếu đêm qua ở nhà.
+    // Bản ghi của đêm hôm qua; null nếu đêm qua ở nhà.
     public DropRecord LastNightDrop => deliveredDrops.Find(d => d.day == day - 1);
 
-    // Bản ghi giao tin của đêm hôm nay (dùng ở Tổng kết).
+    // Bản ghi của đêm hôm nay (dùng ở Tổng kết).
     public DropRecord TonightDrop => deliveredDrops.Find(d => d.day == day);
 
+    // ---- Nghi ngờ ----
     public void AddSuspicion(SuspicionChannel channel, int points, string reason)
     {
         if (points <= 0) return;
@@ -127,14 +118,21 @@ public class GameState
         GameEvents.RaiseSuspicionAdded(points, $"{reason} → {SuspicionRules.ChannelName(channel)}");
     }
 
+    public int PendingTotal
+    {
+        get
+        {
+            float total = 0;
+            for (int c = 0; c < pendingByChannel.Length; c++)
+                total += pendingByChannel[c] * SuspicionRules.Weight((SuspicionChannel)c);
+            return Mathf.RoundToInt(total);
+        }
+    }
+
     // Gọi ở Tổng kết: chốt điểm của đêm nay.
     public void CloseNight()
     {
-        float total = 0;
-        for (int c = 0; c < pendingByChannel.Length; c++)
-            total += pendingByChannel[c] * SuspicionRules.Weight((SuspicionChannel)c);
-
-        nightlySuspicion.Add(Mathf.RoundToInt(total));
+        nightlySuspicion.Add(PendingTotal);
         nightlyByChannel.Add(new NightSuspicion { day = day, channels = (int[])pendingByChannel.Clone() });
         pendingByChannel = new int[pendingByChannel.Length];
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 // Sự kiện của vòng chơi. Sprint 3: TelemetryLogger đăng ký các sự kiện này để ghi CSV.
 public static class GameEvents
 {
-    public static event Action<string> IntelCaptured;       // mã mảnh tin vừa ghi
+    public static event Action<string> IntelCaptured;       // mã manh mối vừa ghi
     public static event Action<DropRecord> DropDelivered;   // đêm vừa giao tin
     public static event Action<int, string> SuspicionAdded; // điểm, lý do
     public static event Action<int> DayResolved;            // ngày vừa tổng kết
@@ -19,7 +19,7 @@ public static class GameEvents
 
     public static void RaiseDropDelivered(DropRecord drop)
     {
-        Debug.Log($"[Sự kiện] DropDelivered N{drop.day}: {drop.intelId} qua {string.Join(" > ", drop.route)}");
+        Debug.Log($"[Sự kiện] DropDelivered N{drop.day}: {(drop.HasReport ? drop.caseId + (drop.correct ? " (đúng)" : " (sai)") : "không gửi gì")} qua {string.Join(" > ", drop.route)}");
         DropDelivered?.Invoke(drop);
     }
 

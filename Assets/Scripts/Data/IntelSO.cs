@@ -1,18 +1,19 @@
 using UnityEngine;
 
-// Một mảnh tin (F01–F12, B1–B2). Nội dung viết sẵn, KHÔNG sửa lúc chạy.
-// Người chơi đã ghi mảnh nào thì lưu mã vào GameState.fragments.
-[CreateAssetMenu(menuName = "FoS/Intel", fileName = "F00")]
+// Một MANH MỐI (mẩu tin nhỏ): K01, K02... Nội dung viết sẵn, KHÔNG sửa lúc chạy.
+// Người chơi bấm cụm từ tô màu trong lời thoại để ghi manh mối vào sổ tay,
+// rồi tự ghép các manh mối vào ô trống của một hồ sơ (CaseSO) để thành bản báo cáo.
+// Đã ghi manh mối nào thì GameState.fragments lưu mã của nó.
+[CreateAssetMenu(menuName = "FoS/Clue", fileName = "K00")]
 public class IntelSO : ScriptableObject
 {
-    public string id;                       // "F02" — khớp với {{cụm từ|F02}} trong thoại
-    [TextArea(2, 4)] public string text;    // nội dung hiện trong sổ tay
-    public IntelThread thread;
-    public string source;                   // "Emel · N2"
-    public bool isTrue;                     // người chơi không thấy
-    public bool onlyLastNight;              // chỉ B1, B2: tự có trong danh sách giao tin đêm N7
+    public string id;                       // "K02" — khớp với {{cụm từ|K02}} trong thoại
+    public string keyword;                  // nhãn ngắn hiện trên chip và trong câu báo cáo: "cầu Bắc"
+    [TextArea(2, 4)] public string text;    // ghi chú đầy đủ trong sổ tay: ai nói, nói gì
+    public ClueKind kind;                   // ghép được vào ô trống loại nào
+    public IntelThread thread;              // nhóm trong sổ tay
+    public string source;                   // "Emel · thứ Hai"
 
-    [Tooltip("Điểm nghi ngờ cộng thêm khi giao mảnh này (tin rò rỉ khiến Lenmar lần theo). F02/F06/F07 = 2")]
-    public int leakSuspicion;
-    public SuspicionChannel leakChannel;    // F02 → Emel (đồn), F06/F07 → Perrin (nhà Vaule)
+    [Header("Chỉ để tác giả kiểm tra, người chơi không thấy")]
+    public bool isTrue = true;
 }

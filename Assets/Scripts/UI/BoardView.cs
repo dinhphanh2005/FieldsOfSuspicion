@@ -66,6 +66,7 @@ public class BoardView : MonoBehaviour
         var bar = UIFactory.MakeActionBar(transform);
         farmBtn = UIFactory.BarButton(bar, "Ruộng", ToggleFarm);
         hintBtn = UIFactory.BarButton(bar, "Cách đọc lệnh", ToggleHint);
+        UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook(true));
         barHint = UIFactory.BarHint(bar, "");
         UIFactory.BarSpacer(bar);
         UIFactory.BarButton(bar, "Mở tiệm buổi chiều", () => dm.EndPhase(), primary: true);
@@ -74,6 +75,10 @@ public class BoardView : MonoBehaviour
     public void Show(DaySO today, GameState s)
     {
         day = today;
+        if (farmPanel) farmPanel.gameObject.SetActive(false);
+        // Ngày đầu: bật sẵn gợi ý đọc lệnh mật để người chơi mới không bị lạc
+        if (s.day == 1 && !hintOn) { ToggleHint(); return; }
+        if (s.day > 1 && hintOn) { ToggleHint(); return; }
         BuildCards();
         RefreshFarm();
     }
@@ -119,11 +124,13 @@ public class BoardView : MonoBehaviour
     void ToggleHint()
     {
         hintOn = !hintOn;
+        if (farmPanel && farmPanel.gameObject.activeSelf) farmPanel.gameObject.SetActive(false);
         hintNote.gameObject.SetActive(hintOn);
         UIFactory.SetLabel(hintBtn, hintOn ? "Tắt gợi ý" : "Cách đọc lệnh");
         UIFactory.SetColor(hintBtn, hintOn ? UIFactory.Gold : UIFactory.Paper);
         barHint.text = hintOn ? "Chữ đỏ = chữ cái đầu mỗi câu" : "";
         BuildCards();
+        RefreshFarm();
     }
 
     void BuildFarmPanel(RectTransform stage)

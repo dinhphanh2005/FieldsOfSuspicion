@@ -12,7 +12,7 @@ class SaveEnvelope
 // Tất cả trạng thái runtime chỉ chứa kiểu dữ liệu JsonUtility hỗ trợ và id, không chứa tham chiếu asset.
 public static class SaveSystem
 {
-    public const int CurrentVersion = 1;
+    public const int CurrentVersion = 2;   // 2: hồ sơ + manh mối (thay mảnh tin rời)
     public static string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
     public static bool HasSave => File.Exists(SavePath);
 
@@ -50,12 +50,11 @@ public static class SaveSystem
             if (state.fragments == null) state.fragments = new System.Collections.Generic.List<string>();
             if (state.deliveredDrops == null) state.deliveredDrops = new System.Collections.Generic.List<DropRecord>();
             if (state.handlerOrderResults == null) state.handlerOrderResults = new System.Collections.Generic.List<HandlerOrderResult>();
-            if (state.intelEvidence == null) state.intelEvidence = new System.Collections.Generic.List<IntelEvidenceState>();
+            if (state.drafts == null) state.drafts = new System.Collections.Generic.List<ReportDraft>();
             if (state.shownMessageIds == null) state.shownMessageIds = new System.Collections.Generic.List<string>();
             if (state.capturedToday == null) state.capturedToday = new System.Collections.Generic.List<string>();
             if (state.nightlySuspicion == null) state.nightlySuspicion = new System.Collections.Generic.List<int>();
             if (state.nightlyByChannel == null) state.nightlyByChannel = new System.Collections.Generic.List<NightSuspicion>();
-            state.ReconcileEvidence();
             return true;
         }
         catch (Exception ex) { error = ex.Message; state = null; return false; }

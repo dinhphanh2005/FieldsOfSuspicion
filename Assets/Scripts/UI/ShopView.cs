@@ -35,6 +35,7 @@ public class ShopView : MonoBehaviour
     ScrollRect scroll;
     Choice[] choices;
     Button notebookBtn;
+    TextMeshProUGUI barHint;
 
     Mode mode;
     DaySO day;
@@ -74,7 +75,7 @@ public class ShopView : MonoBehaviour
 
         var bar = UIFactory.MakeActionBar(transform);
         notebookBtn = UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook());
-        UIFactory.BarHint(bar, "Bấm cụm từ gạch chân màu đỏ trong lời khách để ghi vào sổ tay");
+        barHint = UIFactory.BarHint(bar, DefaultHint);
         UIFactory.BarSpacer(bar);
         UIFactory.BarButton(bar, "Sang buổi tối", () => dm.EndPhase(), primary: true);
     }
@@ -181,6 +182,7 @@ public class ShopView : MonoBehaviour
             : new List<CustomerVisit>();
         index = 0;
         mode = Mode.Prompt;
+        if (barHint) barHint.text = DefaultHint;
         log.Clear();
         fresh = 0;
 
@@ -204,10 +206,12 @@ public class ShopView : MonoBehaviour
         StartVisit();
     }
 
+    const string DefaultHint = "Bấm cụm từ gạch chân màu đỏ trong lời khách để ghi vào sổ tay";
+
     void StayClosed()
     {
+        // Nghỉ chiều nay: không tốn năng lượng (trước đây cộng thêm năng lượng, làm vượt mức thật)
         mode = Mode.Closed;
-        S.energy = Mathf.Min(EconomyRules.MaxEnergy, S.energy + EconomyRules.OpenShopEnergy);
         log.Clear();
         fresh = 0;
         log.Add(Narration("Tomas treo tấm biển \"Hôm nay nghỉ\" lên cửa. Chiều nay không có khách, cũng không có tin."));
@@ -273,7 +277,7 @@ public class ShopView : MonoBehaviour
     bool CanSell => !traded && Visit != null && Visit.sellQuantity > 0 && HasStockFor(Visit.sellQuantity);
     bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(Visit.discountQuantity);
     bool CanTrade => CanSell || CanDiscount;
-    bool CanAsk => askCount < 2 && (askCount > 0 || S.money >= Visit.askCost);
+    bool CanAsk => Visit != null && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
 
     static string Narration(string text) => $"<i><color=#{NarrationColor}>{text}</color></i>";
 
@@ -288,9 +292,11 @@ public class ShopView : MonoBehaviour
         dialogue.text = string.Join("\n", parts);
         RefreshChoices();
         RefreshQueue();
-        UIFactory.SetLabel(notebookBtn, $"Sổ tay  ·  {S.fragments.Count} tin");
+        RefreshNotebookButton();
         UIFactory.ScrollToBottom(scroll);
     }
+
+    public void RefreshNotebookButton() => UIFactory.SetLabel(notebookBtn, $"Sổ tay  ·  {S.fragments.Count} manh mối");
 
     // ---------------- Lựa chọn ----------------
 
@@ -429,7 +435,10 @@ public class ShopView : MonoBehaviour
 
     void OnIntelClicked(string id)
     {
+        var clue = dm.FindIntel(id);
+        bool isNew = !S.HasFragment(id);
         dm.CaptureIntel(id);
+        if (isNew && clue && barHint) barHint.text = $"<color=#E0B04B>Đã ghi vào sổ tay:</color> {clue.keyword}  <color=#9C8C7B>[{IntelThreadNames.Of(clue.kind)}]</color>";
         Render();
     }
 

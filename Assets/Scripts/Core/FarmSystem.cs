@@ -20,6 +20,13 @@ public static class FarmSystem
         var plots = new List<FarmPlotState>();
         for (int i = 0; i < EconomyRules.StartingPlotCount; i++)
             plots.Add(new FarmPlotState { plotId = i });
+        // Bà Mabry để lại hai luống cà rốt đã gieo từ trước: chín vào sáng thứ Hai, để tuần đầu
+        // không bị hết rau ngay (một ván chỉ có 7 ngày, cây mới gieo mất 3 ngày mới chín).
+        for (int i = 0; i < 2 && i < plots.Count; i++)
+        {
+            plots[i].cropId = CarrotId;
+            plots[i].daysGrowing = 1;
+        }
         return plots;
     }
 

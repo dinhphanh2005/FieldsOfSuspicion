@@ -13,7 +13,7 @@ public class NewsSO : ScriptableObject
     public ShowCondition condition;
     public string param;
 
-    [Tooltip("Khi tin này hiện, tự thêm mảnh tin này vào sổ tay (F12 ở N6)")]
+    [Tooltip("Khi tin này hiện, tự thêm các manh mối này vào sổ tay (cách nhau dấu phẩy)")]
     public string grantsIntel;
 
     [Tooltip("Lá thư (đọc riêng trên tờ giấy thư, trước tờ báo) thay vì một mục trên báo")]

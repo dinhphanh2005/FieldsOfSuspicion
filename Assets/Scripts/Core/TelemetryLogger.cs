@@ -7,7 +7,10 @@ using UnityEngine;
 public sealed class TelemetryLogger : MonoBehaviour
 {
     StringBuilder events = new StringBuilder();
-    public string CsvPath => Path.Combine(Application.persistentDataPath, "telemetry.csv");
+    // v2: thêm cột run, report, suspicion_cumulative. File mới để không lẫn cột với bản cũ.
+    public string CsvPath => Path.Combine(Application.persistentDataPath, "telemetry_v2.csv");
+    // Mã ván chơi (đặt lúc bắt đầu ván mới) để tách nhiều ván trong cùng một file CSV
+    public string RunId = DateTime.Now.ToString("yyyyMMdd-HHmmss");
 
     void OnEnable()
     {
@@ -28,7 +31,7 @@ public sealed class TelemetryLogger : MonoBehaviour
     }
 
     void OnIntelCaptured(string id) => AddEvent("IntelCaptured", id);
-    void OnDropDelivered(DropRecord drop) => AddEvent("DropDelivered", $"{drop.intelId}:{drop.mode}");
+    void OnDropDelivered(DropRecord drop) => AddEvent("ReportDelivered", drop.HasReport ? $"{drop.caseId}:{(drop.correct ? "correct" : "wrong")}" : "none");
     void OnSuspicionAdded(int points, string reason) => AddEvent("SuspicionAdded", $"{points}:{reason}");
     void OnEndingReached(EndingId id) => AddEvent("EndingReached", id.ToString());
     void OnHandlerOrderResolved(string id, Handler handler, bool followed) => AddEvent("HandlerOrder", $"{handler}:{id}:{followed}");
@@ -41,14 +44,15 @@ public sealed class TelemetryLogger : MonoBehaviour
             bool header = !File.Exists(CsvPath);
             using (var writer = new StreamWriter(CsvPath, true, new UTF8Encoding(true)))
             {
-                if (header) writer.WriteLine("day,money,stock,energy,action_points,price_level,customer_momentum,sales,fragments,delivered,suspicion_night,suspicion_window,rent_warnings,p_burned,burn_model_eligible,ending,events");
-                string delivered = state.TonightDrop == null ? "" : state.TonightDrop.intelId;
+                if (header) writer.WriteLine("run,day,money,stock,energy,action_points,price_level,customer_momentum,sales,clues,report,suspicion_night,suspicion_window,suspicion_cumulative,rent_warnings,p_burned,burn_model_eligible,ending,events");
+                var tonight = state.TonightDrop;
+                string delivered = tonight == null || !tonight.HasReport ? "" : $"{tonight.caseId}:{(tonight.correct ? 1 : 0)}";
                 string row = string.Join(",", new[] {
-                    state.day.ToString(), state.money.ToString(), state.stock.ToString(), state.energy.ToString(), state.actionPoints.ToString(),
+                    RunId, state.day.ToString(), state.money.ToString(), state.stock.ToString(), state.energy.ToString(), state.actionPoints.ToString(),
                     state.shopPriceLevel.ToString(), state.customerBaseMomentum.ToString(), state.salesToday.ToString(),
                     Csv(string.Join("|", state.fragments)), Csv(delivered),
                     state.nightlySuspicion.Count == 0 ? "0" : state.nightlySuspicion[state.nightlySuspicion.Count - 1].ToString(),
-                    state.SuspicionWindow.ToString(), state.rentWarnings.ToString(),
+                    state.SuspicionWindow.ToString(), state.SuspicionTotal.ToString(), state.rentWarnings.ToString(),
                     state.burnProbability < 0 ? "" : state.burnProbability.ToString("R", System.Globalization.CultureInfo.InvariantCulture),
                     state.ending == EndingId.Evicted.ToString() ? "0" : "1",
                     Csv(state.ending ?? ""), Csv(events.ToString())

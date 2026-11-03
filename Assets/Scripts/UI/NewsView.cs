@@ -21,6 +21,8 @@ public class NewsView : MonoBehaviour
     int page;           // 0..letters.Count-1 = thư, letters.Count = báo
     DaySO day;
     GameState state;
+    string recap;
+    readonly List<NewsSO> shown = new List<NewsSO>();
 
     public void Init(DayManager manager)
     {
@@ -55,12 +57,14 @@ public class NewsView : MonoBehaviour
         return rt;
     }
 
-    // Trả về tin chính (để DayManager xử lý grantsIntel)
-    public NewsSO Show(DaySO today, GameState s, string rentLetter = null)
+    // Trả về mọi thư/tin đã hiện (để DayManager xử lý grantsIntel)
+    public List<NewsSO> Show(DaySO today, GameState s, string rentLetter = null, string nightRecap = "")
     {
         day = today;
         state = s;
+        recap = nightRecap ?? "";
         letters.Clear();
+        shown.Clear();
 
         if (rentLetter != null)
             letters.Add(new Letter
@@ -72,12 +76,15 @@ public class NewsView : MonoBehaviour
 
         if (day)
             foreach (var n in day.news.Where(n => n && n.isLetter && Conditions.Check(s, n.condition, n.param)))
+            {
                 letters.Add(new Letter { title = n.headline, note = n.letterNote, body = n.sub });
+                shown.Add(n);
+            }
 
-        var main = BuildNewspaper();
+        BuildNewspaper();
         page = 0;
         ShowPage();
-        return main;
+        return new List<NewsSO>(shown);
     }
 
     void Next()
@@ -96,13 +103,13 @@ public class NewsView : MonoBehaviour
         {
             BuildLetter(letters[page]);
             UIFactory.FitHeight(letterSheet, 580);
-            hint.text = letters.Count > 1 ? $"Thư {page + 1}/{letters.Count}" : "Có thư để ở bậc cửa sáng nay";
+            hint.text = letters.Count > 1 ? $"Thư {page + 1}/{letters.Count}" : "Có thư nhét dưới khe cửa sáng nay";
             UIFactory.SetLabel(nextBtn, page + 1 < letters.Count ? "Đọc thư tiếp" : "Đọc báo");
         }
         else
         {
             UIFactory.FitHeight(newsSheet, 580);
-            hint.text = "";
+            hint.text = recap;
             UIFactory.SetLabel(nextBtn, "Ra bảng tin làng");
         }
     }
@@ -176,6 +183,7 @@ public class NewsView : MonoBehaviour
 
         if (main)
         {
+            shown.Add(main);
             var h = UIFactory.AddLine(newsContent, main.headline, 34, UIFactory.Ink, TextAlignmentOptions.Center, title: true);
             h.lineSpacing = -8;
             if (!string.IsNullOrEmpty(main.sub))
@@ -188,7 +196,9 @@ public class NewsView : MonoBehaviour
         }
 
         // Tin phụ: chia cột đều, ngăn bằng đường kẻ dọc
-        var side = day.news.Where(n => n && n.isSide && !n.isLetter && Conditions.Check(state, n.condition, n.param)).ToList();
+        var side = day.news.Where(n => n && n.isSide && !n.isLetter && Conditions.Check(state, n.condition, n.param))
+                           .OrderByDescending(n => n.priority).Take(3).ToList();   // tối đa 3 cột cho dễ đọc
+        shown.AddRange(side);
         if (side.Count > 0)
         {
             UIFactory.Size(UIFactory.MakeRect(newsContent, "Gap", Vector2.zero, Vector2.one), 20);

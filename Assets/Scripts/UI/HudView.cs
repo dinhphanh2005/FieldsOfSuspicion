@@ -10,7 +10,7 @@ public class HudView : MonoBehaviour
 {
     DayManager dm;
     TextMeshProUGUI phase, info, susLabel;
-    Image susPill, susDot;
+    Image susPill;
     RectTransform detailBox;
     TextMeshProUGUI detail;
     string lastPhase, lastInfo, lastSus, lastDetail;
@@ -55,8 +55,10 @@ public class HudView : MonoBehaviour
         pill.pivot = new Vector2(1, 0.5f);
         pill.sizeDelta = new Vector2(170, 30);
         pill.anchoredPosition = new Vector2(-20, 0);
+        // Viên tròn màu trơn (không dùng ảnh meter_suspicion_*: ảnh đó có sẵn mắt + vạch,
+        // đè chữ "Nghi ngờ" lên sẽ rối). Màu viên đổi theo mức.
         susPill = UIFactory.MakeBox(pill, UIFactory.Hex("3D4A33"));
-        UIFactory.Skin(susPill, "meter_suspicion_low");
+        UIFactory.Round(susPill, 15);
         var suspicionIconRt = UIFactory.MakeRect(pill, "SuspicionIcon", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
         suspicionIconRt.pivot = new Vector2(0, 0.5f);
         suspicionIconRt.anchoredPosition = new Vector2(7, 0);
@@ -67,11 +69,6 @@ public class HudView : MonoBehaviour
         UIFactory.ApplyColors(btn);
         btn.onClick.AddListener(ToggleDetail);
 
-        var dot = UIFactory.MakeRect(pill, "Dot", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
-        dot.sizeDelta = new Vector2(8, 8);
-        dot.anchoredPosition = new Vector2(18, 0);
-        susDot = UIFactory.MakeBox(dot, UIFactory.Hex("8FBF7A"), false);
-        UIFactory.Round(susDot, 4);
         var lr = UIFactory.MakeRect(pill, "Label", Vector2.zero, Vector2.one);
         lr.offsetMin = new Vector2(29, 0);
         lr.offsetMax = new Vector2(-12, 0);
@@ -126,9 +123,8 @@ public class HudView : MonoBehaviour
         const string gap = "<space=22>";
         string i = $"Tiền <b>{s.money}</b> xu <color=#9C8C7B><size=85%>(nhà {EconomyRules.Rent}/đêm)</size></color>{gap}" +
                    $"Rau <b>{s.stock}</b> bó{gap}" +
-                   $"Khách quen <b>{s.customerBaseMomentum}</b>/5{gap}" +
-                   $"AP <b>{s.actionPoints}</b>/{EconomyRules.MaxActionPoints}{gap}" +
-                   $"Năng lượng <b>{s.energy}</b>/{EconomyRules.MaxEnergy}" +
+                   $"Năng lượng <b>{s.energy}</b>/{EconomyRules.MaxEnergy}{gap}" +
+                   $"Sổ tay <b>{s.fragments.Count}</b>" +
                    (s.rentWarnings > 0 ? $"{gap}<color=#E0B04B>Thư nhắc {s.rentWarnings}/{EconomyRules.MaxWarnings}</color>" : "");
         if (i != lastInfo) { info.text = i; lastInfo = i; }
 
@@ -138,8 +134,6 @@ public class HudView : MonoBehaviour
         {
             susLabel.text = $"Nghi ngờ: {tier}";
             susPill.color = UIFactory.Hex(w >= SuspicionRules.HighFrom ? "5E2A22" : w >= SuspicionRules.MidFrom ? "5A4A26" : "3D4A33");
-            UIFactory.Skin(susPill, w >= SuspicionRules.HighFrom ? "meter_suspicion_high" : w >= SuspicionRules.MidFrom ? "meter_suspicion_mid" : "meter_suspicion_low");
-            susDot.color  = UIFactory.Hex(w >= SuspicionRules.HighFrom ? "E06A55" : w >= SuspicionRules.MidFrom ? "E0B04B" : "8FBF7A");
             lastSus = tier;
         }
 
