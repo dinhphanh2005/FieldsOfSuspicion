@@ -4,7 +4,7 @@ public static class EconomyRules
     public const int MaxEnergy = 10;        // hồi đầy mỗi sáng
     public const int MaxActionPoints = 4;   // điểm thao tác ruộng mỗi sáng
     public const int HarvestEnergy = 3;     // giữ tương thích bản lưu cũ; ruộng dùng AP
-    public const int HarvestYield = 4;      // giữ tương thích bản lưu cũ
+    public const int HarvestYield = 2;      // chỉnh 04/11: 4 bó/ô làm rau ứ kho, tiền cuối ván > 300 xu      // giữ tương thích bản lưu cũ
     public const int OpenShopEnergy = 4;    // mở tiệm buổi chiều
     public const int StepEnergy = 1;        // mỗi bước đi ban đêm
 
@@ -12,7 +12,7 @@ public static class EconomyRules
     public const int StartStock = 4;        // bó cà rốt có sẵn ngày đầu
     public const int Rent = 12;             // trừ ở Tổng kết mỗi đêm
     public const int MaxWarnings = 3;       // 3 thư nhắc; thiếu lần thứ 4 → Bị đuổi nhà
-    public const int StartingPlotCount = 6;
+    public const int StartingPlotCount = 4;
     public const int CarrotGrowDays = 3;
     public const int CarrotYield = HarvestYield;
     public const int PlantActionCost = 1;

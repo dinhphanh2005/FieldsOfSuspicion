@@ -115,8 +115,8 @@ public class ShopView : MonoBehaviour
 
         // Lời thoại: bên trái, cuộn được
         var scrollRoot = UIFactory.MakeRect(box, "Dialogue_Scroll", Vector2.zero, Vector2.one);
-        scrollRoot.offsetMin = new Vector2(30, 14);
-        scrollRoot.offsetMax = new Vector2(-330, -28);
+        scrollRoot.offsetMin = new Vector2(30, 28);       // viền hoa văn dưới của khung thoại dày ~20px
+        scrollRoot.offsetMax = new Vector2(-330, -46);   // chừa chỗ cho thẻ tên, chữ không chui dưới thẻ
         var content = UIFactory.MakeScroll(scrollRoot, out scroll);
         dialogue = UIFactory.MakeText(UIFactory.MakeRect(content, "Dialogue", Vector2.zero, Vector2.one), "", 17, UIFactory.Ink);
         dialogue.lineSpacing = 10;
@@ -274,7 +274,7 @@ public class ShopView : MonoBehaviour
 
     bool HasStockFor(int quantity) => quantity < 0 ? S.stock > 0 : quantity == 0 || S.stock >= quantity;
     int QuantityAvailable(int requested) => requested < 0 ? S.stock : requested;
-    bool CanSell => !traded && Visit != null && Visit.sellQuantity > 0 && HasStockFor(Visit.sellQuantity);
+    bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);   // -1 = mua hết kho
     bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(Visit.discountQuantity);
     bool CanTrade => CanSell || CanDiscount;
     bool CanAsk => Visit != null && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
@@ -293,6 +293,14 @@ public class ShopView : MonoBehaviour
         RefreshChoices();
         RefreshQueue();
         RefreshNotebookButton();
+        dialogue.ForceMeshUpdate();
+        UIFactory.ScrollToBottom(scroll);
+        if (isActiveAndEnabled) StartCoroutine(ScrollNextFrame());   // TMP đo xong chiều cao ở frame sau
+    }
+
+    System.Collections.IEnumerator ScrollNextFrame()
+    {
+        yield return null;
         UIFactory.ScrollToBottom(scroll);
     }
 
@@ -405,7 +413,7 @@ public class ShopView : MonoBehaviour
         S.stock -= quantity;
         if (v.discountPrice > 0) S.salesToday += quantity;
         S.money += revenue;
-        string outcome = quantity > 0 ? $"{quantity} bó rau · +{revenue} xu" : "không xuất rau · không thu tiền";
+        string outcome = quantity > 0 ? (revenue > 0 ? $"{quantity} bó rau · +{revenue} xu" : $"tặng {quantity} bó rau") : "không xuất rau · không thu tiền";
         Say(v.discount, outcome);
         AfterAction();
     }

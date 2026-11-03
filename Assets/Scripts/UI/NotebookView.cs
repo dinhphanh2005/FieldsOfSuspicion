@@ -37,33 +37,31 @@ public class NotebookView : MonoBehaviour
         UIFactory.MakeSurface(page, UIFactory.Hex("F3EAD6"), 8);
         UIFactory.Skin(page.GetComponent<Image>(), "notebook_page");
         UIFactory.AddShadow(page, 10);
-        var margin = UIFactory.Place(page, "Margin", 28, 0, 2, 584);
-        UIFactory.MakeBox(margin, UIFactory.Hex("C98B7A"), false);
         var tape = UIFactory.Place(page, "Tape", 940, -10, 118, 40);
         UIFactory.Skin(UIFactory.MakeBox(tape, new Color(1, 1, 1, 0.9f), false), "tape");
 
-        UIFactory.MakeTitle(UIFactory.Place(page, "Title", 48, 18, 600, 38), "Sổ tay của Tomas", 26, UIFactory.Ink);
-        subText = UIFactory.MakeText(UIFactory.Place(page, "Sub", 48, 54, 640, 22), "", 14, UIFactory.Muted);
+        UIFactory.MakeTitle(UIFactory.Place(page, "Title", 96, 18, 560, 38), "Sổ tay của Tomas", 26, UIFactory.Ink);
+        subText = UIFactory.MakeText(UIFactory.Place(page, "Sub", 96, 54, 600, 22), "", 14, UIFactory.Muted);
         subText.fontStyle = FontStyles.Italic;
 
         tabClues = Tab(page, "Tab_Clues", 712, 22, () => SwitchTab(false));
         tabCases = Tab(page, "Tab_Cases", 896, 22, () => SwitchTab(true));
-        UIFactory.MakeBox(UIFactory.Place(page, "TabLine", 48, 70, 1012, 1), new Color(0.23f, 0.18f, 0.15f, 0.25f), false);
+        UIFactory.MakeBox(UIFactory.Place(page, "TabLine", 96, 70, 964, 1), new Color(0.23f, 0.18f, 0.15f, 0.25f), false);
 
         // --- Trang Manh mối ---
-        cluesRoot = UIFactory.Place(page, "Clues", 48, 82, 1012, 486);
+        cluesRoot = UIFactory.Place(page, "Clues", 96, 82, 964, 486);
         var cl = UIFactory.MakeScroll(UIFactory.MakeRect(cluesRoot, "Scroll", Vector2.zero, Vector2.one), out _);
         cluesText = UIFactory.AddLine(cl, "", 17, UIFactory.Ink);
         cluesText.lineSpacing = 6;
         cluesText.paragraphSpacing = 4;
 
         // --- Trang Hồ sơ ---
-        casesRoot = UIFactory.Place(page, "Cases", 48, 82, 1012, 486);
+        casesRoot = UIFactory.Place(page, "Cases", 96, 82, 964, 486);
         var listRoot = UIFactory.Place(casesRoot, "CaseList", 0, 0, 286, 486);
         caseList = UIFactory.MakeScroll(listRoot, out _);
         caseList.GetComponent<VerticalLayoutGroup>().spacing = 8;
         UIFactory.MakeBox(UIFactory.Place(casesRoot, "Divider", 302, 0, 1, 486), new Color(0.23f, 0.18f, 0.15f, 0.25f), false);
-        var detailRoot = UIFactory.Place(casesRoot, "CaseDetail", 318, 0, 694, 486);
+        var detailRoot = UIFactory.Place(casesRoot, "CaseDetail", 318, 0, 646, 486);
         caseDetail = UIFactory.MakeScroll(detailRoot, out detailScroll);
         caseDetail.GetComponent<VerticalLayoutGroup>().spacing = 8;
 
@@ -105,7 +103,7 @@ public class NotebookView : MonoBehaviour
 
         if (showingCases)
         {
-            subText.text = "Ghép manh mối vào chỗ trống để thành một bản báo cáo. Sổ tay không biết bạn ghép đúng hay sai.";
+            subText.text = "Ghép manh mối vào chỗ trống. Sổ tay không cho biết ghép đúng hay sai.";
             BuildCaseList(openCases);
             BuildCaseDetail();
             barHint.text = dm.CurrentPhase == Phase.Night
@@ -114,7 +112,7 @@ public class NotebookView : MonoBehaviour
         }
         else
         {
-            subText.text = "Những gì nghe được ở tiệm và đọc được trên báo. Mẩu nào cũng nhỏ — ghép lại mới thành tin.";
+            subText.text = "Mẩu nào cũng nhỏ. Ghép lại mới thành tin.";
             BuildClues();
             barHint.text = "Gạch chân đỏ trong lời khách = có thể ghi vào sổ";
         }
@@ -236,7 +234,7 @@ public class NotebookView : MonoBehaviour
             var label = UIFactory.MakeText(UIFactory.Place(row, "Label", 0, 0, 130, 40), c.slots[i].label, 16, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
             label.fontStyle = FontStyles.Bold;
             var clue = dm.FindIntel(answers[i]);
-            var b = UIFactory.MakeButton(UIFactory.Place(row, "Pick", 130, 2, 540, 36), "Pick",
+            var b = UIFactory.MakeButton(UIFactory.Place(row, "Pick", 120, 2, 500, 36), "Pick",
                 clue ? clue.keyword : "— bấm để chọn manh mối —", () => { activeSlot = slot; Refresh(); }, 16);
             UIFactory.SetColor(b, slot == activeSlot ? UIFactory.Hex("F6DFA0") : Color.white);
         }
@@ -254,7 +252,7 @@ public class NotebookView : MonoBehaviour
         {
             var gridRt = UIFactory.MakeRect(caseDetail, "Chips", Vector2.zero, Vector2.one);
             var grid = gridRt.gameObject.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(218, 40);
+            grid.cellSize = new Vector2(204, 40);
             grid.spacing = new Vector2(8, 8);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = 3;

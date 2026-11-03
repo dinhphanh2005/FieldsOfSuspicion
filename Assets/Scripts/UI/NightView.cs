@@ -94,21 +94,23 @@ public class NightView : MonoBehaviour
         UIFactory.AddShadow(card, 10);
         UIFactory.AddGrain(card, 0.12f);
 
-        var head = UIFactory.Place(card, "Head", 0, 0, 812, 50);
+        // Bản đồ là ảnh tối: dải tiêu đề + chú giải nền tối, chữ sáng
+        var head = UIFactory.Place(card, "Head", 0, 0, 812, 46);
+        UIFactory.MakeBox(head, new Color(0.1f, 0.08f, 0.07f, 0.82f), false);
         var mapTitleRect = UIFactory.MakeRect(head, "Title", Vector2.zero, Vector2.one, 0);
         mapTitleRect.anchorMax = new Vector2(0.4f, 1);
-        var mapTitle = UIFactory.MakeTitle(mapTitleRect, "Sellowe về đêm", 20, UIFactory.Ink,
+        var mapTitle = UIFactory.MakeTitle(mapTitleRect, "Sellowe về đêm", 20, UIFactory.Gold,
                                            TextAlignmentOptions.MidlineLeft);
         mapTitle.margin = new Vector4(22, 0, 0, 0);
         mapSub = UIFactory.MakeText(UIFactory.MakeRect(head, "Sub", new Vector2(0.4f, 0), Vector2.one, 0), "", 14,
-                                    UIFactory.Hex("7A6A5A"), TextAlignmentOptions.MidlineRight);
+                                    UIFactory.Hex("CDBFA8"), TextAlignmentOptions.MidlineRight);
         mapSub.margin = new Vector4(0, 0, 22, 0);
         mapSub.enableAutoSizing = true;
         mapSub.fontSizeMin = 10;
         mapSub.fontSizeMax = 14;
         mapSub.textWrappingMode = TextWrappingModes.NoWrap;
         mapSub.overflowMode = TextOverflowModes.Ellipsis;
-        UIFactory.MakeBox(UIFactory.Place(card, "HeadLine", 0, 50, 812, 1), new Color(0.23f, 0.18f, 0.15f, 0.3f), false);
+
 
         foreach (var e in Edges)
         {
@@ -137,14 +139,19 @@ public class NightView : MonoBehaviour
             nodeIconRt.sizeDelta = new Vector2(22, 22);
             nodeIconRt.anchoredPosition = new Vector2(7, 0);
             UIFactory.Skin(UIFactory.MakeBox(nodeIconRt, Color.white, false), nodeIcon);
-            b.GetComponentInChildren<TextMeshProUGUI>().rectTransform.offsetMin = new Vector2(31, 6);
+            var nodeLabel = b.GetComponentInChildren<TextMeshProUGUI>();
+            nodeLabel.rectTransform.offsetMin = new Vector2(31, 6);
+            nodeLabel.textWrappingMode = TextWrappingModes.NoWrap;   // "Đường ven sông" không xuống dòng
+            nodeLabel.enableAutoSizing = true;
+            nodeLabel.fontSizeMin = 12;
+            nodeLabel.fontSizeMax = 16;
             UIFactory.AddOutline(b.targetGraphic, n.id == "oak" ? UIFactory.Red : new Color(0.23f, 0.18f, 0.15f, 0.35f));
             UIFactory.AddShadow(b, 2);
             nodeButtons[id] = b;
         }
 
         var legend = UIFactory.Place(card, "Legend", 0, 536, 812, 40);
-        UIFactory.MakeBox(UIFactory.Place(legend, "Line", 0, 0, 812, 1), new Color(0.23f, 0.18f, 0.15f, 0.3f), false);
+        UIFactory.MakeBox(legend, new Color(0.1f, 0.08f, 0.07f, 0.82f), false);
         var items = UIFactory.MakeRect(legend, "Items", Vector2.zero, Vector2.one);
         var h = UIFactory.HList(items, 8, 0);
         h.padding = new RectOffset(22, 22, 0, 0);
@@ -178,7 +185,7 @@ public class NightView : MonoBehaviour
     {
         var rt = UIFactory.MakeRect(parent, "Label", Vector2.zero, Vector2.one);
         rt.sizeDelta = new Vector2(0, 40);
-        var t = UIFactory.MakeText(rt, text, 14, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
+        var t = UIFactory.MakeText(rt, text, 14, UIFactory.Light, TextAlignmentOptions.MidlineLeft);
         t.textWrappingMode = TextWrappingModes.NoWrap;
     }
 
@@ -279,8 +286,8 @@ public class NightView : MonoBehaviour
             t.enableAutoSizing = true;      // câu dài thì chữ tự nhỏ lại cho vừa nút
             t.fontSizeMin = 11;
             t.fontSizeMax = 15;
-            UIFactory.Size(b, 74);
-            if (!complete) t.alpha = 0.6f;
+            UIFactory.Size(b, 84);
+            if (!complete) t.alpha = 0.75f;
             reportButtons[id] = b;
             shown++;
         }
@@ -291,7 +298,7 @@ public class NightView : MonoBehaviour
                 15, UIFactory.Hex("9C8C7B"));
         else
             UIFactory.MakeText(UIFactory.MakeRect(intelList, "Tip", Vector2.zero, Vector2.one),
-                "Bản báo cáo còn thiếu ô thì mở Sổ tay → Hồ sơ để ghép tiếp.", 13, UIFactory.Hex("9C8C7B"));
+                "Bản báo cáo còn thiếu ô thì mở Sổ tay, trang Hồ sơ, để ghép tiếp.", 13, UIFactory.Hex("9C8C7B"));
         intelScroll.verticalNormalizedPosition = 1;
     }
 

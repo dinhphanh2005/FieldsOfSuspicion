@@ -138,14 +138,14 @@ public class BoardView : MonoBehaviour
         farmPanel = UIFactory.MakeRect(stage, "Farm_Overlay", Vector2.zero, Vector2.one);
         UIFactory.MakeBox(farmPanel, new Color(0.08f, 0.07f, 0.06f, 0.78f));
         var card = UIFactory.MakeRect(farmPanel, "Farm_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
-        card.sizeDelta = new Vector2(900, 430);
+        card.sizeDelta = new Vector2(920, 470);   // khung gỗ của ảnh dày ~40px: nội dung đặt lùi vào trong
         UIFactory.MakeSurface(card, UIFactory.Hex("E7D7B5"), 8);
         UIFactory.Skin(card.GetComponent<Image>(), "farm_card");
         UIFactory.AddShadow(card, 12);
-        UIFactory.MakeTitle(UIFactory.Place(card, "Title", 32, 24, 836, 38), "MẢNH RUỘNG CỦA TOMAS", 24, UIFactory.Ink);
-        UIFactory.MakeText(UIFactory.Place(card, "Help", 32, 68, 836, 36),
+        UIFactory.MakeTitle(UIFactory.Place(card, "Title", 52, 44, 816, 36), "MẢNH RUỘNG CỦA TOMAS", 24, UIFactory.Ink);
+        UIFactory.MakeText(UIFactory.Place(card, "Help", 52, 82, 816, 30),
             "Gieo cà rốt tốn 1 AP, không dùng rau trong kho. Cây chín sau 3 buổi sáng; thu hoạch tốn 1 AP.", 15, UIFactory.Muted);
-        var grid = UIFactory.Place(card, "Plots", 32, 116, 836, 210);
+        var grid = UIFactory.Place(card, "Plots", 52, 118, 816, 200);
         var h = UIFactory.HList(grid, 12, 0);
         h.childForceExpandWidth = true;
         h.childForceExpandHeight = true;
@@ -154,6 +154,9 @@ public class BoardView : MonoBehaviour
             int plotId = i;
             var b = UIFactory.MakeButton(grid, "Plot_" + i, "", () => OnPlot(plotId), 16);
             UIFactory.Size(b, 184);
+            // Ô ruộng: thẻ giấy trơn bo góc (ảnh nút ngang bị kéo dọc sẽ có dải tối đè lên chữ)
+            UIFactory.Round((Image)b.targetGraphic, 8);
+            b.transition = Selectable.Transition.ColorTint;
             var label = b.GetComponentInChildren<TextMeshProUGUI>();
             label.fontSize = 13;
             label.alignment = TextAlignmentOptions.Center;
@@ -175,7 +178,7 @@ public class BoardView : MonoBehaviour
             plotArt.Add(art);
             plotButtons.Add(b);
         }
-        var statsRect = UIFactory.Place(card, "Stats", 32, 332, 836, 28);
+        var statsRect = UIFactory.Place(card, "Stats", 52, 334, 600, 28);
         var statsLayout = statsRect.gameObject.AddComponent<HorizontalLayoutGroup>();
         statsLayout.spacing = 18;
         statsLayout.childAlignment = TextAnchor.MiddleLeft;
@@ -186,7 +189,7 @@ public class BoardView : MonoBehaviour
         energyStat = AddFarmStat(statsRect, "Energy", "icon_lantern", 205);
         apStat = AddFarmStat(statsRect, "AP", "icon_ap", 150);
         stockStat = AddFarmStat(statsRect, "Stock", "icon_carrot", 180);
-        var close = UIFactory.MakeButton(UIFactory.Place(card, "Close", 690, 366, 178, 42), "Close", "Đóng ruộng", ToggleFarm, 16);
+        var close = UIFactory.MakeButton(UIFactory.Place(card, "Close", 690, 372, 178, 42), "Close", "Đóng ruộng", ToggleFarm, 16);
         UIFactory.SetColor(close, UIFactory.Hex("DCCBA8"));
         farmPanel.gameObject.SetActive(false);
     }
@@ -253,8 +256,13 @@ public class BoardView : MonoBehaviour
                 string plotSprite = empty ? "plot_empty" : plot.ready ? "plot_ready" : plot.daysGrowing == 0 ? "plot_seeded" : "plot_growing";
                 UIFactory.Skin(plotArt[id], plotSprite);
                 plotArt[id].preserveAspect = true;
-                UIFactory.SetInteractable(b, S.actionPoints > 0 && (plot.ready || empty));
-                UIFactory.SetColor(b, Color.white);
+                // Không làm mờ ô đang lớn (chữ sẽ không đọc được); bấm vào ô đang lớn chỉ không có tác dụng
+                bool canAct = S.actionPoints > 0 && (plot.ready || empty);
+                b.interactable = true;
+                foreach (var tx in b.GetComponentsInChildren<TMP_Text>()) tx.alpha = 1f;
+                if (!canAct && (plot.ready || empty)) state += "\n<color=#A8442E>Hết AP hôm nay</color>";
+                b.GetComponentInChildren<TextMeshProUGUI>().text = state;
+                UIFactory.SetColor(b, UIFactory.Hex(plot.ready ? "F3E3B0" : "F4ECD8"));
             }
         }
         if (energyStat) energyStat.text = $"Năng lượng {S.energy}/{EconomyRules.MaxEnergy}";

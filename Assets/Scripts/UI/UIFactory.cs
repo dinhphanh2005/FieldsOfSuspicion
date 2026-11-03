@@ -117,7 +117,7 @@ public static class UIFactory
 
     public static Image MakeBox(RectTransform rt, Color color, bool raycast = true)
     {
-        var img = rt.gameObject.AddComponent<Image>();
+        var img = rt.gameObject.AddComponent<LayoutSafeImage>();
         img.color = color;
         img.raycastTarget = raycast;
         return img;
@@ -345,26 +345,40 @@ public static class UIFactory
     // Nút trên thanh: rộng theo chữ. primary = nút chính màu đỏ.
     public static Button BarButton(RectTransform bar, string label, UnityAction onClick, bool primary = false)
     {
-        var b = MakeButton(bar, "Btn_" + (primary ? "Primary" : "Secondary"), label, onClick, 17);
-        string iconName = IconFor(label);
-        if (!string.IsNullOrEmpty(iconName)) AddButtonIcon(b, iconName);
-        var h = b.gameObject.AddComponent<HorizontalLayoutGroup>();   // rộng = chữ + lề 22 mỗi bên
-        h.padding = new RectOffset(22, 22, 0, 0);
+        var b = MakeButton(bar, "Btn_" + (primary ? "Primary" : "Secondary"), label, onClick, 16);
+        // Nút rộng = [icon] + chữ + lề 20 mỗi bên. Icon là phần tử riêng trong layout (không đè lên chữ).
+        var h = b.gameObject.AddComponent<HorizontalLayoutGroup>();
+        h.padding = new RectOffset(20, 20, 0, 0);
+        h.spacing = 8;
         h.childAlignment = TextAnchor.MiddleCenter;
         h.childControlWidth = true;
         h.childControlHeight = true;
-        h.childForceExpandWidth = true;
+        h.childForceExpandWidth = false;
         h.childForceExpandHeight = true;
         var t = b.GetComponentInChildren<TextMeshProUGUI>();
         t.textWrappingMode = TextWrappingModes.NoWrap;
+        t.margin = Vector4.zero;
+        string iconName = IconFor(label);
+        var iconSprite = string.IsNullOrEmpty(iconName) ? null : SpriteAsset(iconName);
+        if (iconSprite)
+        {
+            var iconRt = MakeRect(b.transform, "Icon", Vector2.zero, Vector2.one);
+            iconRt.SetAsFirstSibling();
+            var le = iconRt.gameObject.AddComponent<LayoutElement>();
+            le.minWidth = le.preferredWidth = 20;
+            le.flexibleWidth = 0;
+            var icon = iconRt.gameObject.AddComponent<Image>();
+            icon.sprite = iconSprite;
+            icon.preserveAspect = true;
+            icon.raycastTarget = false;
+        }
         if (primary)
         {
             SetColor(b, Red);
             Skin((Image)b.targetGraphic, "btn_primary");
             t.color = Light;
             var primaryLayout = b.gameObject.AddComponent<LayoutElement>();
-            primaryLayout.minWidth = 196;
-            primaryLayout.preferredWidth = 220;
+            primaryLayout.minWidth = 200;
         }
         else Skin((Image)b.targetGraphic, "btn_secondary");
         AddShadow(b, 2);

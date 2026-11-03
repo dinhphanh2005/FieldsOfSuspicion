@@ -148,7 +148,7 @@ public class NewsView : MonoBehaviour
         var mastRow = UIFactory.MakeRect(newsContent, "Masthead", Vector2.zero, Vector2.one);
         UIFactory.Size(mastRow, 72);
         var mastImage = UIFactory.MakeBox(mastRow, Color.white, false);
-        UIFactory.Skin(mastImage, "news_masthead");
+        mastImage.color = new Color(0, 0, 0, 0);   // ảnh news_masthead có sẵn chữ → không dùng, tránh chữ chồng hai lớp
         var mastTextRect = UIFactory.MakeRect(mastRow, "Masthead_Title", Vector2.zero, Vector2.one, 8);
         var mast = UIFactory.MakeTitle(mastTextRect, "TIN SELLOWE", 46, UIFactory.Ink, TextAlignmentOptions.Center);
         mast.characterSpacing = 18;
@@ -184,7 +184,7 @@ public class NewsView : MonoBehaviour
         if (main)
         {
             shown.Add(main);
-            var h = UIFactory.AddLine(newsContent, main.headline, 34, UIFactory.Ink, TextAlignmentOptions.Center, title: true);
+            var h = UIFactory.AddLine(newsContent, main.headline, 30, UIFactory.Ink, TextAlignmentOptions.Center, title: true);
             h.lineSpacing = -8;
             if (!string.IsNullOrEmpty(main.sub))
             {

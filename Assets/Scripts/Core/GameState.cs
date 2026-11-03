@@ -115,7 +115,7 @@ public class GameState
     {
         if (points <= 0) return;
         pendingByChannel[(int)channel] += points;
-        GameEvents.RaiseSuspicionAdded(points, $"{reason} → {SuspicionRules.ChannelName(channel)}");
+        GameEvents.RaiseSuspicionAdded(points, $"{reason} > {SuspicionRules.ChannelName(channel)}");
     }
 
     public int PendingTotal

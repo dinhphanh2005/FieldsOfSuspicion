@@ -108,3 +108,6 @@ InitTestScene*.unity*
 .DS_Store
 .idea/
 .vscode/
+
+# Ảnh chụp từ bản chơi tự động (FoS/Dev)
+/DevShots/
