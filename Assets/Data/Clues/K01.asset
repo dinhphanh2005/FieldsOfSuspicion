@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K01
+  m_EditorClassIdentifier: 
+  id: K01
+  keyword: "\u0111o\u00e0n xe qu\u00e2n nhu"
+  text: "\u0110\u1ed3n Lenmar \u0111ang s\u1ed1t ru\u1ed9t ch\u1edd m\u1ed9t \u0111o\u00e0n xe qu\u00e2n nhu. Xe ch\u01b0a t\u1edbi n\u00ean l\u00ednh ph\u1ea3i \u0111i mua rau t\u1eebng b\u00f3."
+  kind: 1
+  thread: 0
+  source: "Emel \u00b7 Ch\u1ee7 Nh\u1eadt"
+  isTrue: 1

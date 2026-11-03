@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K11
+  m_EditorClassIdentifier: 
+  id: K11
+  keyword: "t\u1ed1i th\u1ee9 N\u0103m"
+  text: "Perrin: \u00f4ng ch\u1ee7 b\u1eaft d\u1ecdn xong m\u1ecdi th\u1ee9 tr\u01b0\u1edbc t\u1ed1i th\u1ee9 N\u0103m."
+  kind: 3
+  thread: 2
+  source: "Perrin \u00b7 th\u1ee9 T\u01b0"
+  isTrue: 1

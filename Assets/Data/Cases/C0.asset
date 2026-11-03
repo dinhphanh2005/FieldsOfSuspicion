@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6b87609cfb4ed6ad0997531034a9a7, type: 3}
+  m_Name: C0
+  m_EditorClassIdentifier: 
+  id: C0
+  title: "B\u00e1o c\u00e1o \u0111\u1ea7u ti\u00ean"
+  brief: "V\u0103n ph\u00f2ng mu\u1ed1n th\u1eed \u0111\u01b0\u1eddng d\u00e2y: c\u1eadu \u0111\u00e3 nghe \u0111\u01b0\u1ee3c g\u00ec? \u0110\u1ed3n Lenmar \u0111ang tr\u00f4ng ch\u1edd \u0111i\u1ec1u g\u00ec?"
+  template: "\u0110\u1ed3n Lenmar \u0111ang ch\u1edd {0}."
+  slots:
+  - label: "C\u00e1i g\u00ec"
+    kind: 1
+    correct:
+    - K01
+  opensWith: "K01"
+  firstNight: 1
+  lastNight: 1
+  correctSuspicion: 1
+  wrongSuspicion: 0
+  channel: 0
+  isFinal: 0

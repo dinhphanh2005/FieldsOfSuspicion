@@ -17,5 +17,5 @@ MonoBehaviour:
   body: "\u0110\u1ed3n Lenmar th\u01b0\u1edfng 50 xu cho ai ch\u1ec9 ra k\u1ebb \u0111\u00e3 b\u00e1o tin v\u1ee5 c\u1ea7u B\u1eafc. M\u1ecdi tin b\u00e1o \u0111\u01b0\u1ee3c gi\u1eef k\u00edn."
   signature: "\u0110\u1ed3n Lenmar"
   answer: ""
-  condition: 1
-  param: "F02"
+  condition: 9
+  param: "C1"

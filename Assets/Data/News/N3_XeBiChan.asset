@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N3_XeBiChan
+  m_EditorClassIdentifier: 
+  headline: "\u0110o\u00e0n xe qu\u00e2n nhu Lenmar b\u1ecb ch\u1eb7n \u1edf c\u1ea7u B\u1eafc"
+  sub: "Ng\u01b0\u1eddi Straka ch\u1edd s\u1eb5n t\u1eeb tr\u01b0\u1edbc n\u1eeda \u0111\u00eam. \u0110\u1ed3n Lenmar m\u1ea5t tr\u1eafng m\u1ed9t tu\u1ea7n l\u01b0\u01a1ng th\u1ef1c v\u00e0 treo th\u01b0\u1edfng cho ai ch\u1ec9 ra k\u1ebb b\u00e1o tin."
+  isSide: 0
+  priority: 10
+  condition: 9
+  param: "C1"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

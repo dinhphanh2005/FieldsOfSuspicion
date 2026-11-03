@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K_ROOK
+  m_EditorClassIdentifier: 
+  id: K_ROOK
+  keyword: "Rook (b\u00e0 Rosa, x\u00f3m B\u1eafc)"
+  text: "Ng\u01b0\u1eddi li\u00ean l\u1ea1c l\u00e2u n\u0103m c\u1ee7a Straka. L\u1ec7nh c\u1ee7a Rook k\u00fd t\u00ean \u201cb\u00e0 Rosa, x\u00f3m B\u1eafc\u201d."
+  kind: 0
+  thread: 4
+  source: "Th\u01b0 c\u1ee7a V\u0103n ph\u00f2ng"
+  isTrue: 1

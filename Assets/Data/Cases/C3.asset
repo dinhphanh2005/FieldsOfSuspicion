@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6b87609cfb4ed6ad0997531034a9a7, type: 3}
+  m_Name: C3
+  m_EditorClassIdentifier: 
+  id: C3
+  title: "V\u1ecb kh\u00e1ch nh\u00e0 Vaule"
+  brief: "Nh\u00e0 tr\u01b0\u1edfng l\u00e0ng Vaule s\u1eafp \u0111\u00f3n m\u1ed9t v\u1ecb kh\u00e1ch c\u1ee7a Lenmar. Ai s\u1ebd t\u1edbi, v\u00e0 t\u1edbi khi n\u00e0o? Straka c\u1ea7n bi\u1ebft tr\u01b0\u1edbc \u00edt nh\u1ea5t m\u1ed9t \u0111\u00eam \u0111\u1ec3 chu\u1ea9n b\u1ecb."
+  template: "Ng\u01b0\u1eddi t\u1edbi nh\u00e0 Vaule l\u00e0 {0}, v\u00e0o {1}."
+  slots:
+  - label: "Ai"
+    kind: 0
+    correct:
+    - K10
+  - label: "Khi n\u00e0o"
+    kind: 3
+    correct:
+    - K11
+  opensWith: "K08,K09,K10,K11,K12"
+  firstNight: 3
+  lastNight: 4
+  correctSuspicion: 1
+  wrongSuspicion: 1
+  channel: 1
+  isFinal: 0

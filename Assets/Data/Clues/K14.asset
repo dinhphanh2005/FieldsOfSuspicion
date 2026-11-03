@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K14
+  m_EditorClassIdentifier: 
+  id: K14
+  keyword: "c\u00f3 ng\u01b0\u1eddi Straka b\u00e1n tin"
+  text: "Sable nghe \u0111\u1ed3n c\u00f3 ng\u01b0\u1eddi ph\u00eda Straka \u0111ang b\u00e1n tin cho Lenmar. C\u00f4 khuy\u00ean \u0111\u1eebng tin h\u1ebft nh\u1eefng g\u00ec \u0111\u1ecdc tr\u00ean b\u1ea3ng tin."
+  kind: 6
+  thread: 4
+  source: "Sable \u00b7 th\u1ee9 T\u01b0"
+  isTrue: 1

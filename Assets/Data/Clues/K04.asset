@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K04
+  m_EditorClassIdentifier: 
+  id: K04
+  keyword: "s\u00e1ng th\u1ee9 Ba"
+  text: "Perrin: \u00f4ng Vaule d\u1eb7n \u0111i ch\u1ee3 s\u1edbm v\u00ec \u0111\u01b0\u1eddng c\u00e1i s\u1ebd k\u00edn xe l\u00ednh v\u00e0o s\u00e1ng th\u1ee9 Ba, l\u00fac \u0111o\u00e0n xe v\u1ec1 t\u1edbi \u0111\u1ed3n."
+  kind: 3
+  thread: 0
+  source: "Perrin \u00b7 th\u1ee9 Hai"
+  isTrue: 0

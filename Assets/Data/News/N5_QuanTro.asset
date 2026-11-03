@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N5_QuanTro
+  m_EditorClassIdentifier: 
+  headline: "C\u00f3 ng\u01b0\u1eddi l\u1ea1 thu\u00ea ph\u00f2ng \u1edf qu\u00e1n tr\u1ecd \u0111\u01b0\u1eddng B\u1eafc"
+  sub: "M\u1ea5y ng\u01b0\u1eddi \u0111\u00e0n \u00f4ng l\u1ea1 m\u1eb7t mang theo c\u1ea7n c\u00e2u, d\u00f9 s\u00f4ng \u0111ang ng\u1eadp."
+  isSide: 0
+  priority: 10
+  condition: 9
+  param: "C3"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

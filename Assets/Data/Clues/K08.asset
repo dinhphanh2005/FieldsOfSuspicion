@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K08
+  m_EditorClassIdentifier: 
+  id: K08
+  keyword: "ph\u00f2ng kh\u00e1ch t\u1ea7ng hai"
+  text: "Perrin ph\u1ea3i d\u1ecdn ph\u00f2ng kh\u00e1ch t\u1ea7ng hai nh\u00e0 Vaule, c\u0103n ph\u00f2ng \u0111\u00f3ng c\u1eeda t\u1eeb khi b\u00e0 ch\u1ee7 m\u1ea5t. Nh\u00e0 s\u1eafp c\u00f3 kh\u00e1ch qu\u00fd c\u1ee7a Lenmar."
+  kind: 6
+  thread: 2
+  source: "Perrin \u00b7 th\u1ee9 Ba"
+  isTrue: 1

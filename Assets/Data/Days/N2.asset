@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   day: 2
   news:
-  - {fileID: 11400000, guid: c13a247e215d4b67a6b6ce0673fdc8d3, type: 2}
-  - {fileID: 11400000, guid: 98b2b0eacef04cfb98734ab84c4c38ec, type: 2}
-  - {fileID: 11400000, guid: fa4c6ba00d944c5fa32e33b5f2553f6c, type: 2}
+  - {fileID: 11400000, guid: 56525d84b65755c1a6382a42bbce109f, type: 2}
+  - {fileID: 11400000, guid: beb63b1a5b92584f9fc88504000a58f4, type: 2}
   board:
-  - {fileID: 11400000, guid: 69748cebdc3b47279785bd62aa78f70d, type: 2}
-  - {fileID: 11400000, guid: 0ae0d36f936b41fe98798c6fcd82cad2, type: 2}
-  - {fileID: 11400000, guid: c2bc3859415945018c6f2a051916bf77, type: 2}
+  - {fileID: 11400000, guid: 663fc2e21ba55ad39b4cc523a00e19a5, type: 2}
+  - {fileID: 11400000, guid: 5ab92f7152d7512a9f33df226a85dce2, type: 2}
+  - {fileID: 11400000, guid: cbd23dbbf296526dadcd599ea0c837cd, type: 2}
   visits:
   - customer: {fileID: 11400000, guid: f3cb2fa764fb435a9453a16dbccbafb6, type: 2}
+    requiredMomentum: 0
     entrance: "M\u1ed9t \u00f4ng l\u00e3o \u0111\u1ed9i m\u0169 n\u1ed3i, \u00e1o gi-l\u00ea \u0111\u00e3 s\u1eddn, r\u1ee5t r\u00e8 \u0111\u1ea9y c\u1eeda b\u01b0\u1edbc v\u00e0o."
     entranceVariants: []
     greeting: "Ch\u00e0o c\u1eadu. T\u00f4i l\u00e0 Perrin, qu\u1ea3n gia b\u00ean nh\u00e0 Vaule. B\u1ebfp nh\u00e0 t\u00f4i c\u1ea7n rau s\u1ea1ch, m\u00e0 ngo\u00e0i ch\u1ee3 to\u00e0n rau h\u00e9o c\u1ea3."
@@ -33,6 +33,7 @@ MonoBehaviour:
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""
+    discountAccepted: 1
     pressSuspicion: 1
     sell:
       tomas: "D\u1ea1, b\u00e1c c\u1ee9 ch\u1ecdn tho\u1ea3i m\u00e1i."
@@ -44,7 +45,7 @@ MonoBehaviour:
       replyVariants: []
     ask:
       tomas: "D\u1ea1o n\u00e0y b\u00ean nh\u00e0 Vaule c\u00f3 chuy\u1ec7n g\u00ec vui kh\u00f4ng b\u00e1c?"
-      reply: "Vui th\u00ec ch\u1eb3ng th\u1ea5y. \u00d4ng ch\u1ee7 c\u1ee9 ng\u1ed3i m\u1ed9t m\u00ecnh trong th\u01b0 ph\u00f2ng, d\u1eb7n ng\u01b0\u1eddi l\u00e0m \u0111\u1eebng g\u00e2y \u1ed3n. Nh\u00e0 gi\u00e0u c\u0169ng c\u00f3 c\u00e1i kh\u1ed5 c\u1ee7a nh\u00e0 gi\u00e0u, c\u1eadu \u1ea1."
+      reply: "Vui th\u00ec ch\u1eb3ng th\u1ea5y. \u00d4ng ch\u1ee7 c\u1ee9 ng\u1ed3i m\u1ed9t m\u00ecnh trong th\u01b0 ph\u00f2ng. \u00c0, \u00f4ng d\u1eb7n t\u00f4i \u0111i ch\u1ee3 s\u1edbm, v\u00ec \u0111\u01b0\u1eddng c\u00e1i s\u1ebd k\u00edn xe l\u00ednh v\u00e0o {{s\u00e1ng th\u1ee9 Ba|K04}}, l\u00fac \u0111o\u00e0n xe g\u00ec \u0111\u00f3 c\u1ee7a \u0111\u1ed3n v\u1ec1 t\u1edbi n\u01a1i."
       replyVariants: []
     press:
       tomas: "\u00d4ng Vaule lo chuy\u1ec7n g\u00ec m\u00e0 ng\u1ed3i m\u1ed9t m\u00ecnh m\u00e3i th\u1ebf b\u00e1c?"
@@ -57,72 +58,76 @@ MonoBehaviour:
     exit: "Perrin x\u00e1ch gi\u1ecf rau, ch\u1eadm r\u00e3i \u0111i v\u1ec1 ph\u00eda ng\u00f4i nh\u00e0 l\u1edbn cu\u1ed1i l\u00e0ng."
     exitVariants: []
   - customer: {fileID: 11400000, guid: 7c6e42a34471486bb790148cdbf172ec, type: 2}
+    requiredMomentum: 0
     entrance: "Emel b\u01b0\u1edbc v\u00e0o, v\u1ebb v\u1ed9i v\u00e3, m\u0169 c\u00f2n ch\u01b0a k\u1ecbp b\u1ecf xu\u1ed1ng."
     entranceVariants: []
-    greeting: "L\u1ea1i l\u00e0 t\u00f4i \u0111\u00e2y. H\u00f4m nay cho t\u00f4i nhi\u1ec1u h\u01a1n ch\u00fat, t\u1ed1i nay \u0111\u1ed3n b\u1eadn."
+    greeting: "L\u1ea1i l\u00e0 t\u00f4i \u0111\u00e2y. H\u00f4m nay t\u00f4i c\u1ea7n nhi\u1ec1u h\u01a1n, t\u1ed1i nay \u0111\u1ed3n b\u1eadn."
     greetingVariants: []
     askCost: 0
     sellPrice: 10
     discountPrice: 6
-    sellQuantity: 3
-    discountQuantity: 3
+    sellQuantity: 2
+    discountQuantity: 1
     discountActionLabel: ""
+    discountAccepted: 1
     pressSuspicion: 1
     sell:
       tomas: "Ch\u1ecb l\u1ea5y m\u1ea5y b\u00f3 \u1ea1?"
-      reply: "Ba b\u00f3. T\u1ed1i nay c\u1ea3 \u0111\u1ed3n ph\u1ea3i \u0103n mu\u1ed9n."
+      reply: "Hai b\u00f3. T\u1ed1i nay c\u1ea3 \u0111\u1ed3n \u0103n mu\u1ed9n."
       replyVariants: []
     discount:
       tomas: "Ch\u1ecb l\u1ea5y nhi\u1ec1u, em b\u1edbt cho ch\u1ecb."
-      reply: "L\u1ea1i b\u1edbt \u00e0? C\u1eadu \u0111\u1ecbnh l\u1ea5y l\u00f2ng l\u00ednh \u0111\u1ed3n \u0111\u1ea5y h\u1ea3?"
+      reply: "L\u1ea1i b\u1edbt? C\u1eadu \u0111\u1ecbnh l\u1ea5y l\u00f2ng l\u00ednh \u0111\u1ed3n \u00e0? ...Th\u00f4i \u0111\u01b0\u1ee3c, coi nh\u01b0 t\u00f4i n\u1ee3 c\u1eadu. T\u1ed1i nay c\u1ea3 \u0111\u1ed9i ph\u1ea3i th\u1ee9c t\u1edbi {{n\u1eeda \u0111\u00eam|K03}}, c\u00f3 b\u00f3 rau ngon c\u0169ng \u0111\u1ee1."
       replyVariants: []
     ask:
       tomas: "T\u1ed1i nay \u0111\u1ed3n c\u00f3 vi\u1ec7c g\u00ec m\u00e0 b\u1eadn th\u1ebf ch\u1ecb?"
-      reply: "C\u00e1i {{\u0111o\u00e0n xe qu\u00e2n nhu|F01}} cu\u1ed1i c\u00f9ng c\u0169ng t\u1edbi r\u1ed3i. Xe s\u1ebd qua {{c\u1ea7u B\u1eafc ngay \u0111\u00eam nay|F02}}, n\u00ean c\u1ea3 \u0111\u1ed9i ph\u1ea3i th\u1ee9c canh."
+      reply: "C\u00e1i {{\u0111o\u00e0n xe qu\u00e2n nhu|K01}} cu\u1ed1i c\u00f9ng c\u0169ng t\u1edbi. Xe s\u1ebd \u0111i qua {{c\u1ea7u B\u1eafc|K02}} trong \u0111\u00eam nay, n\u00ean c\u1ea3 \u0111\u1ed9i ph\u1ea3i ra canh."
       replyVariants: []
     press:
-      tomas: "Xe qua c\u1ea7u l\u00fac m\u1ea5y gi\u1edd h\u1ea3 ch\u1ecb?"
-      reply: "C\u1eadu h\u1ecfi k\u1ef9 th\u1ebf l\u00e0m g\u00ec? C\u1eadu tr\u1ed3ng rau hay \u0111i \u0111\u1ebfm xe?"
+      tomas: "Xe qua l\u00fac m\u1ea5y gi\u1edd h\u1ea3 ch\u1ecb?"
+      reply: "C\u1eadu h\u1ecfi k\u1ef9 th\u1ebf l\u00e0m g\u00ec? ...T\u1edbi {{n\u1eeda \u0111\u00eam|K03}} l\u00e0 xong. Gi\u1edd th\u00ec c\u1eadu tr\u1ed3ng rau hay \u0111\u1ebfm xe \u0111\u1ea5y?"
       replyVariants: []
     farewell:
       tomas: "Ch\u1ecb tr\u1ef1c \u0111\u00eam v\u1ea5t v\u1ea3 r\u1ed3i."
-      reply: "\u1eea. C\u1ea7u cho \u0111\u00eam nay y\u00ean \u1ed5n."
+      reply: "\u1eea. C\u1ea7u cho \u0111\u00eam nay y\u00ean."
       replyVariants: []
-    exit: "Emel c\u1ea7m rau \u0111i nhanh ra c\u1eeda. Ngo\u00e0i \u0111\u01b0\u1eddng \u0111\u00e3 c\u00f3 ti\u1ebfng l\u00ednh g\u1ecdi nhau."
+    exit: "Emel \u0111\u1ed9i l\u1ea1i m\u0169, b\u01b0\u1edbc nhanh ra \u0111\u01b0\u1eddng c\u00e1i."
     exitVariants: []
   - customer: {fileID: 11400000, guid: 98d534f261fe4af994e75aef739a4b3a, type: 2}
-    entrance: "M\u1ed9t c\u00f4 g\u00e1i kho\u00e1c \u00e1o cho\u00e0ng s\u1eabm m\u00e0u l\u00e1ch v\u00e0o, tr\u00ean vai l\u00e0 c\u00e1i t\u00fai v\u1ea3i c\u0103ng ph\u1ed3ng."
+    requiredMomentum: 0
+    entrance: "M\u1ed9t c\u00f4 g\u00e1i \u0111eo g\u00f9i \u0111\u1ea7y kim ch\u1ec9, x\u00e0 ph\u00f2ng v\u00e0 nh\u1eefng th\u1ee9 kh\u00f4ng t\u00ean, t\u1ef1a v\u00e0o qu\u1ea7y nh\u01b0 th\u1ec3 \u0111\u00e3 quen ti\u1ec7m t\u1eeb l\u00e2u."
     entranceVariants: []
-    greeting: "Ch\u00e0o anh n\u00f4ng d\u00e2n! T\u00f4i c\u00f3 kim ch\u1ec9, x\u00e0 ph\u00f2ng, v\u00e0 c\u1ea3 tin t\u1ee9c n\u1eefa. M\u00f3n cu\u1ed1i th\u00ec \u0111\u1eaft h\u01a1n m\u1ed9t ch\u00fat."
+    greeting: "Ch\u00e0o anh n\u00f4ng d\u00e2n! T\u00f4i c\u00f3 kim ch\u1ec9, x\u00e0 ph\u00f2ng, v\u00e0 c\u1ea3 tin t\u1ee9c. Th\u1ee9 cu\u1ed1i c\u00f9ng th\u00ec \u0111\u1eaft h\u01a1n m\u1ed9t ch\u00fat."
     greetingVariants: []
     askCost: 5
     sellPrice: 10
     discountPrice: 5
     sellQuantity: 1
-    discountQuantity: 0
-    discountActionLabel: Nhận tin (không mua rau)
+    discountQuantity: 1
+    discountActionLabel: ""
+    discountAccepted: 1
     pressSuspicion: 1
     sell:
-      tomas: "C\u00f4 c\u00f3 mua \u00edt c\u00e0 r\u1ed1t kh\u00f4ng?"
-      reply: "T\u00f4i ch\u1eb3ng \u0103n c\u00e0 r\u1ed1t bao gi\u1edd. Nh\u01b0ng th\u00f4i, mua m\u1ed9t b\u00f3 \u0111\u1ec3 l\u00e0m quen v\u1edbi anh v\u1eady."
+      tomas: "C\u00f4 mua \u00edt c\u00e0 r\u1ed1t kh\u00f4ng?"
+      reply: "T\u00f4i kh\u00f4ng \u0103n c\u00e0 r\u1ed1t, nh\u01b0ng mua m\u1ed9t b\u00f3 \u0111\u1ec3 l\u1ea5y l\u00f2ng anh v\u1eady."
       replyVariants: []
     discount:
       tomas: "T\u00f4i b\u1edbt cho c\u00f4 n\u1eeda gi\u00e1."
-      reply: "Anh h\u00e0o ph\u00f3ng th\u1eadt. Th\u1ebf th\u00ec t\u00f4i t\u1eb7ng anh m\u1ed9t tin, kh\u00f4ng l\u1ea5y ti\u1ec1n: {{kho th\u00f3c ph\u00eda T\u00e2y \u0111\u00e3 tr\u1ed1ng, kh\u00f4ng ai canh|F03}}. L\u00ednh Lenmar r\u00fat \u0111i t\u1eeb h\u00f4m kia r\u1ed3i."
+      reply: "Anh h\u00e0o ph\u00f3ng th\u1eadt. V\u1eady t\u00f4i t\u1eb7ng anh m\u1ed9t tin mi\u1ec5n ph\u00ed: kho th\u00f3c ph\u00eda T\u00e2y c\u1ee7a \u0111\u1ed3n \u0111ang {{b\u1ecf tr\u1ed1ng, kh\u00f4ng ai canh|K05}}. L\u00ednh r\u00fat \u0111i t\u1eeb h\u00f4m kia r\u1ed3i."
       replyVariants: []
     ask:
-      tomas: "H\u00f4m nay c\u00f4 c\u00f3 tin g\u00ec \u0111\u00e1ng ti\u1ec1n kh\u00f4ng?"
-      reply: "N\u0103m xu. ...C\u1ea3m \u01a1n anh. {{Kho th\u00f3c ph\u00eda T\u00e2y \u0111\u00e3 tr\u1ed1ng, kh\u00f4ng ai canh|F03}}. Ai mu\u1ed1n l\u1ea5y l\u1ea1i ch\u00fat th\u00f3c th\u00ec \u0111\u00e2y l\u00e0 l\u00fac."
+      tomas: "H\u00f4m nay c\u00f3 tin g\u00ec \u0111\u00e1ng ti\u1ec1n kh\u00f4ng?"
+      reply: "N\u0103m xu. ...C\u1ea3m \u01a1n. Kho th\u00f3c ph\u00eda T\u00e2y \u0111ang {{b\u1ecf tr\u1ed1ng, kh\u00f4ng ai canh|K05}}. Ai mu\u1ed1n l\u1ea5y l\u1ea1i ch\u00fat th\u00f3c c\u1ee7a l\u00e0ng th\u00ec \u0111\u00e2y l\u00e0 l\u00fac."
       replyVariants: []
     press:
-      tomas: "Tin \u0111\u00f3 c\u00f4 nghe t\u1eeb \u0111\u00e2u th\u1ebf?"
-      reply: "\u01a0 hay, ng\u01b0\u1eddi b\u00e1n tin m\u00e0 khai ngu\u1ed3n th\u00ec c\u00f2n b\u00e1n cho ai \u0111\u01b0\u1ee3c n\u1eefa? Anh h\u1ecfi nhi\u1ec1u th\u1ebf, \u0111\u1ecbnh tranh m\u1ed1i c\u1ee7a t\u00f4i \u00e0?"
+      tomas: "C\u00f4 nghe tin \u0111\u00f3 \u1edf \u0111\u00e2u?"
+      reply: "Ng\u01b0\u1eddi b\u00e1n tin m\u00e0 khai ngu\u1ed3n th\u00ec c\u00f2n b\u00e1n \u0111\u01b0\u1ee3c cho ai n\u1eefa? Anh \u0111\u1ecbnh tranh m\u1ed1i c\u1ee7a t\u00f4i \u00e0?"
       replyVariants: []
     farewell:
-      tomas: "C\u00f4 \u0111i \u0111\u01b0\u1eddng c\u1ea9n th\u1eadn."
-      reply: "T\u00f4i l\u00fac n\u00e0o ch\u1eb3ng c\u1ea9n th\u1eadn. Ng\u01b0\u1eddi n\u00ean c\u1ea9n th\u1eadn l\u00e0 anh kia."
+      tomas: "C\u00f4 \u0111i c\u1ea9n th\u1eadn."
+      reply: "T\u00f4i l\u00fac n\u00e0o c\u0169ng c\u1ea9n th\u1eadn. Anh m\u1edbi l\u00e0 ng\u01b0\u1eddi n\u00ean c\u1ea9n th\u1eadn."
       replyVariants: []
-    exit: "Sable nh\u00e1y m\u1eaft r\u1ed3i bi\u1ebfn m\u1ea5t sau g\u00f3c ph\u1ed1, nhanh nh\u01b0 l\u00fac \u0111\u1ebfn."
+    exit: "Sable nh\u00e1y m\u1eaft, r\u1ed3i l\u1eabn v\u00e0o d\u00f2ng ng\u01b0\u1eddi ngo\u00e0i ch\u1ee3."
     exitVariants: []
   night:
   - a: bridge

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6b87609cfb4ed6ad0997531034a9a7, type: 3}
+  m_Name: C4
+  m_EditorClassIdentifier: 
+  id: C4
+  title: "K\u1ebb ph\u1ea3n b\u1ed9i"
+  brief: "V\u0103n ph\u00f2ng tin r\u1eb1ng m\u1ed9t trong hai ng\u01b0\u1eddi li\u00ean l\u1ea1c \u0111\u00e3 b\u00e1n m\u00ecnh cho Lenmar. \u0110\u00eam th\u1ee9 B\u1ea3y, h\u00e3y g\u1eedi t\u00ean k\u1ebb \u0111\u00f3, k\u00e8m m\u1ed9t b\u1eb1ng ch\u1ee9ng."
+  template: "K\u1ebb b\u00e1n tin cho Lenmar l\u00e0 {0}. B\u1eb1ng ch\u1ee9ng: {1}."
+  slots:
+  - label: "Ai"
+    kind: 0
+    correct:
+    - K_SHRIKE
+  - label: "B\u1eb1ng ch\u1ee9ng"
+    kind: 5
+    correct:
+    - K15
+    - K16
+    - K17
+  opensWith: ""
+  firstNight: 7
+  lastNight: 7
+  correctSuspicion: 0
+  wrongSuspicion: 0
+  channel: 0
+  isFinal: 1

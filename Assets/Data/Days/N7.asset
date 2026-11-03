@@ -14,60 +14,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   day: 7
   news:
-  - {fileID: 11400000, guid: 029a0ca0bb7f4547b296d5f04ef998fa, type: 2}
-  - {fileID: 11400000, guid: fa4c6ba00d944c5fa32e33b5f2553f6c, type: 2}
-  - {fileID: 11400000, guid: 3ae7b81dccc94823bb4e4488ec7fdda4, type: 2}
+  - {fileID: 11400000, guid: 2357aa283ab456f8aadf840e823b1634, type: 2}
+  - {fileID: 11400000, guid: 46543138401d5f2fbd2cba125def77dc, type: 2}
+  - {fileID: 11400000, guid: b6111d0ebcb15b368b530ad38dad2a43, type: 2}
   board:
-  - {fileID: 11400000, guid: f0c6a7160a8841c294304be660377bc4, type: 2}
-  - {fileID: 11400000, guid: 41e516f11ff640f3b9f261ba28e9d2aa, type: 2}
-  - {fileID: 11400000, guid: fffda0d3e9a44a9ea04e39ae1a459229, type: 2}
+  - {fileID: 11400000, guid: 7735d860092e54c88a9d14d896999c51, type: 2}
+  - {fileID: 11400000, guid: 784f721d7a665c79b89b970741b3a776, type: 2}
+  - {fileID: 11400000, guid: 3ac00609581f52ebbe444608df732345, type: 2}
   visits:
   - customer: {fileID: 11400000, guid: 7c6e42a34471486bb790148cdbf172ec, type: 2}
-    entrance: "Ti\u1ebfng ch\u1ee3 phi\u00ean \u1ed3n \u00e0o tr\u00e0n v\u00e0o khi Emel \u0111\u1ea9y c\u1eeda."
+    requiredMomentum: 0
+    entrance: "Gi\u1eefa ti\u1ebfng \u1ed3n c\u1ee7a ch\u1ee3 phi\u00ean, Emel \u0111\u1ee9ng ch\u1edd t\u1edbi l\u01b0\u1ee3t m\u00ecnh nh\u01b0 m\u1ed9t ng\u01b0\u1eddi kh\u00e1ch b\u00ecnh th\u01b0\u1eddng."
     entranceVariants: []
-    greeting: "Ch\u1ee3 phi\u00ean \u0111\u00f4ng vui nh\u1ec9. Cho t\u00f4i \u00edt c\u00e0 r\u1ed1t, cu\u1ed1i tu\u1ea7n l\u00ednh \u0111\u01b0\u1ee3c \u0103n ngon m\u1ed9t b\u1eefa."
-    greetingVariants:
+    greeting: "Ch\u1ee3 phi\u00ean \u0111\u00f4ng vui nh\u1ec9. Cho t\u00f4i \u00edt c\u00e0 r\u1ed1t, cu\u1ed1i tu\u1ea7n l\u00ednh \u0111\u01b0\u1ee3c \u0103n ngon."
+    greetingVariants: 
     - condition: 8
       param: ""
       text: "C\u1eadu c\u1ee9 b\u00e1n h\u00e0ng \u0111i. T\u00f4i s\u1ebd \u0111\u1ee9ng \u0111\u00e2y xem m\u1ed9t l\u00fac."
+    - condition: 7
+      param: ""
+      text: "Ch\u1ee3 phi\u00ean \u0111\u00f4ng nh\u1ec9. \u0110\u00f4ng th\u1ebf n\u00e0y th\u00ec ai l\u00e0m g\u00ec c\u0169ng kh\u00f3 m\u00e0 gi\u1ea5u."
     askCost: 0
-    sellPrice: 20
-    discountPrice: 12
+    sellPrice: 10
+    discountPrice: 6
     sellQuantity: -1
-    discountQuantity: -1
+    discountQuantity: 1
     discountActionLabel: ""
+    discountAccepted: 1
     pressSuspicion: 2
     sell:
       tomas: "Ch\u1ecb l\u1ea5y bao nhi\u00eau \u1ea1?"
-      reply: "L\u1ea5y h\u1ebft ch\u1ed7 n\u00e0y. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n."
+      reply: "H\u1ebft ch\u1ed7 n\u00e0y. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n."
       replyVariants: []
     discount:
       tomas: "H\u00f4m nay ch\u1ee3 phi\u00ean, em b\u1edbt cho ch\u1ecb."
       reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi l\u00e0m \u0103n t\u1eed t\u1ebf."
-      replyVariants:
+      replyVariants: 
       - condition: 8
         param: ""
         text: "T\u00f4i kh\u00f4ng c\u1ea7n c\u1eadu b\u1edbt. T\u00f4i c\u1ea7n c\u1eadu n\u00f3i th\u1eadt."
     ask:
-      tomas: "Tu\u1ea7n n\u00e0y \u0111\u1ed3n m\u1ec7t l\u1eafm h\u1ea3 ch\u1ecb?"
-      reply: "M\u1ec7t. \u0110\u1ea1i \u00fay b\u1eaft \u0111\u1ea7u \u0111\u1ed1i chi\u1ebfu danh s\u00e1ch nh\u1eefng ai ra \u0111\u01b0\u1eddng sau gi\u1edd gi\u1edbi nghi\u00eam c\u1ea3 tu\u1ea7n nay. T\u00f4i mong l\u00e0 kh\u00f4ng c\u00f3 t\u00ean c\u1eadu trong \u0111\u00f3."
+      tomas: "Tu\u1ea7n n\u00e0y \u0111\u1ed3n m\u1ec7t ch\u1ecb nh\u1ec9?"
+      reply: "M\u1ec7t. \u0110\u1ea1i \u00fay b\u1eaft \u0111\u1ea7u \u0111\u1ed1i chi\u1ebfu danh s\u00e1ch nh\u1eefng ai ra \u0111\u01b0\u1eddng sau gi\u1edd gi\u1edbi nghi\u00eam c\u1ea3 tu\u1ea7n nay. T\u00f4i mong l\u00e0 kh\u00f4ng c\u00f3 t\u00ean c\u1eadu."
       replyVariants: []
     press:
       tomas: "Danh s\u00e1ch \u0111\u00f3 c\u00f3 nh\u1eefng ai h\u1ea3 ch\u1ecb?"
-      reply: "...\u0110\u00fang c\u00e1i c\u00e2u t\u00f4i kh\u00f4ng mu\u1ed1n nghe nh\u1ea5t t\u1eeb c\u1eadu \u0111\u1ea5y, Tomas."
+      reply: "C\u1eadu h\u1ecfi k\u1ef9 th\u1ebf l\u00e0m g\u00ec? \u0110\u00fang c\u00e2u t\u00f4i kh\u00f4ng mu\u1ed1n nghe nh\u1ea5t."
       replyVariants: []
     farewell:
       tomas: "Ch\u00fac ch\u1ecb cu\u1ed1i tu\u1ea7n vui."
       reply: "C\u1eadu c\u0169ng v\u1eady, Tomas."
-      replyVariants:
+      replyVariants: 
       - condition: 8
         param: ""
         text: "H\u1eb9n g\u1eb7p l\u1ea1i. S\u1edbm th\u00f4i."
-    exit: "Emel l\u1eabn v\u00e0o \u0111\u00e1m \u0111\u00f4ng ngo\u00e0i ch\u1ee3."
-    exitVariants:
-    - condition: 8
-      param: ""
-      text: "Emel kh\u00f4ng \u0111i \u0111\u00e2u xa. C\u00f4 \u0111\u1ee9ng \u1edf g\u00f3c ch\u1ee3, m\u1eaft v\u1eabn nh\u00ecn v\u1ec1 ph\u00eda ti\u1ec7m."
+    exit: "Emel l\u1eabn v\u00e0o \u0111\u00e1m \u0111\u00f4ng. L\u1ea7n \u0111\u1ea7u ti\u00ean, c\u00f4 ngo\u00e1i l\u1ea1i nh\u00ecn ti\u1ec7m."
+    exitVariants: []
   night:
   - a: well
     b: market
@@ -91,5 +93,5 @@ MonoBehaviour:
     b: oak
     risk: 3
     closed: 0
-    hiddenUntil: "F08"
-    note: "C\u1ea7u B\u1eafc c\u00f3 tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam (theo tin F08)."
+    hiddenUntil: "K13"
+    note: "C\u1ea7u B\u1eafc c\u00f3 tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam."

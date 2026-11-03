@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N4_SideKho
+  m_EditorClassIdentifier: 
+  headline: "Chuy\u1ec7n l\u1ea1 \u1edf kho th\u00f3c ph\u00eda T\u00e2y"
+  sub: "D\u00e2n l\u00e0ng th\u1ea5y l\u00ednh Lenmar l\u1ee5c t\u1ee5c r\u1eddi kho sau m\u1ea5y \u0111\u00eam n\u1eb1m ch\u1edd ai \u0111\u00f3. H\u00f3a ra kho ch\u01b0a bao gi\u1edd b\u1ecf tr\u1ed1ng."
+  isSide: 1
+  priority: 5
+  condition: 12
+  param: "C2"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

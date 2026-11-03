@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N5_ThueBep
+  m_EditorClassIdentifier: 
+  headline: "Nh\u00e0 Vaule thu\u00ea th\u00eam ng\u01b0\u1eddi l\u00e0m b\u1ebfp"
+  sub: "C\u00f3 v\u1ebb nh\u00e0 tr\u01b0\u1edfng l\u00e0ng s\u1eafp \u0111\u00e3i m\u1ed9t v\u1ecb kh\u00e1ch quan tr\u1ecdng."
+  isSide: 0
+  priority: 0
+  condition: 0
+  param: ""
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

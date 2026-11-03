@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K05
+  m_EditorClassIdentifier: 
+  id: K05
+  keyword: "b\u1ecf tr\u1ed1ng, kh\u00f4ng ai canh"
+  text: "Sable (b\u00e1n tin 5 xu): kho th\u00f3c ph\u00eda T\u00e2y c\u1ee7a \u0111\u1ed3n \u0111ang b\u1ecf tr\u1ed1ng, l\u00ednh r\u00fat \u0111i t\u1eeb h\u00f4m kia."
+  kind: 4
+  thread: 1
+  source: "Sable \u00b7 th\u1ee9 Hai"
+  isTrue: 0

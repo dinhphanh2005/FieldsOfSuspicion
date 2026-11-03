@@ -1,0 +1,410 @@
+# -*- coding: utf-8 -*-
+"""NỘI DUNG TRUYỆN — Fields of Suspicion / Cánh Đồng Ngờ Vực (bản 2, 04/11/2026)
+
+Ý tưởng chính (lấy cảm hứng từ cuốn sổ trong Do Not Feed the Monkeys):
+  Khách nói chuyện → người chơi bấm cụm từ tô màu → được MANH MỐI nhỏ (K..).
+  Văn phòng đặt câu hỏi → HỒ SƠ (C..) là một câu có ô trống.
+  Người chơi tự ghép manh mối vào ô trống → BẢN BÁO CÁO (mẩu tin lớn) → mang ra hốc cây sồi.
+  Game không nói đúng/sai. Hậu quả hiện ở Tin tức sáng hôm sau.
+Cú twist: Shrike (ông Sev, lò gạch) là kẻ phản bội. Lệnh của hắn luôn đẩy Tomas vào chỗ chết.
+
+Cú pháp:  {{cụm từ trong lời thoại|mã manh mối}}
+Dòng thoại: L(câu của Tomas, câu đáp của khách, (điều kiện, tham số, câu thay thế)...)
+"""
+
+# ============================================================ MANH MỐI
+# kind: Who/What/Where/When/State/Evidence/Detail(chỉ để đọc, không ghép vào ô)
+CLUES = [
+    dict(id='K_ROOK', keyword='Rook (bà Rosa, xóm Bắc)', kind='Who', thread='Traitor', source='Thư của Văn phòng',
+         text='Người liên lạc lâu năm của Straka. Lệnh của Rook ký tên “bà Rosa, xóm Bắc”.'),
+    dict(id='K_SHRIKE', keyword='Shrike (ông Sev, lò gạch)', kind='Who', thread='Traitor', source='Thư của Văn phòng',
+         text='Người liên lạc thứ hai. Shrike là tên một loài chim: chim bách thanh. Lệnh của Shrike ký tên “ông Sev, lò gạch”.'),
+    dict(id='K01', keyword='đoàn xe quân nhu', kind='What', thread='Convoy', source='Emel · Chủ Nhật',
+         text='Đồn Lenmar đang sốt ruột chờ một đoàn xe quân nhu. Xe chưa tới nên lính phải đi mua rau từng bó.'),
+    dict(id='K02', keyword='cầu Bắc', kind='Where', thread='Convoy', source='Emel · thứ Hai',
+         text='Emel: đoàn xe sẽ đi qua cầu Bắc trong đêm thứ Hai, cả đội phải ra canh.'),
+    dict(id='K03', keyword='nửa đêm thứ Hai', kind='When', thread='Convoy', source='Emel · thứ Hai',
+         text='Emel: đội canh xe phải thức tới nửa đêm thứ Hai là xong việc.'),
+    dict(id='K04', keyword='sáng thứ Ba', kind='When', thread='Convoy', source='Perrin · thứ Hai', true=False,
+         text='Perrin: ông Vaule dặn đi chợ sớm vì đường cái sẽ kín xe lính vào sáng thứ Ba, lúc đoàn xe về tới đồn.'),
+    dict(id='K05', keyword='bỏ trống, không ai canh', kind='State', thread='Granary', source='Sable · thứ Hai', true=False,
+         text='Sable (bán tin 5 xu): kho thóc phía Tây của đồn đang bỏ trống, lính rút đi từ hôm kia.'),
+    dict(id='K07', keyword='ổ phục kích của Lenmar', kind='State', thread='Granary', source='Emel · thứ Ba',
+         text='Emel: đại úy Doran cho lính nằm chờ trong kho thóc phía Tây từ đầu tuần. Kho là cái bẫy giăng sẵn cho người Straka.'),
+    dict(id='K08', keyword='phòng khách tầng hai', kind='Detail', thread='Vaule', source='Perrin · thứ Ba',
+         text='Perrin phải dọn phòng khách tầng hai nhà Vaule, căn phòng đóng cửa từ khi bà chủ mất. Nhà sắp có khách quý của Lenmar.'),
+    dict(id='K09', keyword='cuối tuần', kind='When', thread='Vaule', source='Perrin · thứ Ba', true=False,
+         text='Perrin đoán vị khách của Lenmar sẽ tới nhà Vaule vào cuối tuần. Ông chỉ đoán.'),
+    dict(id='K10', keyword='đại úy Doran', kind='Who', thread='Vaule', source='Emel · thứ Tư',
+         text='Emel: ngày mai đại úy Doran có hẹn ăn tối ở nhà trưởng làng (nhà Vaule), bắt cô là phẳng quân phục cho ông.'),
+    dict(id='K11', keyword='tối thứ Năm', kind='When', thread='Vaule', source='Perrin · thứ Tư',
+         text='Perrin: ông chủ bắt dọn xong mọi thứ trước tối thứ Năm.'),
+    dict(id='K12', keyword='một sĩ quan Lenmar', kind='Who', thread='Vaule', source='Perrin · thứ Tư',
+         text='Perrin nghe nói khách là một sĩ quan Lenmar, nhưng không ai nói cho ông biết tên.'),
+    dict(id='K13', keyword='trạm gác suốt đêm ở cầu Bắc', kind='Detail', thread='Route', source='Sable · thứ Tư / Emel · thứ Năm',
+         text='Từ tối thứ Ba, cầu Bắc có trạm gác suốt đêm. Ai qua cầu sau giờ giới nghiêm đều bị giữ lại hỏi chuyện.'),
+    dict(id='K14', keyword='có người Straka bán tin', kind='Detail', thread='Traitor', source='Sable · thứ Tư',
+         text='Sable nghe đồn có người phía Straka đang bán tin cho Lenmar. Cô khuyên đừng tin hết những gì đọc trên bảng tin.'),
+    dict(id='K19', keyword='khách đi lại sau giờ giới nghiêm', kind='Evidence', thread='Vaule', source='Perrin · thứ Năm',
+         text='Perrin: khách của ông Vaule tới sau giờ giới nghiêm mà không bị lính bắt. Người đó được Lenmar che chở.'),
+    dict(id='K15', keyword='khăn tay thêu chim bách thanh', kind='Evidence', thread='Traitor', source='Perrin · thứ Sáu',
+         text='Vị khách đêm thứ Năm để quên ở nhà Vaule một chiếc khăn tay thêu hình chim bách thanh.'),
+    dict(id='K16', keyword='người trùm áo đi về phía lò gạch', kind='Evidence', thread='Traitor', source='Sable · thứ Sáu',
+         text='Gần sáng thứ Sáu, một người trùm áo rời nhà Vaule, không lên xe của đại úy mà đi bộ về phía lò gạch.'),
+    dict(id='K17', keyword='thư đóng dấu chim bách thanh', kind='Evidence', thread='Traitor', source='Tin tức · thứ Sáu',
+         text='Bức thư lấy được từ xe ngựa của đại úy Doran được đóng dấu hình chim bách thanh.'),
+    dict(id='K18', keyword='bà cụ xóm Bắc nói chuyện với lính', kind='Evidence', thread='Traitor', source='Tin tức · thứ Sáu', true=False,
+         text='Lính tuần gặp một bà cụ ở xóm Bắc đứng nói chuyện với họ khá lâu lúc chập tối. Bà nói đang đi tìm gà lạc.'),
+]
+
+# ============================================================ HỒ SƠ (mẩu tin lớn)
+CASES = [
+    dict(id='C0', title='Báo cáo đầu tiên', first=1, last=1, opens='K01', correctSus=1, channel='Emel',
+         brief='Văn phòng muốn thử đường dây: cậu đã nghe được gì? Đồn Lenmar đang trông chờ điều gì?',
+         template='Đồn Lenmar đang chờ {0}.',
+         slots=[dict(label='Cái gì', kind='What', correct=['K01'])]),
+    dict(id='C1', title='Đoàn xe quân nhu', first=1, last=2, opens='K01', correctSus=2, channel='Emel',
+         brief='Straka muốn chặn đoàn xe quân nhu của Lenmar. Xe đi qua đâu, và vào lúc nào?',
+         template='Đoàn xe quân nhu sẽ đi qua {0} vào {1}.',
+         slots=[dict(label='Ở đâu', kind='Where', correct=['K02']),
+                dict(label='Khi nào', kind='When', correct=['K03'])]),
+    dict(id='C2', title='Kho thóc phía Tây', first=2, last=3, opens='K05,K07', wrongSus=2, channel='Emel',
+         brief='Người Straka định đột nhập kho thóc của đồn để lấy lại thóc cho dân làng. Kho đang ra sao?',
+         template='Kho thóc phía Tây của đồn Lenmar: {0}.',
+         slots=[dict(label='Tình hình', kind='State', correct=['K07'])]),
+    dict(id='C3', title='Vị khách nhà Vaule', first=3, last=4, opens='K08,K09,K10,K11,K12', correctSus=1, wrongSus=1, channel='Perrin',
+         brief='Nhà trưởng làng Vaule sắp đón một vị khách của Lenmar. Ai sẽ tới, và tới khi nào? Straka cần biết trước ít nhất một đêm để chuẩn bị.',
+         template='Người tới nhà Vaule là {0}, vào {1}.',
+         slots=[dict(label='Ai', kind='Who', correct=['K10']),
+                dict(label='Khi nào', kind='When', correct=['K11'])]),
+    dict(id='C4', title='Kẻ phản bội', first=7, last=7, opens='', final=True,
+         brief='Văn phòng tin rằng một trong hai người liên lạc đã bán mình cho Lenmar. Đêm thứ Bảy, hãy gửi tên kẻ đó, kèm một bằng chứng.',
+         template='Kẻ bán tin cho Lenmar là {0}. Bằng chứng: {1}.',
+         slots=[dict(label='Ai', kind='Who', correct=['K_SHRIKE']),
+                dict(label='Bằng chứng', kind='Evidence', correct=['K15', 'K16', 'K17'])]),
+]
+
+# ============================================================ BẢNG TIN (lệnh Null Cipher đã kiểm tra bằng script)
+ROSA, SEV = 'Liên hệ: bà Rosa, xóm Bắc', 'Liên hệ: ông Sev, lò gạch'
+BOARD = [
+    dict(name='N1_GioiNghiem', handler='None', title='Giờ giới nghiêm', signature='Đồn Lenmar',
+         body='Theo lệnh đồn Lenmar, giới nghiêm từ 10 giờ đêm tới 5 giờ sáng. Lính tuần sẽ đi qua chợ và giếng làng. Ai ra đường trong giờ giới nghiêm sẽ bị giải lên đồn.'),
+    dict(name='C1R', handler='Rook', title='Cần người trông quầy', signature=ROSA, answer='MO TIEM',
+         body='Mùa gặt năm nay bội thu. Ở xóm Bắc, nhà tôi cần thêm người. Trông quầy buổi chiều, việc nhẹ. Ít nói cũng được, miễn thật thà. Em nào biết cân hàng càng tốt. Mời ghé nhà sau buổi trưa.'),
+    dict(name='C1S', handler='Shrike', title='Lớp hát nhà thờ tuyển giọng', signature=SEV, answer='LANG NGHE',
+         body='Lớp hát nhà thờ mở lại từ tuần này. Ai có giọng tốt xin ghi danh. Người lớn hay trẻ nhỏ đều được. Giờ tập là chiều thứ Tư. Nhớ mang theo nước ấm. Giọng khàn thì xin nghỉ một buổi. Hát hay sẽ được hát lễ Chủ Nhật. Em nào ngại thì cứ đến xem trước.'),
+    dict(name='N2_ChoPhien', handler='None', title='Chợ phiên thứ Bảy', signature='Ban chợ',
+         body='Mời bà con mang nông sản ra chợ phiên sáng thứ Bảy. Phí đặt sạp như cũ.'),
+    dict(name='C2R', handler='Rook', title='Bán xe cút kít cũ', signature=ROSA, answer='GIAO XE',
+         body='Gia đình tôi chuyển đi nên cần bán đồ. Ít khi dùng tới, còn rất chắc. Ai cần chở phân, chở rơm đều hợp. Ở ngay đầu xóm Bắc. Xem hàng buổi sáng là tiện nhất. Em trai tôi sẽ chở tới tận nhà.'),
+    dict(name='C2S', handler='Shrike', title='Nhận phơi thóc thuê', signature=SEV, answer='GIAO KHO',
+         body='Gặt xong mà chưa kịp phơi thóc? Ít thóc hay nhiều thóc đều nhận. Ai mang tới trước được phơi trước. Ở sân lò gạch có chỗ rộng. Không lấy công, chỉ xin ít rơm. Hôm nào nắng to sẽ đảo hai lần. Ông Sev trông coi, xin cứ yên tâm.'),
+    dict(name='N3_TreoThuong', handler='None', title='Treo thưởng', signature='Đồn Lenmar', cond='CorrectLastNight', param='C1',
+         body='Đồn Lenmar thưởng 50 xu cho ai chỉ ra kẻ đã báo tin vụ cầu Bắc. Mọi tin báo được giữ kín.'),
+    dict(name='N3_NhaOtto', handler='None', title='Cần người phụ thu hoạch', signature='Nhà Otto',
+         body='Nhà Otto cần hai người phụ nhổ khoai trong ba ngày. Trả công bằng khoai.'),
+    dict(name='C3R', handler='Rook', title='Nhận may vá, sửa áo', signature=ROSA, answer='THEO VAULE',
+         body='Thời tiết sắp lạnh rồi. Hàng xóm ai có áo rách xin mang tới. Em may khéo, lấy công rẻ. Ở xóm Bắc, căn nhà có giàn bầu. Vải mới cũng nhận cắt may. Áo cưới xin báo trước một tuần. Ưu tiên người già và trẻ nhỏ. Lấy đồ vào buổi chiều. Em cảm ơn bà con.'),
+    dict(name='C3S', handler='Shrike', title='Tìm mèo lạc', signature=SEV, answer='QUA CHO',
+         body='Quý bà con có ai thấy con mèo mướp nhà tôi không? Út nhà tôi khóc suốt từ hôm qua. Anh chàng tên Bông, đeo vòng cổ đỏ. Chắc nó lại chui vào gầm sạp ngoài chợ. Hay ai thấy thì giữ giúp tôi. Ông Sev ở lò gạch xin hậu tạ.'),
+    dict(name='N4_NuocSongLen', handler='None', title='Nước sông lên', signature='Trưởng làng Vaule',
+         body='Sau trận mưa đêm qua, đường ven sông ngập tới hết thứ Năm. Bà con không đi lối ấy.'),
+    dict(name='C4R', handler='Rook', title='Bán giỏ mây', signature=ROSA, answer='GIAO VAULE',
+         body='Giỏ mây mới đan xong một mẻ. Ít mà bền, đựng rau rất hợp. Ai mua hai chiếc được bớt tiền. Ở xóm Bắc, hỏi nhà có giàn bầu. Vẫn nhận đan theo kích cỡ riêng. Ai ở xa có thể nhờ người lấy hộ. Ưng chiếc nào thì đặt trước. Lấy trong ngày thứ Năm là kịp. Em xin cảm ơn.'),
+    dict(name='C4S', handler='Shrike', title='Chia sữa bò', signature=SEV, answer='BO VAULE',
+         body='Bò nhà tôi vừa đẻ một con bê. Ở lò gạch, ai muốn xem cứ ghé. Vắt sữa dư, xin chia bà con. Ai mang bình tới sẽ có phần. Uống sữa sớm cho khỏe người. Lấy vào buổi sáng, trước giờ nung gạch. Em bê còn yếu, xin đừng làm ồn.'),
+    dict(name='N5_NhaThoSuaMai', handler='None', title='Nhà thờ sửa mái', signature='Nhà thờ Sellowe',
+         body='Nhà thờ đóng cửa buổi tối để sửa mái. Lễ Chủ Nhật vẫn như thường.'),
+    dict(name='C5R', handler='Rook', title='Nhắc dọn rãnh trước mùa mưa', signature=ROSA, answer='GIU YEN',
+         body='Gió mùa sắp về. Ít hôm nữa trời sẽ mưa dầm. Ủ rơm cho gốc cây kẻo úng. Ý tôi là nên dọn rãnh thoát nước sớm. Em ở xóm Bắc sẽ đi nhắc từng nhà. Nhà nào thiếu cuốc xin cứ mượn.'),
+    dict(name='C5S', handler='Shrike', title='Quán nước đổi chủ', signature=SEV, answer='QUA CAU',
+         body='Quán nước đầu làng đổi chủ. Uống trà, ăn bánh như cũ. Ai ghé trong tuần được mời trà gừng. Chủ mới là cháu ông Sev. Ăn khuya cũng có, tới trước giờ giới nghiêm. Ủng hộ người mới giúp nhé.'),
+    dict(name='N6_TrinhGiay', handler='None', title='Trình giấy sau giới nghiêm', signature='Đồn Lenmar',
+         body='Từ hôm nay, ai bị gặp ngoài đường sau giờ giới nghiêm phải trình giấy và khai lý do.'),
+    dict(name='C6R', handler='Rook', title='Tìm gà lạc', signature=ROSA, answer='MAI BAO TEN',
+         body='Mất một con gà mái hoa mơ. Ai thấy xin báo giúp. Ít lông đuôi, chân có buộc chỉ đỏ. Bà Rosa xóm Bắc xin cảm ơn trước. Ai trả lại sẽ được biếu chục trứng. Ở nhà tôi lúc nào cũng có người. Tối cũng được, gõ cửa sau. Em cháu tôi sẽ ra mở cửa. Nhớ đi trước giờ giới nghiêm.'),
+    dict(name='C6S', handler='Shrike', title='Bán rơm khô', signature=SEV, answer='ROOK PHAN',
+         body='Rơm khô còn nhiều, xin bán rẻ. Ở sân lò gạch, cứ tự lấy. Ông Sev chỉ lấy nửa giá. Kẻo mưa xuống thì ẩm hết. Phải chở trước thứ Bảy. Hết rơm thì thôi, không giữ chỗ. Ai cần nhiều xin báo trước. Nhà xa thì có xe giúp chở.'),
+    dict(name='N7_ChoPhienHomNay', handler='None', title='Chợ phiên hôm nay', signature='Ban chợ',
+         body='Chợ phiên họp từ sáng sớm. Lính đồn sẽ đứng gác ở quảng trường.'),
+    dict(name='C7R', handler='Rook', title='Mời đám cưới', signature=ROSA, answer='DEM CUOI',
+         body='Đám cưới con gái tôi vào Chủ Nhật. Em xin mời cả xóm. Mỗi nhà góp một món là vui rồi. Cỗ bày ở sân nhà, xóm Bắc. Uống rượu nhẹ, không say xỉn. Ở xa thì đến sớm cho kịp. Ít nhiều đều quý.'),
+    dict(name='C7S', handler='Shrike', title='Bán gạch vỡ', signature=SEV, answer='BAO ROOK',
+         body='Bán gạch vỡ làm nền. Ai cần lát sân, lấp hố đều được. Ở lò gạch, sau giờ trưa. Rẻ hơn gạch mới một nửa. Ông Sev chở giúp nếu mua nhiều. Ở xa cũng chở, thêm chút công. Không nhận đổi trả.'),
+]
+
+# ============================================================ TIN TỨC
+LETTER = ('Wren,\n\n'
+          'Từ hôm nay cậu là Tomas Rell, người thuê lại căn nhà và mảnh ruộng của bà Mabry ở Sellowe. '
+          'Ban ngày cậu trồng rau, bán hàng và lắng nghe. Ban đêm cậu làm việc cho chúng tôi.\n\n'
+          'Đừng gửi về những mẩu chuyện vụn vặt. Hãy ghi lại từng chi tiết nhỏ, rồi ghép chúng thành một bản báo cáo '
+          'trả lời đúng câu hỏi chúng tôi cần. Mỗi đêm chỉ một bản, để ở hốc cây sồi phía Đông làng. Đã gửi thì không lấy lại được.\n\n'
+          'Lệnh sẽ được dán trên bảng tin làng, lẫn giữa thông báo của dân làng: đọc chữ cái đầu của mỗi câu, bỏ dấu, ghép lại. '
+          'Rook ký “bà Rosa, xóm Bắc”. Shrike, mang tên loài chim bách thanh, ký “ông Sev, lò gạch”.\n\n'
+          'Văn phòng tin rằng một trong hai người đã bán mình cho Lenmar. Chúng tôi không biết là ai. '
+          'Đêm thứ Bảy, hãy gửi tên kẻ đó, kèm bằng chứng.\n\n'
+          'Đốt lá thư này.')
+
+NEWS = [
+    dict(name='N1_Letter', letter=True, headline='Lá thư dưới khe cửa', note='Không đề tên người gửi', sub=LETTER, grants='K_ROOK,K_SHRIKE'),
+    dict(name='N1_YenA', headline='Sellowe yên ả sau mùa gặt',
+         sub='Đồn Lenmar nhắc lại lệnh giới nghiêm. Căn nhà cuối xóm của bà Mabry đã có người thuê mới, một anh trồng rau ít nói tên Tomas Rell.'),
+    dict(name='N2_KiemTraGiay', priority=10, cond='CorrectLastNight', param='C0', headline='Lính Lenmar kiểm tra giấy tờ trên đường cái',
+         sub='Có tin phía Straka cho người theo dõi đường lên đồn. Đồn Lenmar càng sốt ruột chờ đoàn xe quân nhu.'),
+    dict(name='N2_GiaThoc', headline='Giá thóc tăng nhẹ sau mùa gặt',
+         sub='Nhiều nhà giữ thóc lại chờ giá cao. Riêng kho thóc phía Tây của đồn Lenmar vẫn đóng cửa im ỉm.'),
+    dict(name='N3_XeBiChan', priority=10, cond='CorrectLastNight', param='C1', headline='Đoàn xe quân nhu Lenmar bị chặn ở cầu Bắc',
+         sub='Người Straka chờ sẵn từ trước nửa đêm. Đồn Lenmar mất trắng một tuần lương thực và treo thưởng cho ai chỉ ra kẻ báo tin.'),
+    dict(name='N3_XeThoat', priority=10, cond='WrongLastNight', param='C1', headline='Đoàn xe quân nhu về tới đồn an toàn',
+         sub='Nghe nói người Straka phục nhầm chỗ, nhầm giờ, rồi rút đi tay trắng. Thật ra xe qua cầu Bắc lúc nửa đêm thứ Hai.'),
+    dict(name='N3_KhoBiBat', priority=10, cond='WrongLastNight', param='C2', headline='Kho thóc phía Tây hóa ra là ổ phục kích',
+         sub='Hai người Straka bị bắt khi đột nhập lúc nửa đêm. Lính Lenmar đã nằm chờ sẵn trong kho từ đầu tuần.'),
+    dict(name='N3_KhoCho', priority=10, cond='CorrectLastNight', param='C2', headline='Lính Lenmar chờ suông cả đêm ở kho thóc',
+         sub='Ổ phục kích đặt sẵn trong kho thóc phía Tây không bắt được ai. Đại úy Doran nổi trận lôi đình.'),
+    dict(name='N3_Default', headline='Chợ đầu tuần vắng khách', sub='Dân làng thì thầm về những chiếc xe lính đi qua lúc nửa đêm.'),
+    dict(name='N3_SideXe', side=True, priority=5, cond='CaseNeverDelivered', param='C1', headline='Đoàn xe quân nhu đã về tới đồn',
+         sub='Xe qua cầu Bắc lúc nửa đêm thứ Hai. Lính đồn được một bữa no.'),
+    dict(name='Side_Cho', side=True, priority=3, cond='RouteVisitedLastNight', param='market', headline='Bóng người gần chợ sau giờ giới nghiêm',
+         sub='Lính tuần nói thấy ai đó đi qua chợ lúc khuya nhưng đuổi không kịp.'),
+    dict(name='Side_Cau', side=True, priority=4, cond='RouteVisitedLastNight', param='bridge', headline='Trạm gác cầu Bắc ghi tên người qua cầu',
+         sub='Lính nói người đó dáng gầy, đội mũ rơm, đi về phía cây sồi già.'),
+    dict(name='N4_NuocLen', headline='Nước sông lên sau trận mưa đêm', sub='Đường ven sông ngập, dân làng phải đi vòng qua chợ.'),
+    dict(name='N4_KhoRut', priority=10, cond='CorrectLastNight', param='C2', headline='Đồn Lenmar rút lính khỏi kho thóc phía Tây',
+         sub='Ba đêm nằm chờ mà không bắt được ai. Có tin phía Straka đã biết trước cái bẫy.'),
+    dict(name='N4_KhoBiBat', priority=10, cond='WrongLastNight', param='C2', headline='Thêm người Straka sa bẫy ở kho thóc',
+         sub='Đại úy Doran tuyên bố: có kẻ trong làng đang báo tin cho Straka, và hắn sẽ sớm bị tìm ra.'),
+    dict(name='N4_SideKho', side=True, priority=5, cond='CaseNeverDelivered', param='C2', headline='Chuyện lạ ở kho thóc phía Tây',
+         sub='Dân làng thấy lính Lenmar lục tục rời kho sau mấy đêm nằm chờ ai đó. Hóa ra kho chưa bao giờ bỏ trống.'),
+    dict(name='N4_VauleSai', priority=10, cond='WrongLastNight', param='C3', headline='Lính tuần dày đặc quanh nhà Vaule',
+         sub='Phía Straka đánh động mà chẳng được gì. Quản gia Perrin bị gọi lên đồn hỏi chuyện.'),
+    dict(name='N5_QuanTro', priority=10, cond='CorrectLastNight', param='C3', headline='Có người lạ thuê phòng ở quán trọ đường Bắc',
+         sub='Mấy người đàn ông lạ mặt mang theo cần câu, dù sông đang ngập.'),
+    dict(name='N5_VauleSai', priority=10, cond='WrongLastNight', param='C3', headline='Lính tuần dày đặc quanh nhà Vaule',
+         sub='Phía Straka đánh động mà chẳng được gì. Quản gia Perrin bị gọi lên đồn hỏi chuyện suốt buổi sáng.'),
+    dict(name='N5_ThueBep', headline='Nhà Vaule thuê thêm người làm bếp', sub='Có vẻ nhà trưởng làng sắp đãi một vị khách quan trọng.'),
+    dict(name='N6_DoranBiChan', priority=10, cond='DeliveredBy', param='C3:4', grants='K17',
+         headline='Xe ngựa của đại úy Doran bị chặn trên đường từ nhà Vaule về',
+         sub='Đại úy thoát thân, nhưng một bức thư trong xe bị lấy mất. Người ta đồn thư được đóng dấu hình con chim bách thanh.'),
+    dict(name='N6_SangDen', headline='Đêm qua nhà Vaule sáng đèn tới khuya',
+         sub='Một xe ngựa của đồn rời đi gần sáng. Không ai biết vị khách là ai.'),
+    dict(name='N6_BaCu', side=True, priority=2, grants='K18', headline='Bà cụ xóm Bắc nói chuyện với lính tuần',
+         sub='Lúc chập tối, lính tuần gặp một bà cụ xóm Bắc đứng nói chuyện với họ khá lâu. Bà bảo đang đi tìm con gà mái lạc.'),
+    dict(name='N7_ChoPhien', headline='Chợ phiên thứ Bảy đông hơn mọi năm',
+         sub='Lính đồn đứng gác ở quảng trường từ sáng sớm. Đại úy Doran cho đối chiếu danh sách những ai ra đường sau giờ giới nghiêm cả tuần nay.'),
+]
+
+# ============================================================ KẾT THÚC
+ENDINGS = [
+    dict(id='Burned', title='Bại lộ',
+         text='Sáng nay lính gõ cửa trước khi gà gáy. Trung úy Emel đứng sau họ, tay cầm cuốn sổ ghi tên những người ra đường sau giờ giới nghiêm. Tên Tomas Rell được gạch chân ba lần.\n\n“Cà rốt của cậu ngon thật,” cô nói. “Tiếc là chỉ có thế là thật.”'),
+    dict(id='Evicted', title='Bị đuổi nhà',
+         text='Lá thư thứ tư không còn là lời nhắc. Bà Mabry đứng chờ ở cửa từ sáng sớm, bên cạnh là người thuê mới.\n\nKhông có nhà, không có tiệm, Tomas Rell chẳng còn lý do gì để ở lại Sellowe. Văn phòng không bao giờ nhận được thêm tin nào từ Wren.'),
+    dict(id='Defection', title='Đào tẩu',
+         text='Đêm ấy có người đứng chờ sẵn ở hốc cây sồi. Không phải người của Straka. Ông ta trùm áo, trên cổ tay áo thêu một con chim bách thanh.\n\n“Rook đã bị bắt từ một giờ trước, nhờ có cậu,” Shrike nói. “Giờ Straka sẽ coi cậu là kẻ phản bội. Chỉ còn một nơi chịu nhận cậu thôi.”\n\nSáng hôm sau, tiệm rau của Tomas Rell không mở cửa nữa.'),
+    dict(id='Extraction', title='Được rút về',
+         text='Hai đêm sau, một chiếc xe chở rơm dừng trước cửa nhà. Người đánh xe nói đúng câu mật khẩu.\n\nỞ biên giới, Rook đợi cậu với một tách trà đã nguội. “Chúng tôi bắt được Shrike ở lò gạch,” bà nói. “Cậu làm tốt lắm, Wren. Giờ thì nghỉ đi. Mảnh ruộng đó để người khác lo.”',
+         strong='Bằng chứng cậu gửi đủ để Văn phòng ra lệnh bắt ngay trong đêm. Trong lò gạch, người ta tìm thấy cả một xấp thư đóng dấu chim bách thanh, và một danh sách tên người Straka chưa kịp gửi đi.',
+         weak='Bằng chứng cậu gửi kèm không chứng minh được gì, nên Văn phòng mất thêm hai ngày tự điều tra. Shrike suýt kịp trốn qua sông. Nhưng cái tên thì cậu đã nói đúng.'),
+    dict(id='LeftInCold', title='Bị bỏ rơi',
+         text='Không ai tới. Đêm thứ Bảy trôi qua, rồi Chủ Nhật, rồi cả tuần sau. Bảng tin làng chỉ còn thông báo bán gà, tìm mèo.\n\nTomas Rell vẫn trồng cà rốt, vẫn bán cho trung úy Emel mỗi chiều. Có lẽ một ngày nào đó cậu sẽ quên mình từng tên là Wren.'),
+]
+
+
+def L(tomas, reply, *variants):
+    return (tomas, reply, list(variants))
+
+# ============================================================ 7 NGÀY
+DAYS = []
+
+# ---------------- N1 · Chủ Nhật — làm quen: thư, lệnh mật đầu tiên, ghi manh mối đầu tiên, báo cáo thử
+DAYS.append(dict(day=1, news=['N1_Letter', 'N1_YenA'], board=['N1_GioiNghiem', 'C1R', 'C1S'],
+    night=[dict(a='home', b='river', note='Đêm đầu tiên. Đường ven sông vắng tanh, an toàn.')],
+    visits=[
+    dict(customer='Emel',
+         entrance='Chuông cửa leng keng. Một nữ sĩ quan trẻ, quân phục Lenmar là phẳng phiu, bước vào và nhìn quanh tiệm một lượt.',
+         greeting='Cậu là người mới thuê nhà bà Mabry đấy à? Tôi là Emel, trung úy ở đồn. Từ giờ tôi sẽ ghé mua rau cho bếp ăn của lính.',
+         sell=L('Cà rốt sáng nay mới nhổ, chị lấy bao nhiêu cũng có ạ.', 'Cho tôi một bó trước đã. Lính đồn ăn khỏe lắm, nhất là tuần này còn phải chờ {{đoàn xe quân nhu|K01}} mãi chưa tới.'),
+         discount=L('Khách đầu tiên, em bớt cho chị một chút.', 'Cậu biết làm ăn đấy. Nhưng đừng bớt cho ai cũng thế, bà Mabry không nhận tiền nhà bằng cà rốt đâu.'),
+         ask=L('Đồn mình dạo này đông người hơn hả chị?', 'Đông hơn và đói hơn. Đồn đang chờ {{đoàn xe quân nhu|K01}}, xe chưa tới thì tôi phải tự đi mua từng bó rau thế này.'),
+         press=L('Xe chở những gì thế chị?', 'Cậu hỏi kỹ thế làm gì? Rau của cậu thì tôi quan tâm, còn xe của đồn thì cậu khỏi lo.'),
+         farewell=L('Chị đi thong thả ạ.', 'Mai tôi lại ghé.'),
+         exit='Emel kẹp bó rau dưới nách, đi thẳng về phía đồn mà không ngoái lại.'),
+]))
+
+# ---------------- N2 · Thứ Hai — hai lệnh, hai hướng: đoàn xe (Rook) hay kho thóc (Shrike)? Hai nguồn giờ giấc mâu thuẫn.
+DAYS.append(dict(day=2, news=['N2_KiemTraGiay', 'N2_GiaThoc'], board=['N2_ChoPhien', 'C2R', 'C2S'],
+    night=[dict(a='bridge', b='oak', risk='High', note='Lính canh đoàn xe quân nhu ở cầu Bắc.'),
+           dict(a='river', b='oak', risk='High', note='Lính tuần dọc bờ sông mở đường cho đoàn xe.'),
+           dict(a='well', b='market', risk='Low', note='Lính rút về cầu Bắc: quanh chợ vắng hơn mọi đêm.'),
+           dict(a='market', b='oak', risk='Safe')],
+    visits=[
+    dict(customer='Perrin',
+         entrance='Một ông lão đội mũ nồi, áo gi-lê đã sờn, rụt rè đẩy cửa bước vào.',
+         greeting='Chào cậu. Tôi là Perrin, quản gia bên nhà Vaule. Bếp nhà tôi cần rau sạch, mà ngoài chợ toàn rau héo cả.',
+         sell=L('Dạ, bác cứ chọn thoải mái.', 'Cà rốt đẹp đấy. Ông chủ tôi khó tính lắm, nhưng thế này chắc không chê được.'),
+         discount=L('Lần đầu bác ghé, cháu bớt cho bác.', 'Ôi, cậu tốt bụng quá. Thế thì tôi ghé thường xuyên, nhà tôi ăn nhiều rau lắm.'),
+         ask=L('Dạo này bên nhà Vaule có chuyện gì vui không bác?', 'Vui thì chẳng thấy. Ông chủ cứ ngồi một mình trong thư phòng. À, ông dặn tôi đi chợ sớm, vì đường cái sẽ kín xe lính vào {{sáng thứ Ba|K04}}, lúc đoàn xe gì đó của đồn về tới nơi.'),
+         press=L('Ông Vaule lo chuyện gì mà ngồi một mình mãi thế bác?', 'Cậu tò mò thật đấy... Chuyện nhà chủ, người làm như tôi đâu dám kể.'),
+         farewell=L('Hẹn bác lần sau ạ.', 'Ừ, mai mốt tôi lại ghé.'),
+         exit='Perrin xách giỏ rau, chậm rãi đi về phía ngôi nhà lớn cuối làng.'),
+    dict(customer='Emel', sellQty=2,
+         entrance='Emel bước vào, vẻ vội vã, mũ còn chưa kịp bỏ xuống.',
+         greeting='Lại là tôi đây. Hôm nay tôi cần nhiều hơn, tối nay đồn bận.',
+         sell=L('Chị lấy mấy bó ạ?', 'Hai bó. Tối nay cả đồn ăn muộn.'),
+         discount=L('Chị lấy nhiều, em bớt cho chị.', 'Lại bớt? Cậu định lấy lòng lính đồn à? ...Thôi được, coi như tôi nợ cậu. Tối nay cả đội phải thức tới {{nửa đêm|K03}}, có bó rau ngon cũng đỡ.'),
+         ask=L('Tối nay đồn có việc gì mà bận thế chị?', 'Cái {{đoàn xe quân nhu|K01}} cuối cùng cũng tới. Xe sẽ đi qua {{cầu Bắc|K02}} trong đêm nay, nên cả đội phải ra canh.'),
+         press=L('Xe qua lúc mấy giờ hả chị?', 'Cậu hỏi kỹ thế làm gì? ...Tới {{nửa đêm|K03}} là xong. Giờ thì cậu trồng rau hay đếm xe đấy?'),
+         farewell=L('Chị trực đêm vất vả rồi.', 'Ừ. Cầu cho đêm nay yên.'),
+         exit='Emel đội lại mũ, bước nhanh ra đường cái.'),
+    dict(customer='Sable', askCost=5, discountPrice=5,
+         entrance='Một cô gái đeo gùi đầy kim chỉ, xà phòng và những thứ không tên, tựa vào quầy như thể đã quen tiệm từ lâu.',
+         greeting='Chào anh nông dân! Tôi có kim chỉ, xà phòng, và cả tin tức. Thứ cuối cùng thì đắt hơn một chút.',
+         sell=L('Cô mua ít cà rốt không?', 'Tôi không ăn cà rốt, nhưng mua một bó để lấy lòng anh vậy.'),
+         discount=L('Tôi bớt cho cô nửa giá.', 'Anh hào phóng thật. Vậy tôi tặng anh một tin miễn phí: kho thóc phía Tây của đồn đang {{bỏ trống, không ai canh|K05}}. Lính rút đi từ hôm kia rồi.'),
+         ask=L('Hôm nay có tin gì đáng tiền không?', 'Năm xu. ...Cảm ơn. Kho thóc phía Tây đang {{bỏ trống, không ai canh|K05}}. Ai muốn lấy lại chút thóc của làng thì đây là lúc.'),
+         press=L('Cô nghe tin đó ở đâu?', 'Người bán tin mà khai nguồn thì còn bán được cho ai nữa? Anh định tranh mối của tôi à?'),
+         farewell=L('Cô đi cẩn thận.', 'Tôi lúc nào cũng cẩn thận. Anh mới là người nên cẩn thận.'),
+         exit='Sable nháy mắt, rồi lẫn vào dòng người ngoài chợ.'),
+]))
+
+# ---------------- N3 · Thứ Ba — hậu quả đầu tiên; Emel làm lộ cái bẫy kho thóc; mạch nhà Vaule bắt đầu
+DAYS.append(dict(day=3, news=['N3_XeBiChan', 'N3_XeThoat', 'N3_KhoBiBat', 'N3_KhoCho', 'N3_Default', 'N3_SideXe', 'Side_Cho', 'Side_Cau'],
+    board=['N3_TreoThuong', 'N3_NhaOtto', 'C3R', 'C3S'],
+    night=[dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
+    visits=[
+    dict(customer='Perrin', sellQty=2,
+         entrance='Perrin đẩy cửa, thở dốc như vừa đi bộ cả quãng đường dài.',
+         greeting='Cậu Tomas, cho tôi thật nhiều rau. Nhà tôi sắp có khách.',
+         sell=L('Bác lấy bao nhiêu cũng có ạ.', 'Hai bó. Ông chủ dặn bếp phải chuẩn bị từ hôm nay.'),
+         discount=L('Bác mua nhiều, cháu bớt cho bác.', 'Cảm ơn cậu. Dạo này tôi mệt quá, được bớt vài xu cũng vui.'),
+         ask=L('Khách quý lắm hả bác?', 'Chắc vậy. Ông chủ bắt tôi dọn {{phòng khách tầng hai|K08}}, căn phòng đóng cửa từ hồi bà chủ mất. Lau suốt cả buổi sáng.'),
+         press=L('Khách là ai mà phải dọn cả phòng đó hả bác?', 'Cậu tò mò thật đấy... Thôi, nói nhỏ thôi: khách của Lenmar, chắc tới vào {{cuối tuần|K09}}. Đừng kể với ai, ông chủ mà biết thì tôi mất việc.'),
+         farewell=L('Bác về kẻo bếp chờ.', 'Ừ, bếp mà thiếu rau thì ông chủ lại mắng.'),
+         exit='Perrin ôm bó rau, vừa đi vừa lẩm nhẩm đếm những việc còn phải làm.'),
+    dict(customer='Emel',
+         entrance='Emel bước vào, mắt thâm quầng như cả đêm không ngủ.',
+         greeting='Đoàn xe tới rồi, đồn no đủ. Tôi chỉ ghé mua chút rau thơm.',
+         greetingV=[('CorrectLastNight', 'C1', 'Đêm qua đoàn xe bị chặn ở cầu Bắc. Cả đồn bị khiển trách. Cho tôi một bó, hôm nay chẳng ai muốn ăn.'),
+                    ('WrongLastNight', 'C2', 'Đêm qua bắt được hai người Straka ở kho thóc. Cả đồn thức trắng để thẩm vấn.')],
+         sell=L('Rau thơm sáng nay còn tươi lắm chị.', 'Được. Ít ra trong làng này còn một thứ không làm tôi đau đầu.'),
+         discount=L('Hôm nay em lấy chị giá vốn.', 'Cậu tử tế quá. Hay là cậu có chuyện gì muốn nhờ tôi?'),
+         ask=L('Đêm qua đồn có chuyện gì không chị?',
+               'Đại úy Doran bắt lính tôi canh ở kho thóc phía Tây cả tuần. Kho đó là {{ổ phục kích|K07}} giăng sẵn cho người Straka. ...Mà tôi kể với cậu làm gì không biết.',
+               ('WrongLastNight', 'C2', 'Bắt được hai người Straka ở kho thóc phía Tây. Đại úy bảo kho đó vốn là {{ổ phục kích|K07}} giăng sẵn từ đầu tuần, chỉ chờ có người tin lời đồn.'),
+               ('CorrectLastNight', 'C2', 'Tôi ngồi rình ở kho thóc cả đêm mà chẳng ai tới. Cái {{ổ phục kích|K07}} ấy đại úy giăng từ đầu tuần, thế mà hỏng.')),
+         press=L('Có ai biết người báo tin vụ cầu Bắc không chị?', 'Cậu hỏi kỹ thế làm gì? Ở đây chẳng ai báo tin gì cả.',
+                 ('CorrectLastNight', 'C1', 'Chưa. Nhưng người biết giờ xe chạy không nhiều. Tôi đang nhớ lại xem hôm qua mình đã nói với những ai.')),
+         farewell=L('Chị giữ sức khỏe.', 'Cậu cũng vậy. Tối đừng ra đường.'),
+         exit='Emel đi rồi, mùi thuốc lá rẻ tiền còn vương lại trên quầy.'),
+]))
+
+# ---------------- N4 · Thứ Tư — ghép "ai" + "khi nào" của vị khách; Sable lộ trạm gác cầu Bắc và tin đồn kẻ phản bội
+DAYS.append(dict(day=4, news=['N4_NuocLen', 'N4_KhoRut', 'N4_KhoBiBat', 'N4_VauleSai', 'N4_SideKho', 'Side_Cho', 'Side_Cau'],
+    board=['N4_NuocSongLen', 'C4R', 'C4S'],
+    night=[dict(a='home', b='river', closed=True, note='Đường ven sông ngập, không đi được.'),
+           dict(a='river', b='oak', closed=True),
+           dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
+    visits=[
+    dict(customer='Perrin', sellQty=2,
+         entrance='Perrin bước vào, giỏ đã đầy nửa, trán lấm tấm mồ hôi.',
+         greeting='Lại là tôi. Bếp bảo thiếu hành, thiếu cà rốt, thiếu đủ thứ.',
+         sell=L('Bác lấy như hôm qua nhé?', 'Hai bó. Khách sắp tới rồi.'),
+         discount=L('Bác ghé nhiều, cháu bớt cho bác.', 'Cậu đúng là người tốt. Coi như tôi trả ơn: ông chủ bảo phải dọn xong mọi thứ trước {{tối thứ Năm|K11}}. Vậy là mai đấy, chứ chẳng phải cuối tuần như tôi tưởng.'),
+         ask=L('Khách sắp tới chưa bác?', 'Sắp rồi. Người ta nói là {{một sĩ quan Lenmar|K12}}, nhưng ông chủ chẳng nói với tôi tên tuổi, ngày giờ gì cả.'),
+         press=L('Bác đoán là bao giờ?', 'Cậu tò mò thật đấy... Nhưng nhìn bếp chuẩn bị thì chắc là {{tối thứ Năm|K11}}.'),
+         farewell=L('Bác về cẩn thận, đường ven sông ngập đấy.', 'Biết rồi. Lại phải đi vòng qua chợ.'),
+         exit='Perrin lội qua vũng nước trước cửa, càu nhàu về đôi giày mới.'),
+    dict(customer='Emel',
+         entrance='Emel ghé qua, áo khoác còn ướt mưa.',
+         greeting='Cho tôi một bó cà rốt. Mai tôi còn phải lo cả bữa tối cho người ta.',
+         sell=L('Chị lấy như mọi khi ạ.', 'Ừ. Như mọi khi.'),
+         discount=L('Trời mưa, em bớt cho chị.', 'Cảm ơn. Tôi đang phải tiết kiệm từng xu: mai {{đại úy Doran|K10}} đi ăn tối ở nhà trưởng làng, còn tôi thì ở lại trực đồn với cái bụng rỗng.'),
+         ask=L('Mai chị lo bữa tối cho ai thế?', 'Cho {{đại úy Doran|K10}}. Ông ấy có hẹn ăn tối ở nhà trưởng làng, bắt tôi là phẳng bộ quân phục từ hôm nay.'),
+         press=L('Đại úy hẹn ăn tối với ai vậy chị?', 'Cậu hỏi kỹ thế làm gì? Chuyện của đại úy thì tôi không được hỏi, cậu lại càng không.'),
+         farewell=L('Chị về kẻo ướt.', 'Mưa thế này thì chẳng ai ra đường. Cậu cũng thế.'),
+         exit='Emel kéo cổ áo lên, bước ra màn mưa.'),
+    dict(customer='Sable', askCost=5, sellQty=0, discountQty=1, discountPrice=0, discountLabel='Đổi một bó rau lấy tin',
+         entrance='Sable lách vào tiệm, gùi hàng phủ một tấm vải dầu.',
+         greeting='Anh nông dân! Hôm nay tôi có một tin hơi nặng.',
+         sell=L('Cô mua rau không?', 'Không. Nhưng anh nên mua tin của tôi.'),
+         discount=L('Cô cứ lấy một bó, kể tôi nghe chuyện gì đi.', 'Thế thì tôi nói anh nghe chuyện này, không lấy tiền: từ tối qua cầu Bắc có {{trạm gác suốt đêm|K13}}. Ai qua đó sau giờ giới nghiêm là bị giữ lại.'),
+         ask=L('Tin gì mà nặng thế?', 'Năm xu. ...Người ta đồn {{có người phía Straka đang bán tin cho Lenmar|K14}}. Ai thì tôi không biết. Nhưng nếu tôi là anh, tôi sẽ không tin hết những gì mình đọc trên bảng tin.'),
+         press=L('Cô nghe ai nói?', 'Anh hỏi nhiều quá đấy. Hôm nay anh hỏi còn nhiều hơn cả lính đồn. Định tranh mối của tôi à?'),
+         farewell=L('Hẹn cô hôm khác.', 'Hôm khác tin sẽ đắt hơn.'),
+         exit='Sable kéo tấm vải dầu lên đầu, biến mất sau góc phố.'),
+]))
+
+# ---------------- N5 · Thứ Năm — ngày cuộc gặp. Rook: nằm im. Shrike: qua cầu (nơi có trạm gác).
+DAYS.append(dict(day=5, news=['N5_QuanTro', 'N5_VauleSai', 'N5_ThueBep', 'Side_Cho', 'Side_Cau'], board=['N5_NhaThoSuaMai', 'C5R', 'C5S'],
+    night=[dict(a='home', b='river', closed=True, note='Đường ven sông vẫn ngập.'),
+           dict(a='river', b='oak', closed=True),
+           dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
+    visits=[
+    dict(customer='Emel', discountPrice=0,
+         entrance='Emel bước vào, dừng lại lâu hơn thường lệ ở ngưỡng cửa.',
+         greeting='Chào cậu. Hôm nay tôi được nghỉ nửa ngày, mua ít rau rồi về ngủ.',
+         greetingV=[('SuspicionHigh', '', 'Tomas. Tôi hỏi thật: tối qua cậu có ra khỏi nhà không? Lính tuần nói thấy bóng người đi về phía nhà cậu.'),
+                    ('SuspicionMid', '', 'Chào cậu. Tôi để ý dạo này đêm nào cũng có người đi lại ngoài đường. Cậu có nghe thấy gì không?')],
+         sell=L('Chị lấy như mọi khi nhé?', 'Ừ. Như mọi khi.'),
+         discount=L('Hôm nay em biếu chị một bó.', 'Cảm ơn cậu.', ('SuspicionHigh', '', 'Biếu tôi? Người ta chỉ biếu khi có chuyện cần giấu.')),
+         ask=L('Đồn dạo này căng thẳng chị nhỉ?', 'Từ hôm thứ Ba, đại úy cho lập {{trạm gác suốt đêm|K13}} ở cầu Bắc. Ai qua cầu sau giới nghiêm là bị giữ lại hỏi chuyện ngay.'),
+         press=L('Tối nay đại úy có ở đồn không chị?', 'Cậu hỏi kỹ thế làm gì? Tôi bắt đầu đếm số câu cậu hỏi rồi đấy.'),
+         farewell=L('Chị về nghỉ đi.', 'Ừ, mai gặp.', ('SuspicionHigh', '', 'Tôi sẽ về. Còn cậu thì tối nay ở yên trong nhà nhé.')),
+         exit='Emel đi rồi. Qua ô cửa, Tomas thấy cô dừng lại nói gì đó với hai người lính tuần.'),
+    dict(customer='Perrin', noDiscount=True,
+         entrance='Perrin chỉ ló đầu vào cửa, tay vẫn nắm chặt then.',
+         greeting='Hôm nay là ngày đó rồi. Tôi chỉ ghé lấy rau rồi về ngay, bếp đang loạn cả lên.',
+         greetingV=[('WrongLastNight', 'C3', 'Sáng nay lính gọi tôi lên đồn hỏi đủ thứ. Tôi chỉ lấy rau rồi về ngay.')],
+         sell=L('Rau của bác đây, cháu gói sẵn rồi.', 'Cảm ơn cậu. Cậu chu đáo hơn cả người nhà tôi.'),
+         discount=L('Hôm nay cháu lấy bác rẻ thôi.', 'Thôi, cứ lấy đủ tiền. Hôm nay ông chủ rộng tay lắm.'),
+         ask=L('Mọi việc ổn cả chứ bác?', 'Ổn... Ông chủ cho cả nhà nghỉ sớm, chỉ giữ tôi lại để mở cửa. Khách tới {{sau giờ giới nghiêm|K19}}, cậu tin không? Người thường mà ra đường giờ ấy là bị bắt.'),
+         press=L('Khách đi một mình hay có lính theo hả bác?', 'Cậu tò mò thật đấy. Tôi chỉ là người mở cửa thôi.'),
+         farewell=L('Chúc bác tối nay êm ả.', 'Cầu được như cậu nói.'),
+         exit='Perrin vội vã đi, quên cả lấy tiền thừa.'),
+]))
+
+# ---------------- N6 · Thứ Sáu — bằng chứng về Shrike lộ ra; Shrike quay sang tố Rook
+DAYS.append(dict(day=6, news=['N6_DoranBiChan', 'N6_SangDen', 'N6_BaCu', 'Side_Cho', 'Side_Cau'], board=['N6_TrinhGiay', 'C6R', 'C6S'],
+    night=[dict(a='home', b='river', risk='Medium', note='Đường ven sông vừa mở lại, còn lầy, dễ để lại dấu chân.'),
+           dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
+    visits=[
+    dict(customer='Perrin',
+         entrance='Perrin bước vào, chậm rãi hơn mọi ngày, mắt đỏ như thiếu ngủ.',
+         greeting='Khách đi rồi. Ông chủ vui lắm, thưởng cho tôi một đồng bạc.',
+         greetingV=[('CaseCorrect', 'C3', 'Cậu nghe chuyện chưa? Xe của đại úy bị chặn ngay trên đường từ nhà tôi về. Lính hỏi tôi cả buổi sáng.')],
+         sell=L('Bác lấy ít thôi nhỉ, khách về rồi.', 'Ừ, hôm nay nhà vắng.'),
+         discount=L('Cháu bớt cho bác, coi như mừng bác xong việc.', 'Cảm ơn cậu. Mấy hôm nay tôi chưa được ngủ ngon.'),
+         ask=L('Khách thế nào hả bác?', 'Lúc dọn phòng, tôi thấy khách để quên chiếc {{khăn tay thêu hình chim bách thanh|K15}}. Tôi cất đi rồi, không dám đụng vào nữa.'),
+         press=L('Khách đó là người Lenmar à bác?', 'Cậu tò mò thật đấy. Ông chủ dặn quên hết chuyện tối qua. Tôi chỉ nhớ người ấy nói giọng miền biên giới, giống người bên kia sông.'),
+         farewell=L('Bác nghỉ ngơi đi.', 'Ừ. Cậu cũng vậy.'),
+         exit='Perrin đi, để lại trên quầy mùi long não thoang thoảng.'),
+    dict(customer='Sable', askCost=5, discountPrice=5,
+         entrance='Sable ngồi phịch xuống chiếc ghế cạnh quầy, mắt sáng rỡ.',
+         greeting='Anh nông dân, tối qua tôi về muộn, thấy một chuyện hay lắm.',
+         sell=L('Cô mua rau không?', 'Lại cà rốt. Thôi được, một bó.'),
+         discount=L('Tôi bớt cho cô, kể tôi nghe đi.', 'Lò gạch ấy mà, ông Sev hay dán thông báo lên bảng tin làng lắm. Chữ đẹp ra phết. Lạ là một ông thợ gạch lại viết chữ đẹp thế.'),
+         ask=L('Chuyện gì thế?', 'Năm xu. ...Gần sáng, có {{một người trùm áo đi bộ về phía lò gạch|K16}}, từ nhà Vaule ra. Không lên xe của đại úy, cứ thế đi bộ, như sợ ai nhìn thấy.'),
+         press=L('Cô có nhìn rõ mặt không?', 'Anh hỏi nhiều quá đấy. Trời tối, tôi đâu phải mèo.'),
+         farewell=L('Cô đi đường cẩn thận.', 'Mai chợ phiên. Anh nhớ dậy sớm.'),
+         exit='Sable khoác gùi lên vai, ngân nga một khúc hát chợ.'),
+]))
+
+# ---------------- N7 · Thứ Bảy — chợ phiên, đêm cuối: gửi tên kẻ phản bội
+DAYS.append(dict(day=7, news=['N7_ChoPhien', 'Side_Cho', 'Side_Cau'], board=['N7_ChoPhienHomNay', 'C7R', 'C7S'],
+    night=[dict(a='well', b='market', risk='High', note='Chợ phiên: lính gác quảng trường cả đêm.'),
+           dict(a='market', b='oak', risk='High'),
+           dict(a='river', b='oak', risk='Medium', note='Lính tuần thêm người ra bờ sông.'),
+           dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
+    visits=[
+    dict(customer='Emel', sellQty=-1, pressSus=2,
+         entrance='Giữa tiếng ồn của chợ phiên, Emel đứng chờ tới lượt mình như một người khách bình thường.',
+         greeting='Chợ phiên đông vui nhỉ. Cho tôi ít cà rốt, cuối tuần lính được ăn ngon.',
+         greetingV=[('SuspicionHigh', '', 'Cậu cứ bán hàng đi. Tôi sẽ đứng đây xem một lúc.'),
+                    ('SuspicionMid', '', 'Chợ phiên đông nhỉ. Đông thế này thì ai làm gì cũng khó mà giấu.')],
+         sell=L('Chị lấy bao nhiêu ạ?', 'Hết chỗ này. Cậu bán cho tôi cả tuần rồi, coi như tôi cảm ơn.'),
+         discount=L('Hôm nay chợ phiên, em bớt cho chị.', 'Cậu đúng là người làm ăn tử tế.', ('SuspicionHigh', '', 'Tôi không cần cậu bớt. Tôi cần cậu nói thật.')),
+         ask=L('Tuần này đồn mệt chị nhỉ?', 'Mệt. Đại úy bắt đầu đối chiếu danh sách những ai ra đường sau giờ giới nghiêm cả tuần nay. Tôi mong là không có tên cậu.'),
+         press=L('Danh sách đó có những ai hả chị?', 'Cậu hỏi kỹ thế làm gì? Đúng câu tôi không muốn nghe nhất.'),
+         farewell=L('Chúc chị cuối tuần vui.', 'Cậu cũng vậy, Tomas.', ('SuspicionHigh', '', 'Hẹn gặp lại. Sớm thôi.')),
+         exit='Emel lẫn vào đám đông. Lần đầu tiên, cô ngoái lại nhìn tiệm.'),
+]))

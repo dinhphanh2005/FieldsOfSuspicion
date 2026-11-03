@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N1_Letter
+  m_EditorClassIdentifier: 
+  headline: "L\u00e1 th\u01b0 d\u01b0\u1edbi khe c\u1eeda"
+  sub: "Wren,\n\nT\u1eeb h\u00f4m nay c\u1eadu l\u00e0 Tomas Rell, ng\u01b0\u1eddi thu\u00ea l\u1ea1i c\u0103n nh\u00e0 v\u00e0 m\u1ea3nh ru\u1ed9ng c\u1ee7a b\u00e0 Mabry \u1edf Sellowe. Ban ng\u00e0y c\u1eadu tr\u1ed3ng rau, b\u00e1n h\u00e0ng v\u00e0 l\u1eafng nghe. Ban \u0111\u00eam c\u1eadu l\u00e0m vi\u1ec7c cho ch\u00fang t\u00f4i.\n\n\u0110\u1eebng g\u1eedi v\u1ec1 nh\u1eefng m\u1ea9u chuy\u1ec7n v\u1ee5n v\u1eb7t. H\u00e3y ghi l\u1ea1i t\u1eebng chi ti\u1ebft nh\u1ecf, r\u1ed3i gh\u00e9p ch\u00fang th\u00e0nh m\u1ed9t b\u1ea3n b\u00e1o c\u00e1o tr\u1ea3 l\u1eddi \u0111\u00fang c\u00e2u h\u1ecfi ch\u00fang t\u00f4i c\u1ea7n. M\u1ed7i \u0111\u00eam ch\u1ec9 m\u1ed9t b\u1ea3n, \u0111\u1ec3 \u1edf h\u1ed1c c\u00e2y s\u1ed3i ph\u00eda \u0110\u00f4ng l\u00e0ng. \u0110\u00e3 g\u1eedi th\u00ec kh\u00f4ng l\u1ea5y l\u1ea1i \u0111\u01b0\u1ee3c.\n\nL\u1ec7nh s\u1ebd \u0111\u01b0\u1ee3c d\u00e1n tr\u00ean b\u1ea3ng tin l\u00e0ng, l\u1eabn gi\u1eefa th\u00f4ng b\u00e1o c\u1ee7a d\u00e2n l\u00e0ng: \u0111\u1ecdc ch\u1eef c\u00e1i \u0111\u1ea7u c\u1ee7a m\u1ed7i c\u00e2u, b\u1ecf d\u1ea5u, gh\u00e9p l\u1ea1i. Rook k\u00fd \u201cb\u00e0 Rosa, x\u00f3m B\u1eafc\u201d. Shrike, mang t\u00ean lo\u00e0i chim b\u00e1ch thanh, k\u00fd \u201c\u00f4ng Sev, l\u00f2 g\u1ea1ch\u201d.\n\nV\u0103n ph\u00f2ng tin r\u1eb1ng m\u1ed9t trong hai ng\u01b0\u1eddi \u0111\u00e3 b\u00e1n m\u00ecnh cho Lenmar. Ch\u00fang t\u00f4i kh\u00f4ng bi\u1ebft l\u00e0 ai. \u0110\u00eam th\u1ee9 B\u1ea3y, h\u00e3y g\u1eedi t\u00ean k\u1ebb \u0111\u00f3, k\u00e8m b\u1eb1ng ch\u1ee9ng.\n\n\u0110\u1ed1t l\u00e1 th\u01b0 n\u00e0y."
+  isSide: 0
+  priority: 0
+  condition: 0
+  param: ""
+  grantsIntel: "K_ROOK,K_SHRIKE"
+  isLetter: 1
+  letterNote: "Kh\u00f4ng \u0111\u1ec1 t\u00ean ng\u01b0\u1eddi g\u1eedi"

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N5_VauleSai
+  m_EditorClassIdentifier: 
+  headline: "L\u00ednh tu\u1ea7n d\u00e0y \u0111\u1eb7c quanh nh\u00e0 Vaule"
+  sub: "Ph\u00eda Straka \u0111\u00e1nh \u0111\u1ed9ng m\u00e0 ch\u1eb3ng \u0111\u01b0\u1ee3c g\u00ec. Qu\u1ea3n gia Perrin b\u1ecb g\u1ecdi l\u00ean \u0111\u1ed3n h\u1ecfi chuy\u1ec7n su\u1ed1t bu\u1ed5i s\u00e1ng."
+  isSide: 0
+  priority: 10
+  condition: 10
+  param: "C3"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

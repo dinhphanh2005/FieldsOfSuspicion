@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b767cb1fc474758b978a546ca1c709c, type: 3}
+  m_Name: K16
+  m_EditorClassIdentifier: 
+  id: K16
+  keyword: "ng\u01b0\u1eddi tr\u00f9m \u00e1o \u0111i v\u1ec1 ph\u00eda l\u00f2 g\u1ea1ch"
+  text: "G\u1ea7n s\u00e1ng th\u1ee9 S\u00e1u, m\u1ed9t ng\u01b0\u1eddi tr\u00f9m \u00e1o r\u1eddi nh\u00e0 Vaule, kh\u00f4ng l\u00ean xe c\u1ee7a \u0111\u1ea1i \u00fay m\u00e0 \u0111i b\u1ed9 v\u1ec1 ph\u00eda l\u00f2 g\u1ea1ch."
+  kind: 5
+  thread: 4
+  source: "Sable \u00b7 th\u1ee9 S\u00e1u"
+  isTrue: 1

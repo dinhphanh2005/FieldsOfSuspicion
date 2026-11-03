@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N3_SideXe
+  m_EditorClassIdentifier: 
+  headline: "\u0110o\u00e0n xe qu\u00e2n nhu \u0111\u00e3 v\u1ec1 t\u1edbi \u0111\u1ed3n"
+  sub: "Xe qua c\u1ea7u B\u1eafc l\u00fac n\u1eeda \u0111\u00eam th\u1ee9 Hai. L\u00ednh \u0111\u1ed3n \u0111\u01b0\u1ee3c m\u1ed9t b\u1eefa no."
+  isSide: 1
+  priority: 5
+  condition: 12
+  param: "C1"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""

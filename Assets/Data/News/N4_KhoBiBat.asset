@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a76e658d4e486d846779c1b2cde852, type: 3}
+  m_Name: N4_KhoBiBat
+  m_EditorClassIdentifier: 
+  headline: "Th\u00eam ng\u01b0\u1eddi Straka sa b\u1eaby \u1edf kho th\u00f3c"
+  sub: "\u0110\u1ea1i \u00fay Doran tuy\u00ean b\u1ed1: c\u00f3 k\u1ebb trong l\u00e0ng \u0111ang b\u00e1o tin cho Straka, v\u00e0 h\u1eafn s\u1ebd s\u1edbm b\u1ecb t\u00ecm ra."
+  isSide: 0
+  priority: 10
+  condition: 10
+  param: "C2"
+  grantsIntel: ""
+  isLetter: 0
+  letterNote: ""
