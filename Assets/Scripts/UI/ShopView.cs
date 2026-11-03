@@ -116,7 +116,7 @@ public class ShopView : MonoBehaviour
         // Lời thoại: bên trái, cuộn được
         var scrollRoot = UIFactory.MakeRect(box, "Dialogue_Scroll", Vector2.zero, Vector2.one);
         scrollRoot.offsetMin = new Vector2(30, 28);       // viền hoa văn dưới của khung thoại dày ~20px
-        scrollRoot.offsetMax = new Vector2(-330, -46);   // chừa chỗ cho thẻ tên, chữ không chui dưới thẻ
+        scrollRoot.offsetMax = new Vector2(-340, -46);   // chừa chỗ cho thẻ tên, chữ không chui dưới thẻ
         var content = UIFactory.MakeScroll(scrollRoot, out scroll);
         dialogue = UIFactory.MakeText(UIFactory.MakeRect(content, "Dialogue", Vector2.zero, Vector2.one), "", 17, UIFactory.Ink);
         dialogue.lineSpacing = 10;
@@ -127,14 +127,15 @@ public class ShopView : MonoBehaviour
         // Đường kẻ dọc + cột lựa chọn bên phải
         var vr = UIFactory.MakeRect(box, "Divider", new Vector2(1, 0), new Vector2(1, 1));
         vr.sizeDelta = new Vector2(1, -28);
-        vr.anchoredPosition = new Vector2(-300, 0);
+        vr.anchoredPosition = new Vector2(-318, 0);
         UIFactory.MakeBox(vr, new Color(0.23f, 0.18f, 0.15f, 0.2f), false);
 
         var col = UIFactory.MakeRect(box, "Choices", new Vector2(1, 0), new Vector2(1, 1));
         col.pivot = new Vector2(1, 0.5f);
-        col.sizeDelta = new Vector2(300, 0);
-        var v = UIFactory.VList(col, 5, 0);
-        v.padding = new RectOffset(12, 12, 8, 8);
+        col.sizeDelta = new Vector2(290, 0);
+        col.anchoredPosition = new Vector2(-22, 0);      // chừa viền hoa văn bên phải khung thoại
+        var v = UIFactory.VList(col, 7, 0);
+        v.padding = new RectOffset(10, 4, 20, 20);
         v.childAlignment = TextAnchor.MiddleCenter;
 
         choices = new Choice[4];
@@ -239,6 +240,7 @@ public class ShopView : MonoBehaviour
         }
 
         if (portrait.enabled) portrait.sprite = v.customer.portrait;
+        GameAudio.Sfx("bell", 0.6f);   // chuông cửa khi khách bước vào
         nameText.text = v.customer.displayName;
 
         string entrance = Conditions.Pick(S, v.entrance, v.entranceVariants);

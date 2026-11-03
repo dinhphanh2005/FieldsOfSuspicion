@@ -57,11 +57,7 @@ public class DayManager : MonoBehaviour
     EndingView endingView;
     HudView hud;
     TelemetryLogger telemetry;
-    RectTransform menuRoot;
-    RectTransform settingsRoot;
-    TextMeshProUGUI settingsSummary;
-    TextMeshProUGUI menuFeedback;
-    TMP_InputField nameInput;
+    TitleView titleView;
     Image fader;            // lớp đen mỏng phủ toàn màn, mờ dần khi chuyển buổi
     float fade;             // 1 = vừa chuyển cảnh, giảm dần về 0
 
@@ -150,7 +146,10 @@ public class DayManager : MonoBehaviour
         hud = hudRect.gameObject.AddComponent<HudView>();
         hud.Init(this);
         telemetry = gameObject.AddComponent<TelemetryLogger>();
-        BuildMainMenu(newsPanel.transform.parent);
+        GameAudio.Ensure(gameObject);
+        var titleRect = UIFactory.MakeRect(newsPanel.transform.parent, "Title_Screen", Vector2.zero, Vector2.one);
+        titleView = titleRect.gameObject.AddComponent<TitleView>();
+        titleView.Init(this, bgEnding, bgNight);
 
         // Chuyển cảnh: lớp đen phủ lên trên cùng, tắt raycast để không chặn chuột
         var faderRect = UIFactory.MakeRect(newsPanel.transform.parent, "Fader", Vector2.zero, Vector2.one);
@@ -179,102 +178,36 @@ public class DayManager : MonoBehaviour
     void Start()
     {
         ApplySettings();
-        ShowMainMenu();
+        ShowTitle();
     }
 
-    void BuildMainMenu(Transform root)
-    {
-        menuRoot = UIFactory.MakeRect(root, "Main_Menu", Vector2.zero, Vector2.one);
-        UIFactory.MakeBox(menuRoot, UIFactory.Hex("211C18"));
-        var card = UIFactory.MakeRect(menuRoot, "Menu_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
-        card.sizeDelta = new Vector2(620, 520);
-        UIFactory.MakeSurface(card, UIFactory.Hex("E7D7B5"), 10);
-        UIFactory.AddShadow(card, 12);
-        UIFactory.MakeTitle(UIFactory.Place(card, "Title", 35, 30, 550, 62), "CÁNH ĐỒNG NGỜ VỰC", 30, UIFactory.Ink, TextAlignmentOptions.Center);
-        UIFactory.MakeText(UIFactory.Place(card, "Subtitle", 35, 92, 550, 48), "Một tuần ở Sellowe · Trồng rau ban ngày, chuyển tin ban đêm", 16, UIFactory.Muted, TextAlignmentOptions.Center);
-        var inputRect = UIFactory.Place(card, "Name_Input", 125, 170, 370, 48);
-        inputRect.gameObject.SetActive(false);
-        var inputImage = UIFactory.MakeSurface(inputRect, Color.white, 5);
-        nameInput = inputRect.gameObject.AddComponent<TMP_InputField>();
-        nameInput.targetGraphic = inputImage;
-        nameInput.textViewport = inputRect;
-        nameInput.lineType = TMP_InputField.LineType.SingleLine;
-        nameInput.characterLimit = 32;
-        var textRect = UIFactory.MakeRect(inputRect, "Text", Vector2.zero, Vector2.one);
-        textRect.offsetMin = new Vector2(12, 4); textRect.offsetMax = new Vector2(-12, -4);
-        nameInput.textComponent = UIFactory.MakeText(textRect, "", 18, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
-        var placeholderRect = UIFactory.MakeRect(inputRect, "Placeholder", Vector2.zero, Vector2.one);
-        placeholderRect.offsetMin = new Vector2(12, 4); placeholderRect.offsetMax = new Vector2(-12, -4);
-        nameInput.placeholder = UIFactory.MakeText(placeholderRect, "Tên thật của điệp viên", 18, UIFactory.Muted, TextAlignmentOptions.MidlineLeft);
-        nameInput.text = "";
-        inputRect.gameObject.SetActive(true);
-
-        var newGame = UIFactory.MakeButton(UIFactory.Place(card, "New_Game", 100, 245, 420, 52), "New_Game", "Bắt đầu ván mới", StartNewGame, 19);
-        UIFactory.SetColor(newGame, UIFactory.Gold);
-        var continueGame = UIFactory.MakeButton(UIFactory.Place(card, "Continue", 100, 309, 420, 52), "Continue", "Tiếp tục ván", ContinueGame, 18);
-        UIFactory.SetColor(continueGame, UIFactory.Paper);
-        UIFactory.SetInteractable(continueGame, SaveSystem.HasSave);
-        menuFeedback = UIFactory.MakeText(UIFactory.Place(card, "MenuFeedback", 52, 364, 516, 25), "", 13, UIFactory.Red, TextAlignmentOptions.Center);
-        UIFactory.MakeButton(UIFactory.Place(card, "Settings", 100, 395, 420, 46), "Settings", "Cài đặt", OpenSettings, 17);
-        UIFactory.MakeButton(UIFactory.Place(card, "Quit", 100, 455, 420, 42), "Quit", "Thoát game", QuitGame, 16);
-        menuRoot.gameObject.SetActive(false);
-
-        settingsRoot = UIFactory.MakeRect(root, "Settings_Overlay", Vector2.zero, Vector2.one);
-        UIFactory.MakeBox(settingsRoot, UIFactory.Hex("211C18"));
-        var settingsCard = UIFactory.MakeRect(settingsRoot, "Settings_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
-        settingsCard.sizeDelta = new Vector2(620, 380);
-        UIFactory.MakeSurface(settingsCard, UIFactory.Hex("E7D7B5"), 10);
-        UIFactory.MakeTitle(UIFactory.Place(settingsCard, "Title", 32, 24, 556, 44), "CÀI ĐẶT", 26, UIFactory.Ink, TextAlignmentOptions.Center);
-        settingsSummary = UIFactory.MakeText(UIFactory.Place(settingsCard, "Summary", 50, 80, 520, 70), "", 16, UIFactory.Ink, TextAlignmentOptions.Center);
-        UIFactory.MakeButton(UIFactory.Place(settingsCard, "Fullscreen", 90, 165, 440, 46), "Fullscreen", "Đổi chế độ toàn màn hình", ToggleFullscreen, 17);
-        UIFactory.MakeButton(UIFactory.Place(settingsCard, "VolumeDown", 90, 221, 210, 46), "VolumeDown", "− Âm lượng", () => ChangeVolume(-0.1f), 16);
-        UIFactory.MakeButton(UIFactory.Place(settingsCard, "VolumeUp", 320, 221, 210, 46), "VolumeUp", "+ Âm lượng", () => ChangeVolume(0.1f), 16);
-        UIFactory.MakeButton(UIFactory.Place(settingsCard, "Resolution", 90, 277, 440, 46), "Resolution", "Đổi độ phân giải", CycleResolution, 16);
-        UIFactory.MakeButton(UIFactory.Place(settingsCard, "SettingsClose", 90, 326, 440, 42), "SettingsClose", "Quay lại", CloseSettings, 16);
-        settingsRoot.gameObject.SetActive(false);
-    }
-
-    void ShowMainMenu()
+    void ShowTitle()
     {
         foreach (var panel in new[] { newsPanel, morningPanel, afternoonPanel, nightPanel, endingPanel, notebookPanel })
             if (panel) panel.SetActive(false);
         if (hud) hud.gameObject.SetActive(false);
-        menuRoot.gameObject.SetActive(true);
-        settingsRoot.gameObject.SetActive(false);
-        var continueButton = menuRoot.GetComponentsInChildren<Button>(true).FirstOrDefault(b => b.name == "Continue");
-        if (continueButton) UIFactory.SetInteractable(continueButton, SaveSystem.HasSave);
+        titleView.Show();
+        if (fader) fader.transform.SetAsLastSibling();
     }
 
-    void OpenSettings()
-    {
-        menuRoot.gameObject.SetActive(false);
-        settingsRoot.gameObject.SetActive(true);
-        RefreshSettings();
-    }
-
-    void CloseSettings()
-    {
-        settingsRoot.gameObject.SetActive(false);
-        menuRoot.gameObject.SetActive(true);
-    }
-
-    void ToggleFullscreen()
+    // ---- Cài đặt (gọi từ màn tiêu đề) ----
+    public void ToggleFullscreen()
     {
         Screen.fullScreen = !Screen.fullScreen;
         PlayerPrefs.SetInt("FoS.Fullscreen", Screen.fullScreen ? 1 : 0);
         PlayerPrefs.Save();
-        RefreshSettings();
     }
 
-    void ChangeVolume(float delta)
+    // 100 → 80 → 60 → 40 → 20 → 0 → 100
+    public void CycleVolume()
     {
-        AudioListener.volume = Mathf.Clamp01(AudioListener.volume + delta);
+        float v = Mathf.Round(AudioListener.volume * 5f) / 5f - 0.2f;
+        AudioListener.volume = v < -0.01f ? 1f : Mathf.Clamp01(v);
         PlayerPrefs.SetFloat("FoS.Volume", AudioListener.volume);
         PlayerPrefs.Save();
-        RefreshSettings();
     }
 
-    void CycleResolution()
+    public void CycleResolution()
     {
         var resolutions = Screen.resolutions;
         if (resolutions == null || resolutions.Length == 0) return;
@@ -285,40 +218,28 @@ public class DayManager : MonoBehaviour
         PlayerPrefs.SetInt("FoS.Width", next.width);
         PlayerPrefs.SetInt("FoS.Height", next.height);
         PlayerPrefs.Save();
-        RefreshSettings();
     }
 
-    void RefreshSettings()
+    // ---- Bắt đầu / tiếp tục ván ----
+    public void StartNewGame(string playerName)
     {
-        if (settingsSummary)
-            settingsSummary.text = $"Màn hình: {Screen.width} × {Screen.height} · {(Screen.fullScreen ? "toàn màn hình" : "cửa sổ")}\nÂm lượng: {Mathf.RoundToInt(AudioListener.volume * 100)}%";
-    }
-
-    void StartNewGame()
-    {
-        menuFeedback.text = "";
         SaveSystem.DeleteSave();
-        State = new GameState { day = 1, playerName = string.IsNullOrWhiteSpace(nameInput.text) ? "Wren" : nameInput.text.Trim() };
+        State = new GameState { day = 1, playerName = string.IsNullOrWhiteSpace(playerName) ? "Wren" : playerName.Trim() };
         telemetry.RunId = System.DateTime.Now.ToString("yyyyMMdd-HHmmss");
         BeginFromState();
     }
 
-    void ContinueGame()
+    // Trả về null nếu thành công, ngược lại là lý do lỗi
+    public string ContinueGame()
     {
-        if (!SaveSystem.TryLoad(out var state, out var error))
-        {
-            menuFeedback.text = "Không thể tải bản lưu: " + error;
-            return;
-        }
-        menuFeedback.text = "";
+        if (!SaveSystem.TryLoad(out var state, out var error)) return error;
         State = state;
         BeginFromState();
+        return null;
     }
 
     void BeginFromState()
     {
-        menuRoot.gameObject.SetActive(false);
-        settingsRoot.gameObject.SetActive(false);
         if (hud) hud.gameObject.SetActive(true);
         EnterPhase(Phase.News);
     }
@@ -332,7 +253,7 @@ public class DayManager : MonoBehaviour
         if (width > 0 && height > 0) Screen.SetResolution(width, height, Screen.fullScreen);
     }
 
-    static void QuitGame()
+    public static void QuitGame()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -362,6 +283,8 @@ public class DayManager : MonoBehaviour
         nightPanel.SetActive(phase == Phase.Night);
         endingPanel.SetActive(phase == Phase.Ended);
         notebookPanel.SetActive(false);
+
+        GameAudio.Music(phase == Phase.Night || (phase == Phase.Ended && State.ending == EndingId.Burned.ToString()) ? "night" : "day");
 
         switch (phase)
         {
@@ -482,6 +405,7 @@ public class DayManager : MonoBehaviour
     {
         if (!FindIntel(id)) { Debug.LogWarning($"Thiếu manh mối {id}"); return; }
         if (!State.AddFragment(id)) return;
+        if (CurrentPhase == Phase.Afternoon) GameAudio.Sfx("pen");
         if (!State.capturedToday.Contains(id)) State.capturedToday.Add(id);
         GameEvents.RaiseIntelCaptured(id);
     }
@@ -501,6 +425,7 @@ public class DayManager : MonoBehaviour
     // casesTab = true: mở thẳng trang Hồ sơ.
     public void OpenNotebook(bool casesTab = false, string caseId = null)
     {
+        GameAudio.Sfx("page");
         notebookPanel.SetActive(true);
         notebookPanel.transform.SetAsLastSibling();
         if (hud) hud.transform.SetAsLastSibling();

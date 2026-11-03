@@ -51,9 +51,28 @@ public class DevAutoTour : MonoBehaviour
         canvas = FindFirstObjectByType<Canvas>();
         Log("Kế hoạch: " + plan);
 
-        yield return Shot("menu");
-        Click("Bắt đầu ván mới");
-        yield return Wait();
+        yield return Wait(3.2f);                 // chờ màn tiêu đề hiện dần xong
+        yield return Shot("title");
+        Click("Cài đặt");
+        yield return Wait(0.8f);
+        yield return Shot("title_settings");
+        Click("Quay lại");
+        yield return Wait(0.8f);
+        Click("Ván mới");
+        for (int i = 0; i < 4; i++)
+        {
+            yield return Wait(2.2f);
+            yield return Shot($"intro_{i}");
+            ClickNamed("Hit");
+        }
+        yield return Wait(1.6f);
+        var input = FindFirstObjectByType<TMP_InputField>();
+        if (input) input.text = "Minh";
+        yield return Shot("intro_name");
+        Click("Ký tên");
+        yield return Wait(1.8f);
+        yield return Shot("intro_signed");
+        yield return Wait(3.5f);
 
         for (int day = 1; day <= 7; day++)
         {

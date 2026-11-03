@@ -89,6 +89,7 @@ public class NewsView : MonoBehaviour
 
     void Next()
     {
+        GameAudio.Sfx("page", 0.8f);
         if (page < letters.Count) { page++; ShowPage(); }
         else dm.EndPhase();
     }

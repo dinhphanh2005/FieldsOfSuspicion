@@ -157,6 +157,29 @@ public static class UIFactory
         }
     }
 
+    // Tam giác nhỏ chỉ sang PHẢI (font không có ký tự ▸)
+    static Sprite arrow;
+    public static Sprite ArrowSprite
+    {
+        get
+        {
+            if (arrow) return arrow;
+            const int n = 32;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            for (int y = 0; y < n; y++)
+            for (int x = 0; x < n; x++)
+            {
+                // cạnh trái thẳng đứng, đỉnh nhọn bên phải; khử răng cưa 1px
+                float half = (n / 2f) * (1f - (x + 0.5f) / n);
+                float d = half - Mathf.Abs(y + 0.5f - n / 2f);
+                tex.SetPixel(x, y, new Color(1, 1, 1, Mathf.Clamp01(d + 0.5f)));
+            }
+            tex.Apply();
+            arrow = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100);
+            return arrow;
+        }
+    }
+
     public static void Round(Image img, float radius)
     {
         img.sprite = RoundedSprite;
@@ -269,10 +292,13 @@ public static class UIFactory
         var btn = rt.gameObject.AddComponent<Button>();
         btn.targetGraphic = img;
         ApplyColors(btn);
-        ApplySpriteStates(btn);
+        // Không dùng ảnh hover/pressed có sẵn (ảnh hover có mũi tên ◀ chỉ ngược): đổi màu + ButtonFeel
+        btn.onClick.AddListener(() => GameAudio.Sfx("click", 0.7f));
         if (onClick != null) btn.onClick.AddListener(onClick);
         var labelRect = MakeRect(rt, "Label", Vector2.zero, Vector2.one, 6);
         MakeText(labelRect, label, fontSize, Ink, TextAlignmentOptions.Center);
+        var feel = rt.gameObject.AddComponent<ButtonFeel>();
+        feel.content = labelRect;
         return btn;
     }
 
@@ -280,10 +306,11 @@ public static class UIFactory
     public static void ApplyColors(Button btn)
     {
         var cb = btn.colors;
-        cb.normalColor      = Color.white;
-        cb.highlightedColor = new Color(0.96f, 0.96f, 0.96f, 1);
-        cb.pressedColor     = new Color(0.84f, 0.84f, 0.84f, 1);
-        cb.selectedColor    = Color.white;
+        // Màu nhân với màu ảnh: thường hơi trầm, rê chuột sáng lên hẳn, bấm thì tối lại
+        cb.normalColor      = new Color(0.92f, 0.92f, 0.92f, 1);
+        cb.highlightedColor = Color.white;
+        cb.pressedColor     = new Color(0.80f, 0.80f, 0.80f, 1);
+        cb.selectedColor    = new Color(0.92f, 0.92f, 0.92f, 1);
         cb.disabledColor    = new Color(0.66f, 0.64f, 0.61f, 1);
         cb.fadeDuration     = 0.08f;
         btn.colors = cb;
@@ -358,6 +385,7 @@ public static class UIFactory
         var t = b.GetComponentInChildren<TextMeshProUGUI>();
         t.textWrappingMode = TextWrappingModes.NoWrap;
         t.margin = Vector4.zero;
+        b.GetComponent<ButtonFeel>().content = null;   // chữ do layout đặt chỗ: chỉ sáng lên + lún, không nhích
         string iconName = IconFor(label);
         var iconSprite = string.IsNullOrEmpty(iconName) ? null : SpriteAsset(iconName);
         if (iconSprite)

@@ -385,6 +385,7 @@ public class NightView : MonoBehaviour
         S.energy -= (route.Count - 1) * EconomyRules.StepEnergy;
 
         var c = dm.FindCase(selectedCase);
+        GameAudio.Sfx("drop");
         dm.CompleteNight(new DropRecord
         {
             day = S.day,

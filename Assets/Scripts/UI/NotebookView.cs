@@ -87,6 +87,7 @@ public class NotebookView : MonoBehaviour
 
     void SwitchTab(bool cases)
     {
+        if (cases != showingCases) GameAudio.Sfx("page", 0.6f);
         showingCases = cases;
         cluesRoot.gameObject.SetActive(!cases);
         casesRoot.gameObject.SetActive(cases);
