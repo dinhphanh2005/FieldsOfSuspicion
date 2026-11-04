@@ -283,10 +283,13 @@ public class NightView : MonoBehaviour
             t.alignment = TextAlignmentOptions.MidlineLeft;
             t.rectTransform.offsetMin = new Vector2(14, 6);
             t.rectTransform.offsetMax = new Vector2(-10, -6);
-            t.enableAutoSizing = true;      // câu dài thì chữ tự nhỏ lại cho vừa nút
-            t.fontSizeMin = 11;
-            t.fontSizeMax = 15;
-            UIFactory.Size(b, 84);
+            t.enableAutoSizing = false;
+            t.fontSize = 14;
+            // Nút cao theo chữ: câu dài (báo cáo cuối) không còn tràn ra ngoài khung
+            Canvas.ForceUpdateCanvases();
+            float w = Mathf.Max(160, intelList.rect.width - 24 - t.margin.x);
+            float h = t.GetPreferredValues(t.text, w, 0).y + 16;
+            UIFactory.Size(b, Mathf.Max(64, h));
             if (!complete) t.alpha = 0.75f;
             reportButtons[id] = b;
             shown++;

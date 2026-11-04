@@ -70,7 +70,7 @@ public class TitleView : MonoBehaviour
         UIFactory.AddGrain(cork, 0.3f);
 
         // ---- Áp phích tên game ----
-        var poster = Note(cork, "Poster", 60, 46, 600, 500, "notice_cream", -1.2f, "pin_red");
+        var poster = Note(cork, "Poster", 60, 46, 600, 500, "notice_cream", 0f, "pin_red");
         Bold(UIFactory.Place(poster, "Kicker", 46, 46, 508, 22), "SELLOWE  ·  THÔNG BÁO", 14, UIFactory.Hex("8C3A2B")).characterSpacing = 4;
         var title = Bold(UIFactory.Place(poster, "Title", 44, 78, 520, 150), "CÁNH ĐỒNG\nNGỜ VỰC", 60, UIFactory.Ink);
         title.lineSpacing = -18;
@@ -163,9 +163,8 @@ public class TitleView : MonoBehaviour
 
         // Tờ lệnh điều động
         var paper = UIFactory.MakeRectAt(intro, "Order", new Vector2(0, 16), new Vector2(680, 560));
-        paper.localRotation = Quaternion.Euler(0, 0, -0.6f);
         UIFactory.MakeSurface(paper, UIFactory.Hex("F2E9D3"), 4);
-        UIFactory.Skin(paper.GetComponent<Image>(), "paper_letter");
+        UIFactory.AddGrain(paper, 0.12f);   // giấy trơn: ảnh giấy cũ có nếp gấp ngang trông như đường kẻ lệch
         UIFactory.AddShadow(paper, 12);
         paper.GetComponent<Image>().raycastTarget = false;
 

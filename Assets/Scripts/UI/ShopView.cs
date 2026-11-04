@@ -333,12 +333,11 @@ public class ShopView : MonoBehaviour
                 SetChoice(1, "Nghỉ chiều nay");
                 return;
             case Mode.Closed:
-                SetChoice(0, "Sang buổi tối", "", true, gold: true);
-                return;
+                return;   // chỉ còn nút "Sang buổi tối" ở thanh dưới
         }
 
         var v = Visit;
-        if (v == null || !v.customer) { SetChoice(0, "Sang buổi tối", "", true, gold: true); return; }
+        if (v == null || !v.customer) return;   // hết khách: dùng nút "Sang buổi tối" ở thanh dưới
 
         if (leaving)
         {

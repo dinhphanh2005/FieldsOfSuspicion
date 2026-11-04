@@ -112,7 +112,7 @@ public class BoardView : MonoBehaviour
             pin.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
 
             var v = UIFactory.VList(card, 10, 0);
-            v.padding = new RectOffset(20, 20, 30, 20);
+            v.padding = new RectOffset(34, 34, 36, 28);   // chừa mép giấy (ảnh giấy có viền rách + bóng)
 
             UIFactory.AddLine(card, m.title, 20, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
             string body = hintOn ? SentenceStart.Replace(m.body, x => $"{x.Groups[1].Value}<b><color=#B8442E>{x.Groups[2].Value}</color></b>") : m.body;

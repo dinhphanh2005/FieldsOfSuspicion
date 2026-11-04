@@ -438,12 +438,12 @@ public static class UIFactory
         var iconRt = MakeRect(label.transform, "Icon", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
         iconRt.pivot = new Vector2(0, 0.5f);
         iconRt.sizeDelta = new Vector2(20, 20);
-        iconRt.anchoredPosition = new Vector2(10, 0);
+        iconRt.anchoredPosition = new Vector2(0, 0);
         var icon = iconRt.gameObject.AddComponent<Image>();
         Skin(icon, spriteName);
         icon.preserveAspect = true;
         icon.raycastTarget = false;
-        label.margin = new Vector4(26, 0, 0, 0);
+        label.margin = new Vector4(30, 0, 0, 0);
     }
 
     public static void BarSpacer(RectTransform bar)
