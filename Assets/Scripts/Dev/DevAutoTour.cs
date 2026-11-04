@@ -21,8 +21,17 @@ public class DevAutoTour : MonoBehaviour
     static void Boot()
     {
         string plan = UnityEditor.EditorPrefs.GetString(PrefKey, "");
-        if (string.IsNullOrEmpty(plan)) return;
+        string stamp = UnityEditor.EditorPrefs.GetString(PrefKey + ".at", "");
         UnityEditor.EditorPrefs.DeleteKey(PrefKey);
+        UnityEditor.EditorPrefs.DeleteKey(PrefKey + ".at");
+        if (string.IsNullOrEmpty(plan)) return;
+        // Chỉ chạy khi vừa bấm menu FoS/Dev (trong 60 giây). Cờ cũ còn sót lại thì bỏ qua:
+        // bấm Play bình thường KHÔNG bao giờ tự chơi.
+        if (!long.TryParse(stamp, out long ticks) || (System.DateTime.UtcNow - new System.DateTime(ticks)).TotalSeconds > 60)
+        {
+            Debug.Log("[Tour] Bỏ qua cờ tự chơi cũ.");
+            return;
+        }
         var go = new GameObject("DevAutoTour");
         go.AddComponent<DevAutoTour>().plan = plan;
     }
@@ -72,7 +81,8 @@ public class DevAutoTour : MonoBehaviour
         Click("Ký tên");
         yield return Wait(1.8f);
         yield return Shot("intro_signed");
-        yield return Wait(3.5f);
+        ClickNamed("Hit");
+        yield return Wait(2.5f);
 
         for (int day = 1; day <= 7; day++)
         {

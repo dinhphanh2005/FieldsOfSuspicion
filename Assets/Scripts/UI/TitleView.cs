@@ -17,7 +17,7 @@ public class TitleView : MonoBehaviour
     RectTransform menuCol, settingsCol;
     TextMeshProUGUI feedback, introText, introHint, nameLine;
     TMP_InputField nameInput;
-    Button introHit;
+    Button introHit, skipButton;
     readonly List<(Button b, TextMeshProUGUI sub)> settingsItems = new List<(Button, TextMeshProUGUI)>();
     Button continueItem;
     TextMeshProUGUI continueSub;
@@ -213,7 +213,7 @@ public class TitleView : MonoBehaviour
         introText.lineSpacing = 18;
         introHint = UIFactory.MakeText(UIFactory.MakeRectAt(intro, "Hint", new Vector2(0, -290), new Vector2(600, 30)),
                                        "Bấm để tiếp tục", 14, new Color(0.93f, 0.89f, 0.82f, 0.5f), TextAlignmentOptions.Center);
-        var skip = UIFactory.MakeButton(UIFactory.MakeRectAt(intro, "Skip", new Vector2(560, -312), new Vector2(150, 40)), "Skip", "Bỏ qua  ›", SkipIntro, 15);
+        var skip = skipButton = UIFactory.MakeButton(UIFactory.MakeRectAt(intro, "Skip", new Vector2(560, -312), new Vector2(150, 40)), "Skip", "Bỏ qua  ›", SkipIntro, 15);
         UIFactory.SetColor(skip, new Color(1, 1, 1, 0.15f));
         skip.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
 
@@ -297,6 +297,7 @@ public class TitleView : MonoBehaviour
         Show(introGroup, true);
         Hide(nameGroup);
         introHit.interactable = true;
+        skipButton.gameObject.SetActive(true);
         nameInput.text = "";
         introText.gameObject.SetActive(true);
         introHint.gameObject.SetActive(true);
@@ -311,7 +312,7 @@ public class TitleView : MonoBehaviour
             for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.9f) { introText.alpha = k; yield return null; }
             introText.alpha = 1;
             advance = false;
-            for (float wait = 0; wait < 7f && !advance; wait += Time.unscaledDeltaTime) yield return null;
+            while (!advance) yield return null;   // chỉ sang khung tiếp khi người chơi bấm
             for (float k = 1; k > 0; k -= Time.unscaledDeltaTime / 0.5f) { introText.alpha = k; yield return null; }
             introText.alpha = 0;
         }
@@ -320,6 +321,7 @@ public class TitleView : MonoBehaviour
         introText.gameObject.SetActive(false);
         introHint.gameObject.SetActive(false);
         introHit.interactable = false;   // đang ký tên: bấm ra ngoài không được tính là "tiếp"
+        skipButton.gameObject.SetActive(false);
         yield return Fade(nameGroup, 1, 0.6f);
         nameGroup.blocksRaycasts = nameGroup.interactable = true;
         nameInput.ActivateInputField();
@@ -334,7 +336,11 @@ public class TitleView : MonoBehaviour
         introText.text = $"<size=80%><color=#B8AC98>Hồ sơ mật: {playerName}. Mật danh: Wren. Vỏ bọc: Tomas Rell.</color></size>\n\nSáng Chủ Nhật. Có một lá thư nằm dưới khe cửa.";
         for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.9f) { introText.alpha = k; yield return null; }
         introText.alpha = 1;
-        for (float wait = 0; wait < 2.2f; wait += Time.unscaledDeltaTime) yield return null;
+        introHint.gameObject.SetActive(true);
+        introHit.interactable = true;
+        advance = false;
+        while (!advance) yield return null;
+        introHint.gameObject.SetActive(false);
 
         yield return Fade(blackGroup, 1, 0.8f);
         dm.StartNewGame(playerName);
