@@ -20,6 +20,11 @@ public class TitleView : MonoBehaviour
     readonly List<TextMeshProUGUI> settingSubs = new List<TextMeshProUGUI>();
     readonly List<TextMeshProUGUI> orderLines = new List<TextMeshProUGUI>();
     TMP_InputField nameInput;
+    Image inputBack, underline;
+    TextMeshProUGUI signHint;
+    Button signBtn;
+    const string SignHintText = "Gõ tên của bạn rồi bấm Ký tên (hoặc Enter).";
+    const string RecipientBlank = "Người nhận: ……………………………";
     RectTransform stamp;
     bool advance, skipping;
     float t;
@@ -35,8 +40,8 @@ public class TitleView : MonoBehaviour
 
     static readonly string[] OrderLines =
     {
-        "Người nhận: mật danh Wren.",
-        "Nhiệm vụ: sống bảy ngày ở làng Sellowe, bên kia biên giới, dưới tên Tomas Rell.",
+        RecipientBlank,
+        "Nhiệm vụ: sống bảy ngày ở làng Sellowe, bên kia biên giới, trong vai Tomas Rell.",
         "Vỏ bọc: người trồng rau, thuê căn nhà và mảnh ruộng của bà Mabry.",
         "Chỉ thị chi tiết sẽ được gửi tới nhà vào sáng Chủ Nhật. Đọc xong thì đốt.",
     };
@@ -184,10 +189,16 @@ public class TitleView : MonoBehaviour
         signGroup = sign.gameObject.AddComponent<CanvasGroup>();
         UIFactory.MakeText(UIFactory.Place(sign, "Label", 0, 0, 110, 56), "Ký nhận:", 18, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
         var inputRect = UIFactory.Place(sign, "Input", 110, 6, 300, 44);
-        var inputImage = UIFactory.MakeBox(inputRect, new Color(0, 0, 0, 0.04f));
-        UIFactory.MakeBox(UIFactory.Place(inputRect, "Underline", 0, 42, 300, 2), UIFactory.Ink, false);
+        inputBack = UIFactory.MakeBox(inputRect, new Color(0.12f, 0.23f, 0.37f, 0.05f));
+        underline = UIFactory.MakeBox(UIFactory.Place(inputRect, "Underline", 0, 41, 300, 3), UIFactory.Ink, false);
         nameInput = inputRect.gameObject.AddComponent<TMP_InputField>();
-        nameInput.targetGraphic = inputImage;
+        nameInput.targetGraphic = inputBack;
+        nameInput.transition = Selectable.Transition.None;
+        nameInput.customCaretColor = true;
+        nameInput.caretColor = UIFactory.Hex("1F3A5F");
+        nameInput.caretWidth = 3;
+        nameInput.caretBlinkRate = 1.2f;
+        nameInput.selectionColor = new Color(0.12f, 0.23f, 0.37f, 0.25f);
         nameInput.textViewport = inputRect;
         nameInput.lineType = TMP_InputField.LineType.SingleLine;
         nameInput.characterLimit = 24;
@@ -197,16 +208,16 @@ public class TitleView : MonoBehaviour
         nameInput.textComponent.fontStyle = FontStyles.Italic;
         var phRect = UIFactory.MakeRect(inputRect, "Placeholder", Vector2.zero, Vector2.one);
         phRect.offsetMin = new Vector2(8, 4); phRect.offsetMax = new Vector2(-8, -4);
-        var ph = UIFactory.MakeText(phRect, "tên thật của cậu", 18, UIFactory.Muted, TextAlignmentOptions.MidlineLeft);
+        var ph = UIFactory.MakeText(phRect, "Bấm vào đây rồi gõ tên của bạn", 17, UIFactory.Muted, TextAlignmentOptions.MidlineLeft);
         ph.fontStyle = FontStyles.Italic;
         nameInput.placeholder = ph;
         nameInput.onSubmit.AddListener(_ => advance = true);
-        var signBtn = UIFactory.MakeButton(UIFactory.Place(sign, "SignBtn", 430, 6, 138, 44), "SignBtn", "Ký tên", () => advance = true, 17);
+        signBtn = UIFactory.MakeButton(UIFactory.Place(sign, "SignBtn", 430, 6, 138, 44), "SignBtn", "Ký tên", () => advance = true, 17);
         UIFactory.SetColor(signBtn, UIFactory.Red);
         UIFactory.Skin((Image)signBtn.targetGraphic, "btn_primary");
         signBtn.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
-        UIFactory.MakeText(UIFactory.Place(paper, "SignHint", 56, 482, 568, 22),
-            "Văn phòng ghi tên thật vào hồ sơ mật. Để trống thì hồ sơ chỉ ghi mật danh.", 13, UIFactory.Muted).transform.SetParent(sign, true);
+        signHint = UIFactory.MakeText(UIFactory.Place(paper, "SignHint", 56, 482, 568, 22), SignHintText, 14, UIFactory.Hex("6B5B4C"));
+        signHint.transform.SetParent(sign, true);
 
         // Dấu "ĐÃ NHẬN"
         stamp = UIFactory.MakeRectAt(paper, "Stamp", new Vector2(30, -168), new Vector2(210, 72));
@@ -275,6 +286,9 @@ public class TitleView : MonoBehaviour
         Hide(signGroup);
         stampGroup.alpha = 0;
         nameInput.text = "";
+        orderLines[0].text = RecipientBlank;
+        signHint.text = SignHintText;
+        signHint.color = UIFactory.Hex("6B5B4C");
         introHit.interactable = true;
         skipButton.gameObject.SetActive(true);
         introHint.gameObject.SetActive(true);
@@ -299,13 +313,26 @@ public class TitleView : MonoBehaviour
         introHint.gameObject.SetActive(false);
         yield return Fade(signGroup, 1, 0.4f);
         nameInput.ActivateInputField();
-        advance = false;
-        while (!advance) yield return null;
-        string playerName = string.IsNullOrWhiteSpace(nameInput.text) ? "Wren" : nameInput.text.Trim();
+        while (true)
+        {
+            advance = false;
+            while (!advance) yield return null;
+            if (!string.IsNullOrWhiteSpace(nameInput.text)) break;
+            // Chưa ký: nhắc bằng chữ đỏ và đặt lại con trỏ vào ô tên
+            signHint.text = "Cần ký tên trước đã — bấm vào dòng kẻ và gõ tên của bạn.";
+            signHint.color = UIFactory.Red;
+            nameInput.ActivateInputField();
+        }
+        string playerName = nameInput.text.Trim();
         nameInput.text = playerName;
         nameInput.interactable = false;
         signGroup.interactable = false;
         GameAudio.Sfx("pen");
+        signHint.text = "";
+        UIFactory.SetInteractable(signBtn, false);
+        // Tên vừa ký điền luôn vào dòng "Người nhận"
+        orderLines[0].text = $"Người nhận: <color=#1F3A5F><i><noparse>{playerName}</noparse></i></color>";
+        yield return FadeText(orderLines[0], 0.3f);
 
         // Đóng dấu: dấu đập xuống (to → vừa) kèm tiếng
         yield return new WaitForSecondsRealtime(0.35f);
@@ -377,6 +404,7 @@ public class TitleView : MonoBehaviour
         signGroup.alpha = mode >= 3 ? 1 : 0;
         stampGroup.alpha = mode == 4 ? 1 : 0;
         nameInput.text = mode == 4 ? "Minh" : "";
+        orderLines[0].text = mode == 4 ? "Người nhận: <color=#1F3A5F><i>Minh</i></color>" : RecipientBlank;
         skipButton.gameObject.SetActive(mode < 3);
         introHint.gameObject.SetActive(mode != 3);
         introHint.text = mode == 4 ? "Bấm để bắt đầu" : "Bấm để đọc tiếp";
@@ -387,5 +415,14 @@ public class TitleView : MonoBehaviour
     {
         t += Time.unscaledDeltaTime;
         if (introHint && introHint.gameObject.activeInHierarchy) introHint.alpha = 0.45f + 0.2f * Mathf.Sin(t * 2.4f);
+        if (nameInput && nameInput.interactable && signGroup.alpha > 0.5f)
+        {
+            // Ô ký tên: đang gõ → gạch chân đỏ đậm, nền xanh mực nhạt; chưa bấm vào → gạch chân nhấp nháy để mời bấm
+            bool focused = nameInput.isFocused;
+            bool empty = string.IsNullOrWhiteSpace(nameInput.text);
+            underline.color = focused ? UIFactory.Red : Color.Lerp(UIFactory.Ink, UIFactory.Red, empty ? 0.5f + 0.5f * Mathf.Sin(t * 3f) : 0f);
+            inputBack.color = new Color(0.12f, 0.23f, 0.37f, focused ? 0.10f : 0.05f);
+            UIFactory.SetInteractable(signBtn, !empty);
+        }
     }
 }
