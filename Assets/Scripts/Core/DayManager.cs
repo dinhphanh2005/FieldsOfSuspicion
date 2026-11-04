@@ -373,8 +373,6 @@ public class DayManager : MonoBehaviour
     void Resolve()
     {
         PayRent();
-        if (State.shopOpenedToday)
-            State.customerBaseMomentum = PricingSystem.MomentumAfterDay(State.customerBaseMomentum, State.shopPriceLevel, State.salesToday);
         State.CloseNight();
         if (BurnPredictor.TryPredict(State, burnModelWeights, burnModelBias, out float probability))
             State.burnProbability = probability;

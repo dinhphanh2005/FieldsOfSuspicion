@@ -177,10 +177,7 @@ public class ShopView : MonoBehaviour
     public void Begin(DaySO today)
     {
         day = today;
-        int expectedMomentum = PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
-        activeVisits = day && day.visits != null
-            ? day.visits.Where(v => v != null && v.requiredMomentum <= expectedMomentum).ToList()
-            : new List<CustomerVisit>();
+        activeVisits = AllVisits();
         index = 0;
         mode = Mode.Prompt;
         if (barHint) barHint.text = DefaultHint;
@@ -199,10 +196,7 @@ public class ShopView : MonoBehaviour
     {
         S.energy -= EconomyRules.OpenShopEnergy;
         S.shopOpenedToday = true;
-        int expectedMomentum = PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
-        activeVisits = day && day.visits != null
-            ? day.visits.Where(v => v != null && v.requiredMomentum <= expectedMomentum).ToList()
-            : new List<CustomerVisit>();
+        activeVisits = AllVisits();
         mode = Mode.Open;
         StartVisit();
     }
@@ -323,6 +317,11 @@ public class ShopView : MonoBehaviour
         UIFactory.SetInteractable(c.button, on);
     }
 
+    // Giá bán cố định theo từng khách (bỏ nút "Giá bán" 04/11: nó không ảnh hưởng gì thấy được)
+    List<CustomerVisit> AllVisits() => day && day.visits != null
+        ? day.visits.Where(v => v != null).ToList()
+        : new List<CustomerVisit>();
+
     void RefreshChoices()
     {
         foreach (var c in choices) c.button.gameObject.SetActive(false);
@@ -330,9 +329,8 @@ public class ShopView : MonoBehaviour
         switch (mode)
         {
             case Mode.Prompt:
-                SetChoice(0, $"Giá bán · {PricingSystem.Name(S.shopPriceLevel)}", "bấm để đổi mức giá");
-                SetChoice(1, "Mở tiệm", $"−{EconomyRules.OpenShopEnergy} năng lượng", S.energy >= EconomyRules.OpenShopEnergy, gold: true);
-                SetChoice(2, "Nghỉ chiều nay");
+                SetChoice(0, "Mở tiệm", $"−{EconomyRules.OpenShopEnergy} năng lượng", S.energy >= EconomyRules.OpenShopEnergy, gold: true);
+                SetChoice(1, "Nghỉ chiều nay");
                 return;
             case Mode.Closed:
                 SetChoice(0, "Sang buổi tối", "", true, gold: true);
@@ -351,7 +349,7 @@ public class ShopView : MonoBehaviour
         string sellLabel = traded ? "Đã giao dịch" : v.sellQuantity == 0 ? "Khách không mua rau" :
             v.sellQuantity < 0 ? $"Bán hết kho ({S.stock} bó)" : $"Bán {v.sellQuantity} bó";
         int sellCount = QuantityAvailable(v.sellQuantity);
-        int sellRevenue = PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum) * Mathf.Max(0, sellCount);
+        int sellRevenue = v.sellPrice * Mathf.Max(0, sellCount);
         SetChoice(0, sellLabel, sellRevenue > 0 ? $"+{sellRevenue} xu" : "", CanSell);
         int discountCount = QuantityAvailable(v.discountQuantity);
         int discountRevenue = DiscountUnitPrice(v) * Mathf.Max(0, discountCount);
@@ -369,8 +367,7 @@ public class ShopView : MonoBehaviour
         switch (mode)
         {
             case Mode.Prompt:
-                if (i == 0) CyclePrice();
-                else if (i == 1) OpenShop();
+                if (i == 0) OpenShop();
                 else StayClosed();
                 return;
             case Mode.Closed:
@@ -397,7 +394,7 @@ public class ShopView : MonoBehaviour
         if (!CanSell) return;
         traded = true;
         int quantity = QuantityAvailable(v.sellQuantity);
-        int revenue = PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum) * quantity;
+        int revenue = v.sellPrice * quantity;
         S.stock -= quantity;
         if (v.sellPrice > 0) S.salesToday += quantity;
         S.money += revenue;
@@ -420,9 +417,7 @@ public class ShopView : MonoBehaviour
         AfterAction();
     }
 
-    int DiscountUnitPrice(CustomerVisit visit) => visit.discountAccepted
-        ? PricingSystem.Revenue(visit.discountPrice, ShopPriceLevel.Low, S.customerBaseMomentum)
-        : PricingSystem.Revenue(visit.sellPrice, S.shopPriceLevel, S.customerBaseMomentum);
+    int DiscountUnitPrice(CustomerVisit visit) => visit.discountAccepted ? visit.discountPrice : visit.sellPrice;
 
     void OnAsk()
     {
@@ -452,29 +447,18 @@ public class ShopView : MonoBehaviour
         Render();
     }
 
-    void CyclePrice()
-    {
-        S.shopPriceLevel = (ShopPriceLevel)(((int)S.shopPriceLevel + 1) % 3);
-        Render();
-    }
-
     // ---------------- Bảng khách ----------------
 
     void RefreshQueue()
     {
         UIFactory.Clear(queueList);
-        int projectedMomentum = mode == Mode.Closed
-            ? S.customerBaseMomentum
-            : PricingSystem.MomentumAfterDay(S.customerBaseMomentum, S.shopPriceLevel, 0);
-        var queue = day && day.visits != null
-            ? day.visits.Where(v => v != null && v.requiredMomentum <= projectedMomentum).ToList()
-            : new List<CustomerVisit>();
+        var queue = AllVisits();
         int count = queue.Count;
 
         if (mode == Mode.Prompt)
         {
             QueueRow("Chưa mở tiệm", count > 0 ? $"{count} người hay ghé" : "", false);
-            queueFoot.text = $"{PricingSystem.Name(S.shopPriceLevel)} · đà khách quen {S.customerBaseMomentum}/5. Mở tiệm tốn {EconomyRules.OpenShopEnergy} năng lượng.";
+            queueFoot.text = $"Mở tiệm tốn {EconomyRules.OpenShopEnergy} năng lượng. Tiền bán rau để trả tiền nhà: {EconomyRules.Rent} xu mỗi đêm.";
             return;
         }
         if (mode == Mode.Closed)
@@ -494,7 +478,7 @@ public class ShopView : MonoBehaviour
         }
         var v = Visit;
         queueFoot.text = v != null
-            ? $"{(v.sellQuantity > 0 ? $"Khách lấy {v.sellQuantity} bó" : v.sellQuantity < 0 ? "Khách lấy hết kho" : "Khách không mua rau")} · giá thường {PricingSystem.Revenue(v.sellPrice, S.shopPriceLevel, S.customerBaseMomentum)} xu/bó\nĐà khách quen {S.customerBaseMomentum}/5 · trong kho {S.stock} bó rau."
+            ? $"{(v.sellQuantity > 0 ? $"Khách lấy {v.sellQuantity} bó" : v.sellQuantity < 0 ? "Khách lấy hết kho" : "Khách không mua rau")} · {v.sellPrice} xu/bó\nTrong kho {S.stock} bó rau · tiền nhà đêm nay {EconomyRules.Rent} xu."
             : $"Hết khách. Trong kho còn {S.stock} bó rau.";
     }
 
