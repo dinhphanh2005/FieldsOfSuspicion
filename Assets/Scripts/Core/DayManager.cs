@@ -149,7 +149,7 @@ public class DayManager : MonoBehaviour
         GameAudio.Ensure(gameObject);
         var titleRect = UIFactory.MakeRect(newsPanel.transform.parent, "Title_Screen", Vector2.zero, Vector2.one);
         titleView = titleRect.gameObject.AddComponent<TitleView>();
-        titleView.Init(this, bgEnding, bgNight);
+        titleView.Init(this);
 
         // Chuyển cảnh: lớp đen phủ lên trên cùng, tắt raycast để không chặn chuột
         var faderRect = UIFactory.MakeRect(newsPanel.transform.parent, "Fader", Vector2.zero, Vector2.one);

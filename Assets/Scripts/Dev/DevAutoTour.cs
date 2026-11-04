@@ -68,18 +68,19 @@ public class DevAutoTour : MonoBehaviour
         Click("Quay lại");
         yield return Wait(0.8f);
         Click("Ván mới");
-        for (int i = 0; i < 4; i++)
-        {
-            yield return Wait(2.2f);
-            yield return Shot($"intro_{i}");
-            ClickNamed("Hit");
-        }
         yield return Wait(1.6f);
+        yield return Shot("intro_0");
+        for (int i = 1; i < 4; i++)
+        {
+            ClickNamed("Hit");
+            yield return Wait(0.9f);
+            yield return Shot($"intro_{i}");
+        }
         var input = FindFirstObjectByType<TMP_InputField>();
         if (input) input.text = "Minh";
         yield return Shot("intro_name");
         Click("Ký tên");
-        yield return Wait(1.8f);
+        yield return Wait(1.2f);
         yield return Shot("intro_signed");
         ClickNamed("Hit");
         yield return Wait(2.5f);

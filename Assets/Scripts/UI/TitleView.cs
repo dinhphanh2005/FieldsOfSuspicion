@@ -5,245 +5,226 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Màn tiêu đề + cảnh mở đầu + ký tên.
-//   Tiêu đề: ảnh cánh đồng phủ kín (zoom chậm), sương trôi, tên game lớn bên trái, menu chữ.
-//   Ván mới → 4 khung chữ kể bối cảnh (bấm để tiếp, có "Bỏ qua") → ký tên thật → lá thư N1.
+// Màn tiêu đề = bảng tin làng Sellowe (cùng chất liệu với màn bảng tin trong game):
+//   tờ áp phích lớn bên trái (tên game), các mẩu giấy ghim bên phải là menu.
+//   Easter egg: chữ cái đầu 5 câu trên áp phích ghép thành "DOC KY" (đọc kỹ) — đúng luật đọc lệnh mật của game.
+// Ván mới → "Lệnh điều động" hiện từng dòng trên tờ giấy (bấm để hiện tiếp) → ký nhận → đóng dấu → N1.
+// Một font duy nhất: font chữ của game (Be Vietnam Pro), tiêu đề chỉ in đậm.
 public class TitleView : MonoBehaviour
 {
     DayManager dm;
-    RectTransform bgRect, fogA, fogB;
-    RawImage fogImgA, fogImgB;
-    CanvasGroup titleGroup, menuGroup, settingsGroup, introGroup, nameGroup, blackGroup;
-    RectTransform menuCol, settingsCol;
-    TextMeshProUGUI feedback, introText, introHint, nameLine;
-    TMP_InputField nameInput;
-    Button introHit, skipButton;
-    readonly List<(Button b, TextMeshProUGUI sub)> settingsItems = new List<(Button, TextMeshProUGUI)>();
-    Button continueItem;
+    CanvasGroup menuGroup, settingsGroup, introGroup, signGroup, stampGroup, blackGroup;
+    TextMeshProUGUI feedback, introHint;
+    Button continueNote, introHit, skipButton;
     TextMeshProUGUI continueSub;
+    readonly List<TextMeshProUGUI> settingSubs = new List<TextMeshProUGUI>();
+    readonly List<TextMeshProUGUI> orderLines = new List<TextMeshProUGUI>();
+    TMP_InputField nameInput;
+    RectTransform stamp;
+    bool advance, skipping;
     float t;
-    bool advance;
 
-    static readonly string[] IntroLines =
+    static readonly string[] PosterBody =
     {
-        "Mùa thu năm ấy, con sông biên giới giữa Straka và Lenmar im lặng một cách đáng ngờ.",
-        "Bên kia sông là làng Sellowe: ruộng cà rốt, một cái chợ phiên,\nvà đồn lính Lenmar của đại úy Doran.",
-        "Văn phòng tình báo Straka cần một người ở đó.\nKhông phải lính. Một người bình thường, biết trồng rau, biết bán hàng,\nvà biết lắng nghe.",
-        "Họ gọi người ấy là Wren.",
+        "Đồn Lenmar nhắc lại lệnh giới nghiêm từ 10 giờ đêm.",
+        "Ở cuối xóm, nhà bà Mabry đã có người thuê.",
+        "Cà rốt mùa này ngọt, chợ phiên họp sáng thứ Bảy.",
+        "Kẻ lạ vào làng xin trình giấy ở đồn.",
+        "Yên tâm, Sellowe vẫn bình yên như mọi năm.",
     };
 
-    public void Init(DayManager manager, Sprite titleBg, Sprite introBg)
+    static readonly string[] OrderLines =
+    {
+        "Người nhận: mật danh Wren.",
+        "Nhiệm vụ: sống bảy ngày ở làng Sellowe, bên kia biên giới, dưới tên Tomas Rell.",
+        "Vỏ bọc: người trồng rau, thuê căn nhà và mảnh ruộng của bà Mabry.",
+        "Chỉ thị chi tiết sẽ được gửi tới nhà vào sáng Chủ Nhật. Đọc xong thì đốt.",
+    };
+
+    static TextMeshProUGUI Bold(RectTransform rt, string text, float size, Color color, TextAlignmentOptions align = TextAlignmentOptions.TopLeft)
+    {
+        var tx = UIFactory.MakeText(rt, text, size, color, align);
+        tx.fontStyle = FontStyles.Bold;
+        return tx;
+    }
+
+    public void Init(DayManager manager)
     {
         dm = manager;
         var root = (RectTransform)transform;
 
-        // ---- Nền: ảnh phủ kín + zoom chậm ----
-        UIFactory.MakeBox(root, UIFactory.Hex("120E0C"));
-        bgRect = UIFactory.MakeRect(root, "BG", Vector2.zero, Vector2.one);
-        if (titleBg)
-        {
-            var img = bgRect.gameObject.AddComponent<Image>();
-            img.sprite = titleBg;
-            img.raycastTarget = false;
-            var fit = bgRect.gameObject.AddComponent<AspectRatioFitter>();
-            fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
-            fit.aspectRatio = titleBg.rect.width / titleBg.rect.height;
-        }
-        var fogTex = FogTexture();
-        fogA = Fog(root, "FogA", fogTex, 0.30f, out fogImgA);
-        fogB = Fog(root, "FogB", fogTex, 0.22f, out fogImgB);
-        var shade = UIFactory.MakeRect(root, "Shade", Vector2.zero, new Vector2(0.72f, 1));
-        var shadeImg = shade.gameObject.AddComponent<RawImage>();
-        shadeImg.texture = Gradient(new Color(0.07f, 0.05f, 0.04f, 0.88f), new Color(0.07f, 0.05f, 0.04f, 0f));
-        shadeImg.raycastTarget = false;
+        // ---- Tường gỗ + bảng bần khung gỗ ----
+        UIFactory.MakeBox(root, UIFactory.Hex("2B2019"));
+        UIFactory.AddGrain(root, 0.18f);
+        var frame = UIFactory.Place(root, "Board_Frame", 56, 40, 1168, 640);
+        UIFactory.MakeSurface(frame, UIFactory.Hex("5B3D28"), 10);
+        UIFactory.AddShadow(frame, 14);
+        var cork = UIFactory.MakeRect(frame, "Cork", Vector2.zero, Vector2.one, 16);
+        UIFactory.MakeSurface(cork, UIFactory.Hex("A9805A"), 6);
+        UIFactory.Skin(cork.GetComponent<Image>(), "board_cork");
+        UIFactory.AddGrain(cork, 0.3f);
 
-        // ---- Tên game ----
-        var title = UIFactory.Place(root, "TitleBlock", 110, 120, 640, 260);
-        titleGroup = title.gameObject.AddComponent<CanvasGroup>();
-        UIFactory.MakeTitle(UIFactory.Place(title, "L1", 0, 0, 640, 76), "CÁNH ĐỒNG", 66, UIFactory.Paper).characterSpacing = 6;
-        UIFactory.MakeTitle(UIFactory.Place(title, "L2", 0, 74, 640, 76), "NGỜ VỰC", 66, UIFactory.Gold).characterSpacing = 6;
-        UIFactory.MakeBox(UIFactory.Place(title, "Rule", 4, 162, 64, 2), UIFactory.Gold, false);
-        var en = UIFactory.MakeText(UIFactory.Place(title, "EN", 2, 176, 600, 28), "Fields of Suspicion", 20, new Color(0.93f, 0.89f, 0.82f, 0.8f));
-        en.fontStyle = FontStyles.Italic;
-        en.characterSpacing = 3;
-        UIFactory.MakeText(UIFactory.Place(title, "Tag", 2, 210, 600, 24),
-            "Một tuần ở Sellowe. Trồng rau ban ngày, chuyển tin ban đêm.", 16, new Color(0.93f, 0.89f, 0.82f, 0.6f));
+        // ---- Áp phích tên game ----
+        var poster = Note(cork, "Poster", 60, 46, 600, 500, "notice_cream", -1.2f, "pin_red");
+        Bold(UIFactory.Place(poster, "Kicker", 46, 46, 508, 22), "SELLOWE  ·  THÔNG BÁO", 14, UIFactory.Hex("8C3A2B")).characterSpacing = 4;
+        var title = Bold(UIFactory.Place(poster, "Title", 44, 78, 520, 150), "CÁNH ĐỒNG\nNGỜ VỰC", 60, UIFactory.Ink);
+        title.lineSpacing = -18;
+        title.characterSpacing = 2;
+        UIFactory.MakeBox(UIFactory.Place(poster, "Rule", 46, 236, 508, 2), UIFactory.Hex("3A2E25"), false);
+        var body = UIFactory.MakeText(UIFactory.Place(poster, "Body", 46, 256, 508, 172), string.Join(" ", PosterBody), 19, UIFactory.Ink);
+        body.lineSpacing = 12;
+        var sig = UIFactory.MakeText(UIFactory.Place(poster, "Sig", 46, 432, 508, 24), "Ban chợ Sellowe", 15, UIFactory.Muted, TextAlignmentOptions.TopRight);
+        sig.fontStyle = FontStyles.Italic;
 
-        // ---- Menu ----
-        menuCol = UIFactory.Place(root, "Menu", 110, 410, 420, 220);
-        menuGroup = menuCol.gameObject.AddComponent<CanvasGroup>();
-        UIFactory.VList(menuCol, 2, 0).childAlignment = TextAnchor.UpperLeft;
-        Item(menuCol, "Ván mới", null, () => StartCoroutine(Intro()));
-        continueItem = Item(menuCol, "Tiếp tục", "", Continue, out continueSub);
-        Item(menuCol, "Cài đặt", null, () => StartCoroutine(Swap(menuGroup, settingsGroup)));
-        Item(menuCol, "Thoát", null, DayManager.QuitGame);
-        feedback = UIFactory.MakeText(UIFactory.Place(root, "Feedback", 110, 640, 600, 24), "", 14, UIFactory.Hex("E06A55"));
+        // ---- Menu: mẩu giấy ghim ----
+        menuGroup = Column(cork, "Menu");
+        var col = (RectTransform)menuGroup.transform;
+        MenuNote(col, 0, "Ván mới", "Tuần đầu tiên ở Sellowe", "notice_cream", 1.4f, "pin_brass", () => StartCoroutine(Intro()), out _);
+        continueNote = MenuNote(col, 1, "Tiếp tục", "", "notice_green", -1.0f, "pin_red", Continue, out continueSub);
+        MenuNote(col, 2, "Cài đặt", "Âm lượng, màn hình", "notice_blue", 0.8f, "pin_blue", () => StartCoroutine(Swap(menuGroup, settingsGroup)), out _);
+        MenuNote(col, 3, "Thoát", "Rời khỏi làng", "notice_pink", -1.6f, "pin_brass", DayManager.QuitGame, out _);
 
-        // ---- Cài đặt (thay chỗ menu) ----
-        settingsCol = UIFactory.Place(root, "Settings", 110, 410, 520, 240);
-        settingsGroup = settingsCol.gameObject.AddComponent<CanvasGroup>();
-        UIFactory.VList(settingsCol, 2, 0).childAlignment = TextAnchor.UpperLeft;
-        settingsItems.Add((Item(settingsCol, "Toàn màn hình", "", () => { dm.ToggleFullscreen(); RefreshSettings(); }, out var s1), s1));
-        settingsItems.Add((Item(settingsCol, "Âm lượng", "", () => { dm.CycleVolume(); RefreshSettings(); }, out var s2), s2));
-        settingsItems.Add((Item(settingsCol, "Độ phân giải", "", () => { dm.CycleResolution(); RefreshSettings(); }, out var s3), s3));
-        Item(settingsCol, "Quay lại", null, () => StartCoroutine(Swap(settingsGroup, menuGroup)));
+        settingsGroup = Column(cork, "Settings");
+        var scol = (RectTransform)settingsGroup.transform;
+        MenuNote(scol, 0, "Toàn màn hình", "", "notice_blue", -0.8f, "pin_red", () => { dm.ToggleFullscreen(); RefreshSettings(); }, out var s0);
+        MenuNote(scol, 1, "Âm lượng", "", "notice_cream", 1.2f, "pin_brass", () => { dm.CycleVolume(); RefreshSettings(); }, out var s1);
+        MenuNote(scol, 2, "Độ phân giải", "", "notice_green", -1.2f, "pin_blue", () => { dm.CycleResolution(); RefreshSettings(); }, out var s2);
+        MenuNote(scol, 3, "Quay lại", "", "notice_pink", 1.0f, "pin_red", () => StartCoroutine(Swap(settingsGroup, menuGroup)), out _);
+        settingSubs.AddRange(new[] { s0, s1, s2 });
         Hide(settingsGroup);
 
-        var foot = UIFactory.MakeText(UIFactory.MakeRect(root, "Footer", new Vector2(1, 0), new Vector2(1, 0)), "v1.0  ·  Học phần IT1.236.3  ·  2026",
-                                      13, new Color(0.93f, 0.89f, 0.82f, 0.45f), TextAlignmentOptions.BottomRight);
-        foot.rectTransform.pivot = new Vector2(1, 0);
-        foot.rectTransform.sizeDelta = new Vector2(500, 24);
-        foot.rectTransform.anchoredPosition = new Vector2(-28, 20);
+        feedback = UIFactory.MakeText(UIFactory.Place(cork, "Feedback", 700, 566, 420, 24), "", 14, UIFactory.Hex("8C3A2B"));
 
-        BuildIntro(root, introBg);
+        BuildIntro(root);
         var black = UIFactory.MakeRect(root, "Black", Vector2.zero, Vector2.one);
-        UIFactory.MakeBox(black, Color.black, false);
+        UIFactory.MakeBox(black, UIFactory.Hex("140F0C"), false);
         blackGroup = black.gameObject.AddComponent<CanvasGroup>();
         blackGroup.blocksRaycasts = false;
     }
 
     // ---------------- Dựng phần tử ----------------
 
-    Button Item(RectTransform parent, string label, string sub, Action onClick) => Item(parent, label, sub, onClick, out _);
-
-    // Một mục menu chữ: nền trong suốt, rê chuột thì ▸ hiện ra bên trái và chữ nhích sang phải
-    Button Item(RectTransform parent, string label, string sub, Action onClick, out TextMeshProUGUI subText)
+    // Một tờ giấy ghim trên bảng: ảnh giấy + bóng + đinh ghim, nghiêng nhẹ
+    static RectTransform Note(RectTransform parent, string name, float x, float y, float w, float h, string paper, float tilt, string pin)
     {
-        var rt = UIFactory.MakeRect(parent, "Item_" + label, Vector2.zero, Vector2.one);
-        UIFactory.Size(rt, 50);
-        var hit = UIFactory.MakeBox(rt, new Color(1, 1, 1, 0));
-        var b = rt.gameObject.AddComponent<Button>();
-        b.targetGraphic = hit;
-        b.transition = Selectable.Transition.None;
-        b.onClick.AddListener(() => GameAudio.Sfx("click"));
-        b.onClick.AddListener(() => onClick());
-
-        var content = UIFactory.MakeRect(rt, "Content", Vector2.zero, Vector2.one);
-        var text = UIFactory.MakeTitle(UIFactory.Place(content, "Label", 30, 0, 360, 50), label, 26, UIFactory.Light, TextAlignmentOptions.MidlineLeft);
-        text.textWrappingMode = TextWrappingModes.NoWrap;
-        subText = UIFactory.MakeText(UIFactory.Place(content, "Sub", 30 + text.preferredWidth + 16, 0, 260, 50), sub ?? "", 16,
-                                     new Color(0.93f, 0.89f, 0.82f, 0.55f), TextAlignmentOptions.MidlineLeft);
-        var markRt = UIFactory.Place(rt, "Marker", 2, 17, 16, 16);
-        var mark = markRt.gameObject.AddComponent<Image>();
-        mark.sprite = UIFactory.ArrowSprite;
-        mark.color = new Color(UIFactory.Gold.r, UIFactory.Gold.g, UIFactory.Gold.b, 0);
-        mark.raycastTarget = false;
-
-        var feel = rt.gameObject.AddComponent<ButtonFeel>();
-        feel.content = content;
-        feel.marker = mark;
-        feel.nudge = 8;
-        return b;
-    }
-
-    static void SetItemEnabled(Button b, bool on)
-    {
-        b.interactable = on;
-        foreach (var tx in b.GetComponentsInChildren<TMP_Text>()) tx.alpha = on ? 1f : 0.35f;
-    }
-
-    RectTransform Fog(RectTransform root, string name, Texture tex, float alpha, out RawImage img)
-    {
-        var rt = UIFactory.MakeRect(root, name, Vector2.zero, new Vector2(1, 0.62f));
-        img = rt.gameObject.AddComponent<RawImage>();
-        img.texture = tex;
-        img.color = new Color(1, 1, 1, alpha);
-        img.raycastTarget = false;
+        var rt = UIFactory.Place(parent, name, x, y, w, h);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = new Vector2(x + w / 2, -(y + h / 2));
+        rt.localRotation = Quaternion.Euler(0, 0, tilt);
+        UIFactory.MakeSurface(rt, UIFactory.Paper, 4);
+        UIFactory.Skin(rt.GetComponent<Image>(), paper);
+        UIFactory.AddShadow(rt, 6);
+        var p = UIFactory.MakeRectAt(rt, "Pin", Vector2.zero, new Vector2(18, 18));
+        p.anchorMin = p.anchorMax = new Vector2(0.5f, 1);
+        p.anchoredPosition = new Vector2(0, -14);
+        UIFactory.Skin(UIFactory.MakeBox(p, Color.white, false), pin);
         return rt;
     }
 
-    // Mây sương: nhiễu Perlin nhiều tầng, đậm ở dưới, nhạt dần lên trên
-    static Texture2D FogTexture()
+    static CanvasGroup Column(RectTransform cork, string name)
     {
-        const int w = 256, h = 128;
-        var tex = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat };
-        for (int y = 0; y < h; y++)
-        for (int x = 0; x < w; x++)
-        {
-            float n = 0, amp = 0.5f, f = 1f / 64f;
-            for (int o = 0; o < 4; o++)
-            {
-                // lặp liền theo chiều ngang: trộn hai mẫu ở x và x - w
-                float a = Mathf.PerlinNoise(x * f + o * 17, y * f + o * 31);
-                float b = Mathf.PerlinNoise((x - w) * f + o * 17, y * f + o * 31);
-                n += amp * Mathf.Lerp(a, b, x / (float)w);
-                amp *= 0.5f; f *= 2f;
-            }
-            float v = Mathf.Clamp01((n - 0.3f) * 1.8f) * Mathf.Pow(1f - y / (float)h, 1.4f);
-            tex.SetPixel(x, y, new Color(1, 1, 1, v));
-        }
-        tex.Apply();
-        return tex;
+        var col = UIFactory.Place(cork, name, 700, 40, 420, 520);
+        return col.gameObject.AddComponent<CanvasGroup>();
     }
 
-    static Texture2D Gradient(Color left, Color right)
+    // Mục menu = một mẩu giấy. Rê chuột: giấy được nhấc lên (thẳng lại, to hơn chút, bóng đậm hơn)
+    Button MenuNote(RectTransform col, int i, string label, string sub, string paper, float tilt, string pin, Action onClick, out TextMeshProUGUI subText)
     {
-        var tex = new Texture2D(64, 1, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
-        for (int x = 0; x < 64; x++) tex.SetPixel(x, 0, Color.Lerp(left, right, Mathf.SmoothStep(0, 1, x / 63f)));
-        tex.Apply();
-        return tex;
+        var rt = Note(col, "Note_" + label, 10 + (i % 2 == 0 ? 0 : 26), i * 124, 360, 100, paper, tilt, pin);
+        var b = rt.gameObject.AddComponent<Button>();
+        b.targetGraphic = rt.GetComponent<Image>();
+        UIFactory.ApplyColors(b);
+        b.onClick.AddListener(() => GameAudio.Sfx("page", 0.7f));
+        b.onClick.AddListener(() => onClick());
+        Bold(UIFactory.Place(rt, "Label", 30, 26, 300, 34), label, 26, UIFactory.Ink);
+        subText = UIFactory.MakeText(UIFactory.Place(rt, "Sub", 30, 60, 300, 22), sub ?? "", 15, UIFactory.Muted);
+        rt.gameObject.AddComponent<NoteFeel>();
+        return b;
     }
 
-    void BuildIntro(RectTransform root, Sprite introBg)
+    void BuildIntro(RectTransform root)
     {
         var intro = UIFactory.MakeRect(root, "Intro", Vector2.zero, Vector2.one);
-        UIFactory.MakeBox(intro, UIFactory.Hex("0B0908"));
+        UIFactory.MakeBox(intro, UIFactory.Hex("1E1712"));
+        UIFactory.AddGrain(intro, 0.15f);
         introGroup = intro.gameObject.AddComponent<CanvasGroup>();
-        if (introBg)
-        {
-            var bg = UIFactory.MakeRect(intro, "BG", Vector2.zero, Vector2.one);
-            var img = bg.gameObject.AddComponent<Image>();
-            img.sprite = introBg;
-            img.color = new Color(1, 1, 1, 0.35f);
-            img.raycastTarget = false;
-            var fit = bg.gameObject.AddComponent<AspectRatioFitter>();
-            fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
-            fit.aspectRatio = introBg.rect.width / introBg.rect.height;
-        }
-        // Bấm bất kỳ đâu để sang khung tiếp
+
         var hit = UIFactory.MakeRect(intro, "Hit", Vector2.zero, Vector2.one);
         var hitImg = UIFactory.MakeBox(hit, new Color(0, 0, 0, 0));
-        var hb = introHit = hit.gameObject.AddComponent<Button>();
-        hb.targetGraphic = hitImg;
-        hb.transition = Selectable.Transition.None;
-        hb.onClick.AddListener(() => advance = true);
+        introHit = hit.gameObject.AddComponent<Button>();
+        introHit.targetGraphic = hitImg;
+        introHit.transition = Selectable.Transition.None;
+        introHit.onClick.AddListener(() => advance = true);
 
-        introText = UIFactory.MakeText(UIFactory.MakeRectAt(intro, "Line", new Vector2(0, 20), new Vector2(900, 240)), "", 26,
-                                       UIFactory.Light, TextAlignmentOptions.Center);
-        introText.lineSpacing = 18;
-        introHint = UIFactory.MakeText(UIFactory.MakeRectAt(intro, "Hint", new Vector2(0, -290), new Vector2(600, 30)),
-                                       "Bấm để tiếp tục", 14, new Color(0.93f, 0.89f, 0.82f, 0.5f), TextAlignmentOptions.Center);
-        var skip = skipButton = UIFactory.MakeButton(UIFactory.MakeRectAt(intro, "Skip", new Vector2(560, -312), new Vector2(150, 40)), "Skip", "Bỏ qua  ›", SkipIntro, 15);
-        UIFactory.SetColor(skip, new Color(1, 1, 1, 0.15f));
-        skip.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
+        // Tờ lệnh điều động
+        var paper = UIFactory.MakeRectAt(intro, "Order", new Vector2(0, 16), new Vector2(680, 560));
+        paper.localRotation = Quaternion.Euler(0, 0, -0.6f);
+        UIFactory.MakeSurface(paper, UIFactory.Hex("F2E9D3"), 4);
+        UIFactory.Skin(paper.GetComponent<Image>(), "paper_letter");
+        UIFactory.AddShadow(paper, 12);
+        paper.GetComponent<Image>().raycastTarget = false;
 
-        // Ký tên
-        var name = UIFactory.MakeRectAt(intro, "Name", new Vector2(0, 10), new Vector2(620, 260));
-        nameGroup = name.gameObject.AddComponent<CanvasGroup>();
-        nameLine = UIFactory.MakeText(UIFactory.Place(name, "Ask", 0, 0, 620, 70),
-            "Trước khi trở thành Tomas Rell, cậu tên là gì?\n<size=70%><color=#B8AC98>Văn phòng ghi tên thật vào hồ sơ mật. Để trống thì hồ sơ ghi là Wren.</color></size>",
-            24, UIFactory.Light, TextAlignmentOptions.Center);
-        var inputRect = UIFactory.Place(name, "Input", 110, 100, 400, 52);
-        var inputImage = UIFactory.MakeSurface(inputRect, UIFactory.Paper, 6);
+        UIFactory.MakeText(UIFactory.Place(paper, "Office", 56, 48, 400, 20), "VĂN PHÒNG STRAKA  ·  TỐI MẬT", 13, UIFactory.Muted).characterSpacing = 3;
+        UIFactory.MakeText(UIFactory.Place(paper, "No", 420, 48, 204, 20), "Số 47", 13, UIFactory.Muted, TextAlignmentOptions.TopRight);
+        Bold(UIFactory.Place(paper, "Head", 56, 74, 568, 40), "LỆNH ĐIỀU ĐỘNG", 30, UIFactory.Ink);
+        UIFactory.MakeBox(UIFactory.Place(paper, "Rule", 56, 122, 568, 2), UIFactory.Ink, false);
+
+        var lines = UIFactory.Place(paper, "Lines", 56, 140, 568, 260);
+        var v = UIFactory.VList(lines, 14, 0);
+        v.childAlignment = TextAnchor.UpperLeft;
+        foreach (var line in OrderLines)
+        {
+            var tx = UIFactory.AddLine(lines, line, 18, UIFactory.Ink);
+            tx.lineSpacing = 8;
+            orderLines.Add(tx);
+        }
+
+        // Ký nhận
+        var sign = UIFactory.Place(paper, "Sign", 56, 418, 568, 56);
+        signGroup = sign.gameObject.AddComponent<CanvasGroup>();
+        UIFactory.MakeText(UIFactory.Place(sign, "Label", 0, 0, 110, 56), "Ký nhận:", 18, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
+        var inputRect = UIFactory.Place(sign, "Input", 110, 6, 300, 44);
+        var inputImage = UIFactory.MakeBox(inputRect, new Color(0, 0, 0, 0.04f));
+        UIFactory.MakeBox(UIFactory.Place(inputRect, "Underline", 0, 42, 300, 2), UIFactory.Ink, false);
         nameInput = inputRect.gameObject.AddComponent<TMP_InputField>();
         nameInput.targetGraphic = inputImage;
         nameInput.textViewport = inputRect;
         nameInput.lineType = TMP_InputField.LineType.SingleLine;
         nameInput.characterLimit = 24;
         var textRect = UIFactory.MakeRect(inputRect, "Text", Vector2.zero, Vector2.one);
-        textRect.offsetMin = new Vector2(16, 4); textRect.offsetMax = new Vector2(-16, -4);
-        nameInput.textComponent = UIFactory.MakeText(textRect, "", 20, UIFactory.Ink, TextAlignmentOptions.Midline);
+        textRect.offsetMin = new Vector2(8, 4); textRect.offsetMax = new Vector2(-8, -4);
+        nameInput.textComponent = UIFactory.MakeText(textRect, "", 22, UIFactory.Hex("1F3A5F"), TextAlignmentOptions.MidlineLeft);
+        nameInput.textComponent.fontStyle = FontStyles.Italic;
         var phRect = UIFactory.MakeRect(inputRect, "Placeholder", Vector2.zero, Vector2.one);
-        phRect.offsetMin = new Vector2(16, 4); phRect.offsetMax = new Vector2(-16, -4);
-        var ph = UIFactory.MakeText(phRect, "Wren", 20, UIFactory.Muted, TextAlignmentOptions.Midline);
+        phRect.offsetMin = new Vector2(8, 4); phRect.offsetMax = new Vector2(-8, -4);
+        var ph = UIFactory.MakeText(phRect, "tên thật của cậu", 18, UIFactory.Muted, TextAlignmentOptions.MidlineLeft);
         ph.fontStyle = FontStyles.Italic;
         nameInput.placeholder = ph;
         nameInput.onSubmit.AddListener(_ => advance = true);
-        var sign = UIFactory.MakeButton(UIFactory.Place(name, "Sign", 210, 176, 200, 48), "Sign", "Ký tên", () => advance = true, 18);
-        UIFactory.SetColor(sign, UIFactory.Red);
-        sign.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
-        UIFactory.Skin((Image)sign.targetGraphic, "btn_primary");
-        Hide(nameGroup);
+        var signBtn = UIFactory.MakeButton(UIFactory.Place(sign, "SignBtn", 430, 6, 138, 44), "SignBtn", "Ký tên", () => advance = true, 17);
+        UIFactory.SetColor(signBtn, UIFactory.Red);
+        UIFactory.Skin((Image)signBtn.targetGraphic, "btn_primary");
+        signBtn.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
+        UIFactory.MakeText(UIFactory.Place(paper, "SignHint", 56, 482, 568, 22),
+            "Văn phòng ghi tên thật vào hồ sơ mật. Để trống thì hồ sơ chỉ ghi mật danh.", 13, UIFactory.Muted).transform.SetParent(sign, true);
+
+        // Dấu "ĐÃ NHẬN"
+        stamp = UIFactory.MakeRectAt(paper, "Stamp", new Vector2(30, -168), new Vector2(210, 72));
+        stamp.localRotation = Quaternion.Euler(0, 0, 9);
+        var ink = new Color(0.66f, 0.17f, 0.12f, 0.85f);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "T", 0, 0, 210, 3), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "B", 0, 69, 210, 3), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "L", 0, 3, 3, 66), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "R", 207, 3, 3, 66), ink, false);
+        Bold(UIFactory.MakeRect(stamp, "Text", Vector2.zero, Vector2.one), "ĐÃ NHẬN", 30, ink, TextAlignmentOptions.Center).characterSpacing = 6;
+        stampGroup = stamp.gameObject.AddComponent<CanvasGroup>();
+        stampGroup.blocksRaycasts = false;
+
+        introHint = UIFactory.MakeText(UIFactory.MakeRectAt(intro, "Hint", new Vector2(0, -320), new Vector2(600, 24)),
+                                       "Bấm để đọc tiếp", 14, new Color(0.93f, 0.89f, 0.82f, 0.6f), TextAlignmentOptions.Center);
+        skipButton = UIFactory.MakeButton(UIFactory.MakeRectAt(intro, "Skip", new Vector2(560, -320), new Vector2(120, 36)), "Skip", "Bỏ qua", SkipIntro, 14);
+        UIFactory.SetColor(skipButton, new Color(1, 1, 1, 0.12f));
+        skipButton.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
         Hide(introGroup);
     }
 
@@ -253,96 +234,99 @@ public class TitleView : MonoBehaviour
     {
         gameObject.SetActive(true);
         transform.SetAsLastSibling();
-        GameAudio.Music("night", 2f);
+        GameAudio.Music("day", 2f);
         GameState save = null;
         bool has = SaveSystem.HasSave && SaveSystem.TryLoad(out save, out _);
-        SetItemEnabled(continueItem, has);
-        continueSub.text = has ? $"N{save.day} · {save.Weekday}" : "chưa có ván lưu";
+        continueNote.interactable = has;
+        foreach (var tx in continueNote.GetComponentsInChildren<TMP_Text>()) tx.alpha = has ? 1f : 0.45f;
+        continueSub.text = has ? $"Đang ở N{save.day} · {save.Weekday}" : "Chưa có ván lưu";
+        feedback.text = "";
         RefreshSettings();
-        Hide(settingsGroup); Hide(introGroup); Hide(nameGroup);
-        StartCoroutine(Entrance());
-    }
-
-    IEnumerator Entrance()
-    {
-        Hide(titleGroup); Hide(menuGroup);
+        Hide(settingsGroup); Hide(introGroup);
+        Show(menuGroup);
         blackGroup.alpha = 1;
-        yield return Fade(blackGroup, 0, 1.2f);
-        yield return Fade(titleGroup, 1, 0.8f);
-        yield return Fade(menuGroup, 1, 0.5f);
+        StartCoroutine(Fade(blackGroup, 0, 0.9f));
     }
 
     void Continue()
     {
         string error = dm.ContinueGame();
-        if (error != null) feedback.text = "Không thể tải ván lưu: " + error;
+        if (error != null) feedback.text = "Không mở được ván lưu: " + error;
         else gameObject.SetActive(false);
     }
 
     void RefreshSettings()
     {
-        if (settingsItems.Count < 3) return;
-        settingsItems[0].sub.text = Screen.fullScreen ? "Bật" : "Tắt";
-        settingsItems[1].sub.text = $"{Mathf.RoundToInt(AudioListener.volume * 100)}%   <size=80%>(bấm để đổi)</size>";
-        settingsItems[2].sub.text = $"{Screen.width} × {Screen.height}";
+        if (settingSubs.Count < 3) return;
+        settingSubs[0].text = Screen.fullScreen ? "Đang bật" : "Đang tắt";
+        settingSubs[1].text = $"{Mathf.RoundToInt(AudioListener.volume * 100)}%  · bấm để đổi";
+        settingSubs[2].text = $"{Screen.width} × {Screen.height}";
     }
 
-    bool skipping;
     void SkipIntro() { skipping = true; advance = true; }
 
     IEnumerator Intro()
     {
         menuGroup.interactable = false;
-        yield return Fade(blackGroup, 1, 0.6f);
-        Show(introGroup, true);
-        Hide(nameGroup);
+        yield return Fade(blackGroup, 1, 0.5f);
+        GameAudio.Music("night", 1.5f);
+        Show(introGroup);
+        foreach (var l in orderLines) l.alpha = 0;
+        Hide(signGroup);
+        stampGroup.alpha = 0;
+        nameInput.text = "";
         introHit.interactable = true;
         skipButton.gameObject.SetActive(true);
-        nameInput.text = "";
-        introText.gameObject.SetActive(true);
         introHint.gameObject.SetActive(true);
-        yield return Fade(blackGroup, 0, 0.6f);
-
         skipping = false;
-        foreach (var line in IntroLines)
+        yield return Fade(blackGroup, 0, 0.5f);
+
+        // Từng dòng hiện ra khi bấm (dòng đầu hiện ngay)
+        for (int i = 0; i < orderLines.Count; i++)
         {
-            if (skipping) break;
-            introText.text = line;
-            introText.alpha = 0;
-            for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.9f) { introText.alpha = k; yield return null; }
-            introText.alpha = 1;
-            advance = false;
-            while (!advance) yield return null;   // chỉ sang khung tiếp khi người chơi bấm
-            for (float k = 1; k > 0; k -= Time.unscaledDeltaTime / 0.5f) { introText.alpha = k; yield return null; }
-            introText.alpha = 0;
+            if (i > 0 && !skipping)
+            {
+                advance = false;
+                while (!advance) yield return null;
+            }
+            if (i > 0) GameAudio.Sfx("page", 0.4f);
+            yield return FadeText(orderLines[i], skipping ? 0.05f : 0.45f);
         }
 
-        // Ký tên
-        introText.gameObject.SetActive(false);
-        introHint.gameObject.SetActive(false);
-        introHit.interactable = false;   // đang ký tên: bấm ra ngoài không được tính là "tiếp"
+        // Ký nhận
+        introHit.interactable = false;
         skipButton.gameObject.SetActive(false);
-        yield return Fade(nameGroup, 1, 0.6f);
-        nameGroup.blocksRaycasts = nameGroup.interactable = true;
+        introHint.gameObject.SetActive(false);
+        yield return Fade(signGroup, 1, 0.4f);
         nameInput.ActivateInputField();
         advance = false;
         while (!advance) yield return null;
-        GameAudio.Sfx("pen");
         string playerName = string.IsNullOrWhiteSpace(nameInput.text) ? "Wren" : nameInput.text.Trim();
-        yield return Fade(nameGroup, 0, 0.5f);
-        Hide(nameGroup);
+        nameInput.text = playerName;
+        nameInput.interactable = false;
+        signGroup.interactable = false;
+        GameAudio.Sfx("pen");
 
-        introText.gameObject.SetActive(true);
-        introText.text = $"<size=80%><color=#B8AC98>Hồ sơ mật: {playerName}. Mật danh: Wren. Vỏ bọc: Tomas Rell.</color></size>\n\nSáng Chủ Nhật. Có một lá thư nằm dưới khe cửa.";
-        for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.9f) { introText.alpha = k; yield return null; }
-        introText.alpha = 1;
+        // Đóng dấu: dấu đập xuống (to → vừa) kèm tiếng
+        yield return new WaitForSecondsRealtime(0.35f);
+        GameAudio.Sfx("drop", 0.8f);
+        for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.18f)
+        {
+            stampGroup.alpha = k;
+            stamp.localScale = Vector3.one * Mathf.Lerp(1.5f, 1f, k * k);
+            yield return null;
+        }
+        stampGroup.alpha = 1; stamp.localScale = Vector3.one;
+
+        introHint.text = "Bấm để bắt đầu";
         introHint.gameObject.SetActive(true);
         introHit.interactable = true;
         advance = false;
         while (!advance) yield return null;
-        introHint.gameObject.SetActive(false);
 
-        yield return Fade(blackGroup, 1, 0.8f);
+        yield return Fade(blackGroup, 1, 0.7f);
+        nameInput.interactable = true;
+        introHint.text = "Bấm để đọc tiếp";
         dm.StartNewGame(playerName);
         gameObject.SetActive(false);
     }
@@ -350,13 +334,21 @@ public class TitleView : MonoBehaviour
     IEnumerator Swap(CanvasGroup from, CanvasGroup to)
     {
         RefreshSettings();
-        yield return Fade(from, 0, 0.2f);
+        from.interactable = false;
+        yield return Fade(from, 0, 0.18f);
         Hide(from);
-        yield return Fade(to, 1, 0.25f);
+        Show(to, 0);
+        yield return Fade(to, 1, 0.22f);
     }
 
     static void Hide(CanvasGroup g) { g.alpha = 0; g.interactable = g.blocksRaycasts = false; }
-    static void Show(CanvasGroup g, bool instant) { g.alpha = instant ? 1 : g.alpha; g.interactable = g.blocksRaycasts = true; }
+    static void Show(CanvasGroup g, float alpha = 1) { g.alpha = alpha; g.interactable = g.blocksRaycasts = true; }
+
+    static IEnumerator FadeText(TMP_Text tx, float time)
+    {
+        for (float k = 0; k < 1; k += Time.unscaledDeltaTime / time) { tx.alpha = k; yield return null; }
+        tx.alpha = 1;
+    }
 
     static IEnumerator Fade(CanvasGroup g, float to, float time)
     {
@@ -367,17 +359,33 @@ public class TitleView : MonoBehaviour
             yield return null;
         }
         g.alpha = to;
-        bool on = to > 0.5f;
-        if (g.name != "Black") g.interactable = g.blocksRaycasts = on;
+        if (g.gameObject.name != "Black") g.interactable = g.blocksRaycasts = to > 0.5f;
     }
+
+#if UNITY_EDITOR
+    // Chỉ dùng cho công cụ chụp xem trước trong Editor (không chạy game): dựng sẵn từng trạng thái, không coroutine.
+    public void PreviewState(int mode)
+    {
+        Hide(menuGroup); Hide(settingsGroup); Hide(introGroup);
+        blackGroup.alpha = 0;
+        continueSub.text = "Đang ở N3 · Thứ Ba";
+        RefreshSettings();
+        if (mode == 0) { Show(menuGroup); return; }
+        if (mode == 1) { Show(settingsGroup); return; }
+        Show(introGroup);
+        for (int i = 0; i < orderLines.Count; i++) orderLines[i].alpha = mode == 2 && i > 0 ? 0 : 1;
+        signGroup.alpha = mode >= 3 ? 1 : 0;
+        stampGroup.alpha = mode == 4 ? 1 : 0;
+        nameInput.text = mode == 4 ? "Minh" : "";
+        skipButton.gameObject.SetActive(mode < 3);
+        introHint.gameObject.SetActive(mode != 3);
+        introHint.text = mode == 4 ? "Bấm để bắt đầu" : "Bấm để đọc tiếp";
+    }
+#endif
 
     void Update()
     {
         t += Time.unscaledDeltaTime;
-        // Ảnh nền zoom vào/ra rất chậm, sương trôi hai lớp khác tốc độ
-        if (bgRect) bgRect.localScale = Vector3.one * (1.03f + 0.03f * Mathf.Sin(t * 0.05f));
-        if (fogImgA) fogImgA.uvRect = new Rect(t * 0.006f, 0, 1.6f, 1);
-        if (fogImgB) fogImgB.uvRect = new Rect(-t * 0.004f + 0.37f, 0.1f, 1.2f, 1);
-        if (introHint && introHint.gameObject.activeInHierarchy) introHint.alpha = 0.35f + 0.25f * Mathf.Sin(t * 2.5f);
+        if (introHint && introHint.gameObject.activeInHierarchy) introHint.alpha = 0.45f + 0.2f * Mathf.Sin(t * 2.4f);
     }
 }
