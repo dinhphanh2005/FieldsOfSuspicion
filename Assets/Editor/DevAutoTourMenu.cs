@@ -34,6 +34,14 @@ public static class DevAutoTourMenu
         EditorApplication.isPlaying = true;
     }
 
+    [MenuItem("FoS/Dev/Tự chơi không bán hàng (kiểm tra thư nhắc + Bị đuổi nhà)")]
+    static void RunBroke()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("broke");
+        EditorApplication.isPlaying = true;
+    }
+
     [MenuItem("FoS/Dev/Tự chơi theo Shrike (kiểm tra Bại lộ)")]
     static void RunShrike()
     {

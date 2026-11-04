@@ -125,7 +125,7 @@ public class HudView : MonoBehaviour
                    $"Rau <b>{s.stock}</b> bó{gap}" +
                    $"Năng lượng <b>{s.energy}</b>/{EconomyRules.MaxEnergy}{gap}" +
                    $"Sổ tay <b>{s.fragments.Count}</b>" +
-                   (s.rentWarnings > 0 ? $"{gap}<color=#E0B04B>Thư nhắc {s.rentWarnings}/{EconomyRules.MaxWarnings}</color>" : "");
+                   (s.rentWarnings > EconomyRules.MaxWarnings ? $"{gap}<color=#E0B04B>Bị đuổi nhà</color>" : s.rentWarnings > 0 ? $"{gap}<color=#E0B04B>Thư nhắc {s.rentWarnings}/{EconomyRules.MaxWarnings}</color>" : "");
         if (i != lastInfo) { info.text = i; lastInfo = i; }
 
         int w = s.SuspicionWindow;

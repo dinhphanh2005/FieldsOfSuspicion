@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -278,18 +279,22 @@ public class NightView : MonoBehaviour
             var b = UIFactory.MakeButton(intelList, "Report_" + id,
                 $"<size=80%><color=#7A6A5A>{c.title.ToUpper()}</color>{deadline}</size>\n{body}",
                 () => SelectReport(id, complete), 15);
+            // Nền trơn bo góc thay cho ảnh nút: ảnh nút có viền trong suốt dày nên khung thấy được nhỏ hơn ô thật,
+            // chữ dài trông như tràn ra ngoài.
+            UIFactory.Round((Image)b.targetGraphic, 6);
             if (c.isFinal) UIFactory.AddButtonIcon(b, "icon_seal_straka");
             var t = b.GetComponentInChildren<TextMeshProUGUI>();
             t.alignment = TextAlignmentOptions.MidlineLeft;
-            t.rectTransform.offsetMin = new Vector2(14, 6);
-            t.rectTransform.offsetMax = new Vector2(-10, -6);
             t.enableAutoSizing = false;
             t.fontSize = 14;
-            // Nút cao theo chữ: câu dài (báo cáo cuối) không còn tràn ra ngoài khung
-            Canvas.ForceUpdateCanvases();
-            float w = Mathf.Max(160, intelList.rect.width - 24 - t.margin.x);
-            float h = t.GetPreferredValues(t.text, w, 0).y + 16;
-            UIFactory.Size(b, Mathf.Max(64, h));
+            t.textWrappingMode = TextWrappingModes.Normal;
+            t.rectTransform.offsetMin = new Vector2(14, 8);
+            t.rectTransform.offsetMax = new Vector2(-10, -8);
+            // Nút cao theo chữ: đo với bề rộng thật của ô chữ (cột phải rộng 404 − lề 40 − đệm nút 24 − lề icon),
+            // nên câu dài (báo cáo cuối) không tràn ra ngoài khung.
+            float textWidth = ReportListWidth - 24 - t.margin.x - t.margin.z;
+            float textHeight = t.GetPreferredValues(t.text, textWidth, 0).y;
+            UIFactory.Size(b, Mathf.Max(64, textHeight + 20));
             if (!complete) t.alpha = 0.75f;
             reportButtons[id] = b;
             shown++;
@@ -302,8 +307,11 @@ public class NightView : MonoBehaviour
         else
             UIFactory.MakeText(UIFactory.MakeRect(intelList, "Tip", Vector2.zero, Vector2.one),
                 "Bản báo cáo còn thiếu ô thì mở Sổ tay, trang Hồ sơ, để ghép tiếp.", 13, UIFactory.Hex("9C8C7B"));
+        LayoutRebuilder.ForceRebuildLayoutImmediate(intelList);
         intelScroll.verticalNormalizedPosition = 1;
     }
+
+    const float ReportListWidth = 364;   // = bề rộng cột phải (404) trừ lề trái/phải 20
 
     void SelectReport(string id, bool complete)
     {

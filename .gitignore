@@ -112,3 +112,4 @@ InitTestScene*.unity*
 # Ảnh chụp từ bản chơi tự động (FoS/Dev)
 /DevShots/
 __pycache__/
+/Builds/

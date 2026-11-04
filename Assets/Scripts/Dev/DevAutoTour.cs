@@ -38,7 +38,7 @@ public class DevAutoTour : MonoBehaviour
 
     string plan;
     int shot;
-    string Dir => Path.Combine(OutDir, plan == "shrike" ? "shrike" : "");
+    string Dir => Path.Combine(OutDir, plan == "rook-correct" ? "" : plan);
     readonly StringBuilder log = new StringBuilder();
     DayManager dm;
     Canvas canvas;
@@ -117,7 +117,11 @@ public class DevAutoTour : MonoBehaviour
     {
         if (dm.CurrentPhase != Phase.Morning) yield break;
         yield return Shot($"N{day}_board");
-        if (day == 1) { Click("Tắt gợi ý"); yield return Wait(); yield return Shot($"N{day}_board_nohint"); }
+        if (day == 1)
+        {
+            Click("Giải sẵn lệnh"); yield return Wait(); yield return Shot($"N{day}_board_decoded");
+            Click("Tắt gợi ý"); yield return Wait(); yield return Shot($"N{day}_board_nohint");
+        }
         Click("Ruộng");
         yield return Wait();
         // Thu hoạch ô chín, gieo ô trống
@@ -153,6 +157,16 @@ public class DevAutoTour : MonoBehaviour
     {
         if (dm.CurrentPhase != Phase.Afternoon) yield break;
         yield return Shot($"N{day}_shop_prompt");
+        if (plan == "broke")
+        {
+            // Không bán hàng: kiểm tra thư nhắc tiền nhà và kết thúc Bị đuổi nhà
+            Click("Nghỉ chiều nay");
+            yield return Wait();
+            yield return Shot($"N{day}_shop_closed");
+            Click("Sang buổi tối");
+            yield return Wait();
+            yield break;
+        }
         Click("Mở tiệm");
         yield return Wait();
         for (int k = 0; k < 4; k++)
@@ -210,7 +224,7 @@ public class DevAutoTour : MonoBehaviour
     {
         if (dm.CurrentPhase != Phase.Night) yield break;
         yield return Shot($"N{day}_night");
-        var p = plan == "shrike" ? ShrikePlan[day] : NightPlan[day];
+        var p = plan == "shrike" ? ShrikePlan[day] : plan == "broke" ? (null, null, null) : NightPlan[day];
         if (p.caseId == null) { Click("Ở nhà tối nay"); yield return Wait(); yield break; }
 
         // Soạn báo cáo trong sổ tay, chọn manh mối bằng cách bấm nút như người chơi

@@ -20,9 +20,9 @@ public static class EconomyRules
 
     static readonly string[] Letters =
     {
-        "Cậu Tomas, đêm qua cậu chưa trả tiền nhà. Tôi biết mùa đầu ai cũng khó, nhưng tôi cũng phải sống. Bà Mabry.",
-        "Cậu Tomas, đây là lần thứ hai. Tôi không muốn phải nói chuyện này trước mặt hàng xóm. Bà Mabry.",
-        "Cậu Tomas, lần cuối. Nếu cậu còn thiếu thêm một đêm nữa, tôi sẽ cho người khác thuê. Bà Mabry.",
+        $"Cậu Tomas, đêm qua cậu chưa trả {Rent} xu tiền nhà. Tôi biết mùa đầu ai cũng khó, nhưng tôi cũng phải sống. Bà Mabry.",
+        $"Cậu Tomas, đây là lần thứ hai cậu thiếu {Rent} xu tiền nhà. Tôi không muốn phải nói chuyện này trước mặt hàng xóm. Bà Mabry.",
+        $"Cậu Tomas, lần cuối. Tiền nhà {Rent} xu mỗi đêm, nếu cậu còn thiếu thêm một đêm nữa, tôi sẽ cho người khác thuê. Bà Mabry.",
     };
 
     // n = số lần đã thiếu (1..3)
