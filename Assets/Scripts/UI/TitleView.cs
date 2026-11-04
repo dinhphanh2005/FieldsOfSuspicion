@@ -220,14 +220,14 @@ public class TitleView : MonoBehaviour
         signHint.transform.SetParent(sign, true);
 
         // Dấu "ĐÃ NHẬN"
-        stamp = UIFactory.MakeRectAt(paper, "Stamp", new Vector2(30, -168), new Vector2(210, 72));
+        stamp = UIFactory.MakeRectAt(paper, "Stamp", new Vector2(212, -164), new Vector2(170, 60));
         stamp.localRotation = Quaternion.Euler(0, 0, 9);
         var ink = new Color(0.66f, 0.17f, 0.12f, 0.85f);
-        UIFactory.MakeBox(UIFactory.Place(stamp, "T", 0, 0, 210, 3), ink, false);
-        UIFactory.MakeBox(UIFactory.Place(stamp, "B", 0, 69, 210, 3), ink, false);
-        UIFactory.MakeBox(UIFactory.Place(stamp, "L", 0, 3, 3, 66), ink, false);
-        UIFactory.MakeBox(UIFactory.Place(stamp, "R", 207, 3, 3, 66), ink, false);
-        Bold(UIFactory.MakeRect(stamp, "Text", Vector2.zero, Vector2.one), "ĐÃ NHẬN", 30, ink, TextAlignmentOptions.Center).characterSpacing = 6;
+        UIFactory.MakeBox(UIFactory.Place(stamp, "T", 0, 0, 170, 3), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "B", 0, 57, 170, 3), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "L", 0, 3, 3, 54), ink, false);
+        UIFactory.MakeBox(UIFactory.Place(stamp, "R", 167, 3, 3, 54), ink, false);
+        Bold(UIFactory.MakeRect(stamp, "Text", Vector2.zero, Vector2.one), "ĐÃ NHẬN", 25, ink, TextAlignmentOptions.Center).characterSpacing = 6;
         stampGroup = stamp.gameObject.AddComponent<CanvasGroup>();
         stampGroup.blocksRaycasts = false;
 
@@ -287,6 +287,7 @@ public class TitleView : MonoBehaviour
         stampGroup.alpha = 0;
         nameInput.text = "";
         orderLines[0].text = RecipientBlank;
+        signBtn.gameObject.SetActive(true);
         signHint.text = SignHintText;
         signHint.color = UIFactory.Hex("6B5B4C");
         introHit.interactable = true;
@@ -329,7 +330,7 @@ public class TitleView : MonoBehaviour
         signGroup.interactable = false;
         GameAudio.Sfx("pen");
         signHint.text = "";
-        UIFactory.SetInteractable(signBtn, false);
+        signBtn.gameObject.SetActive(false);   // dấu "ĐÃ NHẬN" đóng đúng chỗ nút, không đè lên dòng ký
         // Tên vừa ký điền luôn vào dòng "Người nhận"
         orderLines[0].text = $"Người nhận: <color=#1F3A5F><i><noparse>{playerName}</noparse></i></color>";
         yield return FadeText(orderLines[0], 0.3f);
@@ -403,6 +404,7 @@ public class TitleView : MonoBehaviour
         for (int i = 0; i < orderLines.Count; i++) orderLines[i].alpha = mode == 2 && i > 0 ? 0 : 1;
         signGroup.alpha = mode >= 3 ? 1 : 0;
         stampGroup.alpha = mode == 4 ? 1 : 0;
+        signBtn.gameObject.SetActive(mode != 4);
         nameInput.text = mode == 4 ? "Minh" : "";
         orderLines[0].text = mode == 4 ? "Người nhận: <color=#1F3A5F><i>Minh</i></color>" : RecipientBlank;
         skipButton.gameObject.SetActive(mode < 3);

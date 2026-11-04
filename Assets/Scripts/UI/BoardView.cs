@@ -21,7 +21,9 @@ public class BoardView : MonoBehaviour
     TextMeshProUGUI energyStat, apStat, stockStat;
     readonly List<Button> plotButtons = new List<Button>();
     readonly List<Image> plotArt = new List<Image>();
-    bool hintOn;
+    int hintLevel;           // 0 = tắt · 1 = tô chữ đầu câu · 2 = giải sẵn lệnh
+    bool hintIntroduced;     // ngày đầu tự bật mức 1, sau đó giữ lựa chọn của người chơi
+    bool hintOn => hintLevel > 0;
     DaySO day;
 
     GameState S => dm.State;
@@ -65,7 +67,7 @@ public class BoardView : MonoBehaviour
         BuildFarmPanel(stage);
         var bar = UIFactory.MakeActionBar(transform);
         farmBtn = UIFactory.BarButton(bar, "Ruộng", ToggleFarm);
-        hintBtn = UIFactory.BarButton(bar, "Cách đọc lệnh", ToggleHint);
+        hintBtn = UIFactory.BarButton(bar, "Gợi ý đọc lệnh", ToggleHint);
         UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook(true));
         barHint = UIFactory.BarHint(bar, "");
         UIFactory.BarSpacer(bar);
@@ -77,8 +79,7 @@ public class BoardView : MonoBehaviour
         day = today;
         if (farmPanel) farmPanel.gameObject.SetActive(false);
         // Ngày đầu: bật sẵn gợi ý đọc lệnh mật để người chơi mới không bị lạc
-        if (s.day == 1 && !hintOn) { ToggleHint(); return; }
-        if (s.day > 1 && hintOn) { ToggleHint(); return; }
+        if (!hintIntroduced) { hintIntroduced = true; SetHint(1); return; }
         BuildCards();
         RefreshFarm();
     }
@@ -116,19 +117,28 @@ public class BoardView : MonoBehaviour
             UIFactory.AddLine(card, m.title, 20, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
             string body = hintOn ? SentenceStart.Replace(m.body, x => $"{x.Groups[1].Value}<b><color=#B8442E>{x.Groups[2].Value}</color></b>") : m.body;
             UIFactory.AddLine(card, body, 16, UIFactory.Ink).lineSpacing = 8;
+            if (hintLevel == 2 && m.handler != Handler.None)
+            {
+                string meaning = HandlerOrders.Meaning(m.answer);
+                UIFactory.AddLine(card, $"<b>Lệnh: {HandlerOrders.Key(m.answer)}</b>" + (meaning != "" ? $" — {meaning}" : ""),
+                                  15, UIFactory.Hex("8C3A2B"));
+            }
             var sig = UIFactory.AddLine(card, m.signature, 15, UIFactory.Muted);
             sig.fontStyle = FontStyles.Italic;
         }
     }
 
-    void ToggleHint()
+    void ToggleHint() => SetHint((hintLevel + 1) % 3);
+
+    void SetHint(int level)
     {
-        hintOn = !hintOn;
+        hintLevel = level;
         if (farmPanel && farmPanel.gameObject.activeSelf) farmPanel.gameObject.SetActive(false);
         hintNote.gameObject.SetActive(hintOn);
-        UIFactory.SetLabel(hintBtn, hintOn ? "Tắt gợi ý" : "Cách đọc lệnh");
+        UIFactory.SetLabel(hintBtn, hintLevel == 0 ? "Gợi ý đọc lệnh" : hintLevel == 1 ? "Giải sẵn lệnh" : "Tắt gợi ý");
         UIFactory.SetColor(hintBtn, hintOn ? UIFactory.Gold : UIFactory.Paper);
-        barHint.text = hintOn ? "Chữ đỏ = chữ cái đầu mỗi câu" : "";
+        barHint.text = hintLevel == 1 ? "Chữ đỏ = chữ cái đầu mỗi câu · bấm lần nữa để xem lời giải"
+                     : hintLevel == 2 ? "Lời giải hiện ngay dưới mỗi lệnh mật" : "";
         BuildCards();
         RefreshFarm();
     }

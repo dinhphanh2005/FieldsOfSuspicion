@@ -353,7 +353,12 @@ public class DayManager : MonoBehaviour
         string rent = State.lastRentPaidDay == State.day - 1 ? $"Đã trả {EconomyRules.Rent} xu tiền nhà" :
                       State.lastRentMissDay == State.day - 1 ? "Không đủ tiền nhà" : "";
         string sus = last > 0 ? $"đêm qua có thêm người để ý tới cậu (+{last})" : "đêm qua không ai để ý tới cậu";
-        return string.IsNullOrEmpty(rent) ? char.ToUpper(sus[0]) + sus.Substring(1) : $"{rent} · {sus}";
+        string line = string.IsNullOrEmpty(rent) ? char.ToUpper(sus[0]) + sus.Substring(1) : $"{rent} · {sus}";
+        // Lệnh mật hôm qua: cho người chơi biết mình đã làm theo hay chưa (không nói lệnh của ai là đúng)
+        var orders = State.handlerOrderResults.Where(r => r.day == State.day - 1)
+                          .Select(r => $"{HandlerOrders.Key(r.instruction)} {(r.followed ? "đã làm" : "không làm")}").ToList();
+        if (orders.Count > 0) line += "\nLệnh mật hôm qua: " + string.Join(" · ", orders);
+        return line;
     }
 
     // Trả tiền nhà ở Tổng kết. Thiếu tiền: không trừ, ghi một lần thiếu (thư nhắc sáng mai).
