@@ -83,7 +83,7 @@ MonoBehaviour:
       replyVariants: []
     discount:
       tomas: "T\u00f4i b\u1edbt cho c\u00f4, k\u1ec3 t\u00f4i nghe \u0111i."
-      reply: "L\u00f2 g\u1ea1ch \u1ea5y m\u00e0, \u00f4ng Sev hay d\u00e1n th\u00f4ng b\u00e1o l\u00ean b\u1ea3ng tin l\u00e0ng l\u1eafm. Ch\u1eef \u0111\u1eb9p ra ph\u1ebft. L\u1ea1 l\u00e0 m\u1ed9t \u00f4ng th\u1ee3 g\u1ea1ch l\u1ea1i vi\u1ebft ch\u1eef \u0111\u1eb9p th\u1ebf."
+      reply: "Chuy\u1ec7n n\u00e0y th\u00ec t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: l\u00f2 g\u1ea1ch \u1ea5y m\u00e0, \u00f4ng Sev hay d\u00e1n th\u00f4ng b\u00e1o l\u00ean b\u1ea3ng tin l\u00e0ng l\u1eafm. Ch\u1eef \u0111\u1eb9p ra ph\u1ebft. L\u1ea1 l\u00e0 m\u1ed9t \u00f4ng th\u1ee3 g\u1ea1ch l\u1ea1i vi\u1ebft ch\u1eef \u0111\u1eb9p th\u1ebf."
       replyVariants: []
     ask:
       tomas: "Chuy\u1ec7n g\u00ec th\u1ebf?"

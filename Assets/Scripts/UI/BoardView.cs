@@ -84,7 +84,29 @@ public class BoardView : MonoBehaviour
         RefreshFarm();
     }
 
+    // Dựng thẻ, nếu thẻ dài (lệnh mật nhiều câu + dòng giải sẵn) không vừa bảng thì thu nhỏ chữ dần,
+    // tránh để layout ép thẻ lại làm các dòng chữ đè lên nhau.
     void BuildCards()
+    {
+        foreach (int size in new[] { 16, 15, 14, 13 })
+        {
+            BuildCardsAt(size);
+            if (CardsFit()) return;
+        }
+    }
+
+    bool CardsFit()
+    {
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(cards);
+        var pad = cards.GetComponent<HorizontalLayoutGroup>().padding;
+        float avail = cards.rect.height - pad.top - pad.bottom;
+        foreach (RectTransform card in cards)
+            if (card.gameObject.activeSelf && LayoutUtility.GetPreferredHeight(card) > avail + 0.5f) return false;
+        return true;
+    }
+
+    void BuildCardsAt(int bodySize)
     {
         UIFactory.Clear(cards);
         if (!day) return;
@@ -114,16 +136,16 @@ public class BoardView : MonoBehaviour
             var v = UIFactory.VList(card, 10, 0);
             v.padding = new RectOffset(34, 34, 36, 28);   // chừa mép giấy (ảnh giấy có viền rách + bóng)
 
-            UIFactory.AddLine(card, m.title, 20, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
+            UIFactory.AddLine(card, m.title, bodySize + 4, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
             string body = hintOn ? SentenceStart.Replace(m.body, x => $"{x.Groups[1].Value}<b><color=#B8442E>{x.Groups[2].Value}</color></b>") : m.body;
-            UIFactory.AddLine(card, body, 16, UIFactory.Ink).lineSpacing = 8;
+            UIFactory.AddLine(card, body, bodySize, UIFactory.Ink).lineSpacing = bodySize >= 15 ? 8 : 4;
             if (hintLevel == 2 && m.handler != Handler.None)
             {
                 string meaning = HandlerOrders.Meaning(m.answer);
                 UIFactory.AddLine(card, $"<b>Lệnh: {HandlerOrders.Key(m.answer)}</b>" + (meaning != "" ? $" — {meaning}" : ""),
-                                  15, UIFactory.Hex("8C3A2B"));
+                                  bodySize - 1, UIFactory.Hex("8C3A2B"));
             }
-            var sig = UIFactory.AddLine(card, m.signature, 15, UIFactory.Muted);
+            var sig = UIFactory.AddLine(card, m.signature, bodySize - 1, UIFactory.Muted);
             sig.fontStyle = FontStyles.Italic;
         }
     }

@@ -271,7 +271,7 @@ public class ShopView : MonoBehaviour
     bool HasStockFor(int quantity) => quantity < 0 ? S.stock > 0 : quantity == 0 || S.stock >= quantity;
     int QuantityAvailable(int requested) => requested < 0 ? S.stock : requested;
     bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);   // -1 = mua hết kho
-    bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(Visit.discountQuantity);
+    bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(DiscountQuantity(Visit));
     bool CanTrade => CanSell || CanDiscount;
     bool CanAsk => Visit != null && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
 
@@ -350,10 +350,10 @@ public class ShopView : MonoBehaviour
         int sellCount = QuantityAvailable(v.sellQuantity);
         int sellRevenue = v.sellPrice * Mathf.Max(0, sellCount);
         SetChoice(0, sellLabel, sellRevenue > 0 ? $"+{sellRevenue} xu" : "", CanSell);
-        int discountCount = QuantityAvailable(v.discountQuantity);
+        int discountCount = QuantityAvailable(DiscountQuantity(v));
         int discountRevenue = DiscountUnitPrice(v) * Mathf.Max(0, discountCount);
         string discountLabel = string.IsNullOrEmpty(v.discountActionLabel)
-            ? v.discountAccepted ? "Bớt giá" : "Đề nghị bớt giá"
+            ? (v.discountAccepted ? "Bớt giá" : "Đề nghị bớt giá") + (!traded && discountCount > 0 ? $" · {discountCount} bó" : "")
             : v.discountActionLabel;
         SetChoice(1, discountLabel, discountRevenue > 0 ? $"+{discountRevenue} xu" : "", CanDiscount);
         SetChoice(2, askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn",
@@ -406,7 +406,7 @@ public class ShopView : MonoBehaviour
         var v = Visit;
         if (!CanDiscount) return;
         traded = true;
-        int quantity = QuantityAvailable(v.discountQuantity);
+        int quantity = QuantityAvailable(DiscountQuantity(v));
         int revenue = DiscountUnitPrice(v) * quantity;
         S.stock -= quantity;
         if (v.discountPrice > 0) S.salesToday += quantity;
@@ -417,6 +417,13 @@ public class ShopView : MonoBehaviour
     }
 
     int DiscountUnitPrice(CustomerVisit visit) => visit.discountAccepted ? visit.discountPrice : visit.sellPrice;
+
+    // Bớt giá = bán đúng số bó khách định mua, nhưng rẻ hơn mỗi bó (2 bó × 6 xu thay vì 2 bó × 10 xu).
+    // Riêng biếu không (giá 0) và trao đổi đặc biệt (đổi rau lấy tin) giữ số bó ghi trong kịch bản.
+    static int DiscountQuantity(CustomerVisit visit) =>
+        visit.discountPrice > 0 && string.IsNullOrEmpty(visit.discountActionLabel) && visit.sellQuantity != 0
+            ? visit.sellQuantity
+            : visit.discountQuantity;
 
     void OnAsk()
     {

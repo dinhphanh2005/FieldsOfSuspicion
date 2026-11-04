@@ -120,7 +120,7 @@ public class DevAutoTour : MonoBehaviour
         if (day == 1)
         {
             Click("Giải sẵn lệnh"); yield return Wait(); yield return Shot($"N{day}_board_decoded");
-            Click("Tắt gợi ý"); yield return Wait(); yield return Shot($"N{day}_board_nohint");
+            // Giữ chế độ giải sẵn cả tuần: thẻ dài nhất (lệnh + lời giải) là trường hợp dễ tràn nhất
         }
         Click("Ruộng");
         yield return Wait();

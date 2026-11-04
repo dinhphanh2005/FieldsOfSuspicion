@@ -141,7 +141,10 @@ public class NightView : MonoBehaviour
             nodeIconRt.anchoredPosition = new Vector2(7, 0);
             UIFactory.Skin(UIFactory.MakeBox(nodeIconRt, Color.white, false), nodeIcon);
             var nodeLabel = b.GetComponentInChildren<TextMeshProUGUI>();
-            nodeLabel.rectTransform.offsetMin = new Vector2(31, 6);
+            nodeLabel.rectTransform.offsetMin = new Vector2(33, 6);
+            nodeLabel.rectTransform.offsetMax = new Vector2(-10, -6);   // chừa mép phải của tấm biển
+            var nodeFeel = b.GetComponent<ButtonFeel>();
+            if (nodeFeel) nodeFeel.content = null;                      // không nhích chữ khi rê/bấm: chữ dài sẽ chạm mép
             nodeLabel.textWrappingMode = TextWrappingModes.NoWrap;   // "Đường ven sông" không xuống dòng
             nodeLabel.enableAutoSizing = true;
             nodeLabel.fontSizeMin = 12;

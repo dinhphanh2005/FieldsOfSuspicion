@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 // Màn tiêu đề = bảng tin làng Sellowe (cùng chất liệu với màn bảng tin trong game):
 //   tờ áp phích lớn bên trái (tên game), các mẩu giấy ghim bên phải là menu.
-//   Easter egg: chữ cái đầu 5 câu trên áp phích ghép thành "DOC KY" (đọc kỹ) — đúng luật đọc lệnh mật của game.
 // Ván mới → "Lệnh điều động" hiện từng dòng trên tờ giấy (bấm để hiện tiếp) → ký nhận → đóng dấu → N1.
 // Một font duy nhất: font chữ của game (Be Vietnam Pro), tiêu đề chỉ in đậm.
 public class TitleView : MonoBehaviour
@@ -28,15 +27,6 @@ public class TitleView : MonoBehaviour
     RectTransform stamp;
     bool advance, skipping;
     float t;
-
-    static readonly string[] PosterBody =
-    {
-        "Đồn Lenmar nhắc lại lệnh giới nghiêm từ 10 giờ đêm.",
-        "Ở cuối xóm, nhà bà Mabry đã có người thuê.",
-        "Cà rốt mùa này ngọt, chợ phiên họp sáng thứ Bảy.",
-        "Kẻ lạ vào làng xin trình giấy ở đồn.",
-        "Yên tâm, Sellowe vẫn bình yên như mọi năm.",
-    };
 
     static readonly string[] OrderLines =
     {
@@ -70,16 +60,13 @@ public class TitleView : MonoBehaviour
         UIFactory.AddGrain(cork, 0.3f);
 
         // ---- Áp phích tên game ----
-        var poster = Note(cork, "Poster", 60, 46, 600, 500, "notice_cream", 0f, "pin_red");
+        var poster = Note(cork, "Poster", 60, 160, 600, 290, "notice_cream", 0f, "pin_red");
         Bold(UIFactory.Place(poster, "Kicker", 46, 46, 508, 22), "SELLOWE  ·  THÔNG BÁO", 14, UIFactory.Hex("8C3A2B")).characterSpacing = 4;
         var title = Bold(UIFactory.Place(poster, "Title", 44, 78, 520, 150), "CÁNH ĐỒNG\nNGỜ VỰC", 60, UIFactory.Ink);
         title.lineSpacing = -18;
         title.characterSpacing = 2;
         UIFactory.MakeBox(UIFactory.Place(poster, "Rule", 46, 236, 508, 2), UIFactory.Hex("3A2E25"), false);
-        var body = UIFactory.MakeText(UIFactory.Place(poster, "Body", 46, 256, 508, 172), string.Join(" ", PosterBody), 19, UIFactory.Ink);
-        body.lineSpacing = 12;
-        var sig = UIFactory.MakeText(UIFactory.Place(poster, "Sig", 46, 432, 508, 24), "Ban chợ Sellowe", 15, UIFactory.Muted, TextAlignmentOptions.TopRight);
-        sig.fontStyle = FontStyles.Italic;
+
 
         // ---- Menu: mẩu giấy ghim ----
         menuGroup = Column(cork, "Menu");

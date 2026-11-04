@@ -113,7 +113,7 @@ MonoBehaviour:
       replyVariants: []
     discount:
       tomas: "T\u00f4i b\u1edbt cho c\u00f4 n\u1eeda gi\u00e1."
-      reply: "Anh h\u00e0o ph\u00f3ng th\u1eadt. V\u1eady t\u00f4i t\u1eb7ng anh m\u1ed9t tin mi\u1ec5n ph\u00ed: kho th\u00f3c ph\u00eda T\u00e2y c\u1ee7a \u0111\u1ed3n \u0111ang {{b\u1ecf tr\u1ed1ng, kh\u00f4ng ai canh|K05}}. L\u00ednh r\u00fat \u0111i t\u1eeb h\u00f4m kia r\u1ed3i."
+      reply: "Anh h\u00e0o ph\u00f3ng th\u1eadt. Chuy\u1ec7n n\u00e0y t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: d\u1ea1o n\u00e0y \u0111\u1ed3n r\u00fat b\u1edbt l\u00ednh kh\u1ecfi m\u1ea5y ch\u1ed7 canh ngo\u00e0i l\u00e0ng. Ch\u1ed7 n\u00e0o th\u00ec ph\u1ea3i tr\u1ea3 ti\u1ec1n."
       replyVariants: []
     ask:
       tomas: "H\u00f4m nay c\u00f3 tin g\u00ec \u0111\u00e1ng ti\u1ec1n kh\u00f4ng?"
