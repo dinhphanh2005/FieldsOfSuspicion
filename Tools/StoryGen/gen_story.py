@@ -182,7 +182,7 @@ def main():
             body += (f"\n  - customer: {ref(cust[v['customer']])}\n    requiredMomentum: 0\n"
                      f"    entrance: {q(v.get('entrance', ''))}\n    entranceVariants: {variants(v.get('entranceV'), 4)}\n"
                      f"    greeting: {q(v['greeting'])}\n    greetingVariants: {variants(v.get('greetingV'), 4)}\n"
-                     f"    askCost: {v.get('askCost', 0)}\n    sellPrice: {v.get('sellPrice', 10)}\n    discountPrice: {v.get('discountPrice', 6)}\n"
+                     f"    askCost: {v.get('askCost', 0)}\n    sellPrice: {v.get('sellPrice', 7)}\n    discountPrice: {v.get('discountPrice', 4)}\n"
                      f"    sellQuantity: {v.get('sellQty', 1)}\n    discountQuantity: {v.get('discountQty', 1)}\n"
                      f"    discountActionLabel: {q(v.get('discountLabel', ''))}\n    discountAccepted: {0 if v.get('noDiscount') else 1}\n"
                      f"    pressSuspicion: {v.get('pressSus', 1)}\n")

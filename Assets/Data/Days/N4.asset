@@ -33,8 +33,8 @@ MonoBehaviour:
     greeting: "L\u1ea1i l\u00e0 t\u00f4i. B\u1ebfp b\u1ea3o thi\u1ebfu h\u00e0nh, thi\u1ebfu c\u00e0 r\u1ed1t, thi\u1ebfu \u0111\u1ee7 th\u1ee9."
     greetingVariants: []
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 2
     discountQuantity: 1
     discountActionLabel: ""
@@ -69,8 +69,8 @@ MonoBehaviour:
     greeting: "Cho t\u00f4i m\u1ed9t b\u00f3 c\u00e0 r\u1ed1t. Mai t\u00f4i c\u00f2n ph\u1ea3i lo c\u1ea3 b\u1eefa t\u1ed1i cho ng\u01b0\u1eddi ta."
     greetingVariants: []
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""
@@ -104,8 +104,8 @@ MonoBehaviour:
     entranceVariants: []
     greeting: "Anh n\u00f4ng d\u00e2n! H\u00f4m nay t\u00f4i c\u00f3 m\u1ed9t tin h\u01a1i n\u1eb7ng."
     greetingVariants: []
-    askCost: 5
-    sellPrice: 10
+    askCost: 8
+    sellPrice: 7
     discountPrice: 0
     sellQuantity: 0
     discountQuantity: 1
@@ -118,11 +118,11 @@ MonoBehaviour:
       replyVariants: []
     discount:
       tomas: "C\u00f4 c\u1ee9 l\u1ea5y m\u1ed9t b\u00f3, k\u1ec3 t\u00f4i nghe chuy\u1ec7n g\u00ec \u0111i."
-      reply: "Chuy\u1ec7n n\u00e0y th\u00ec t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i. C\u00f2n tin n\u1eb7ng th\u00ec v\u1eabn n\u0103m xu."
+      reply: "Chuy\u1ec7n n\u00e0y th\u00ec t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i. C\u00f2n tin n\u1eb7ng th\u00ec t\u00e1m xu."
       replyVariants: []
     ask:
       tomas: "Tin g\u00ec m\u00e0 n\u1eb7ng th\u1ebf?"
-      reply: "N\u0103m xu. ...Ng\u01b0\u1eddi ta \u0111\u1ed3n {{c\u00f3 ng\u01b0\u1eddi ph\u00eda Straka \u0111ang b\u00e1n tin cho Lenmar|K14}}. Ai th\u00ec t\u00f4i kh\u00f4ng bi\u1ebft. Nh\u01b0ng n\u1ebfu t\u00f4i l\u00e0 anh, t\u00f4i s\u1ebd kh\u00f4ng tin h\u1ebft nh\u1eefng g\u00ec m\u00ecnh \u0111\u1ecdc tr\u00ean b\u1ea3ng tin."
+      reply: "T\u00e1m xu. Tin n\u1eb7ng th\u00ec gi\u00e1 c\u0169ng n\u1eb7ng. ...Ng\u01b0\u1eddi ta \u0111\u1ed3n {{c\u00f3 ng\u01b0\u1eddi ph\u00eda Straka \u0111ang b\u00e1n tin cho Lenmar|K14}}. Ai th\u00ec t\u00f4i kh\u00f4ng bi\u1ebft. Nh\u01b0ng n\u1ebfu t\u00f4i l\u00e0 anh, t\u00f4i s\u1ebd kh\u00f4ng tin h\u1ebft nh\u1eefng g\u00ec m\u00ecnh \u0111\u1ecdc tr\u00ean b\u1ea3ng tin."
       replyVariants: []
     press:
       tomas: "C\u00f4 nghe ai n\u00f3i?"

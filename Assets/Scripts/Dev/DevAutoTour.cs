@@ -173,6 +173,9 @@ public class DevAutoTour : MonoBehaviour
         {
             yield return Shot($"N{day}_shop_v{k}_greet");
             if (Script.TryGetValue($"{day}_{k}", out var acts))
+            {
+                // Đường Shrike: mua tin của Sable N2 để có manh mối "kho thóc bỏ trống" (mồi nhử)
+                if (plan == "shrike" && day == 2 && k == 2) acts = new[] { "ask" };
                 foreach (var a in acts)
                 {
                     bool ok = a == "ask" ? Click("Hỏi chuyện") : a == "press" ? Click("Hỏi dồn")
@@ -183,6 +186,7 @@ public class DevAutoTour : MonoBehaviour
                     yield return Wait(0.3f);
                     yield return Shot($"N{day}_shop_v{k}_{a}");
                 }
+            }
             if (!Click("Tiễn khách")) Log("  (khách đã tự về)");
             yield return Wait(0.3f);
             yield return Shot($"N{day}_shop_v{k}_leave");

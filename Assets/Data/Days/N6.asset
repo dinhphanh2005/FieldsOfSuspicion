@@ -34,8 +34,8 @@ MonoBehaviour:
       param: "C3"
       text: "C\u1eadu nghe chuy\u1ec7n ch\u01b0a? Xe c\u1ee7a \u0111\u1ea1i \u00fay b\u1ecb ch\u1eb7n ngay tr\u00ean \u0111\u01b0\u1eddng t\u1eeb nh\u00e0 t\u00f4i v\u1ec1. L\u00ednh h\u1ecfi t\u00f4i c\u1ea3 bu\u1ed5i s\u00e1ng."
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""
@@ -69,9 +69,9 @@ MonoBehaviour:
     entranceVariants: []
     greeting: "Anh n\u00f4ng d\u00e2n, t\u1ed1i qua t\u00f4i v\u1ec1 mu\u1ed9n, th\u1ea5y m\u1ed9t chuy\u1ec7n hay l\u1eafm."
     greetingVariants: []
-    askCost: 5
-    sellPrice: 10
-    discountPrice: 5
+    askCost: 10
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""
@@ -87,7 +87,7 @@ MonoBehaviour:
       replyVariants: []
     ask:
       tomas: "Chuy\u1ec7n g\u00ec th\u1ebf?"
-      reply: "N\u0103m xu. ...G\u1ea7n s\u00e1ng, c\u00f3 {{m\u1ed9t ng\u01b0\u1eddi tr\u00f9m \u00e1o \u0111i b\u1ed9 v\u1ec1 ph\u00eda l\u00f2 g\u1ea1ch|K16}}, t\u1eeb nh\u00e0 Vaule ra. Kh\u00f4ng l\u00ean xe c\u1ee7a \u0111\u1ea1i \u00fay, c\u1ee9 th\u1ebf \u0111i b\u1ed9, nh\u01b0 s\u1ee3 ai nh\u00ecn th\u1ea5y."
+      reply: "M\u01b0\u1eddi xu. T\u00f4i \u0111\u00e3 b\u1ea3o h\u00f4m kh\u00e1c tin s\u1ebd \u0111\u1eaft h\u01a1n m\u00e0. ...G\u1ea7n s\u00e1ng, c\u00f3 {{m\u1ed9t ng\u01b0\u1eddi tr\u00f9m \u00e1o \u0111i b\u1ed9 v\u1ec1 ph\u00eda l\u00f2 g\u1ea1ch|K16}}, t\u1eeb nh\u00e0 Vaule ra. Kh\u00f4ng l\u00ean xe c\u1ee7a \u0111\u1ea1i \u00fay, c\u1ee9 th\u1ebf \u0111i b\u1ed9, nh\u01b0 s\u1ee3 ai nh\u00ecn th\u1ea5y."
       replyVariants: []
     press:
       tomas: "C\u00f4 c\u00f3 nh\u00ecn r\u00f5 m\u1eb7t kh\u00f4ng?"

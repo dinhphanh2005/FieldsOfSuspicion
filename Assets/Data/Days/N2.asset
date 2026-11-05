@@ -28,8 +28,8 @@ MonoBehaviour:
     greeting: "Ch\u00e0o c\u1eadu. T\u00f4i l\u00e0 Perrin, qu\u1ea3n gia b\u00ean nh\u00e0 Vaule. B\u1ebfp nh\u00e0 t\u00f4i c\u1ea7n rau s\u1ea1ch, m\u00e0 ngo\u00e0i ch\u1ee3 to\u00e0n rau h\u00e9o c\u1ea3."
     greetingVariants: []
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""
@@ -64,8 +64,8 @@ MonoBehaviour:
     greeting: "L\u1ea1i l\u00e0 t\u00f4i \u0111\u00e2y. H\u00f4m nay t\u00f4i c\u1ea7n nhi\u1ec1u h\u01a1n, t\u1ed1i nay \u0111\u1ed3n b\u1eadn."
     greetingVariants: []
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 2
     discountQuantity: 1
     discountActionLabel: ""
@@ -100,8 +100,8 @@ MonoBehaviour:
     greeting: "Ch\u00e0o anh n\u00f4ng d\u00e2n! T\u00f4i c\u00f3 kim ch\u1ec9, x\u00e0 ph\u00f2ng, v\u00e0 c\u1ea3 tin t\u1ee9c. Th\u1ee9 cu\u1ed1i c\u00f9ng th\u00ec \u0111\u1eaft h\u01a1n m\u1ed9t ch\u00fat."
     greetingVariants: []
     askCost: 5
-    sellPrice: 10
-    discountPrice: 5
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""

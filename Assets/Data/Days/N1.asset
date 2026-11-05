@@ -28,8 +28,8 @@ MonoBehaviour:
     greeting: "C\u1eadu l\u00e0 ng\u01b0\u1eddi m\u1edbi thu\u00ea nh\u00e0 b\u00e0 Mabry \u0111\u1ea5y \u00e0? T\u00f4i l\u00e0 Emel, trung \u00fay \u1edf \u0111\u1ed3n. T\u1eeb gi\u1edd t\u00f4i s\u1ebd gh\u00e9 mua rau cho b\u1ebfp \u0103n c\u1ee7a l\u00ednh."
     greetingVariants: []
     askCost: 0
-    sellPrice: 10
-    discountPrice: 6
+    sellPrice: 7
+    discountPrice: 4
     sellQuantity: 1
     discountQuantity: 1
     discountActionLabel: ""

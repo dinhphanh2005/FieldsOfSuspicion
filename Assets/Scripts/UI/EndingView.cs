@@ -59,7 +59,11 @@ public class EndingView : MonoBehaviour
         {
             var drop = s.DropFor(c.id);
             string verdict = drop == null ? "<color=#8C7B6B>không gửi</color>"
-                           : drop.correct ? "<color=#4F7F4A>ĐÚNG</color>" : "<color=#A82C1F>SAI</color>";
+                           : drop.correct ? "<color=#4F7F4A>ĐÚNG</color>"
+                           // Báo cáo cuối: nêu đúng tên kẻ phản bội nhưng bằng chứng không chứng minh được
+                           : c.isFinal && drop.answers.Count > 0 && CaseEvaluator.SlotCorrect(c, 0, drop.answers[0])
+                               ? "<color=#A8741F>ĐÚNG NGƯỜI · bằng chứng yếu</color>"
+                           : "<color=#A82C1F>SAI</color>";
             sb.Append($"• {c.title}: {verdict}");
             if (drop != null) sb.Append("  <size=85%><color=#8C7B6B>« " + StripTags(CaseEvaluator.Sentence(c, drop.answers, dm.FindIntel, "{0}", "…")) + " »</color></size>");
             sb.Append('\n');
