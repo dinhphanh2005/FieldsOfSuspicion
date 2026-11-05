@@ -71,9 +71,9 @@ public class TitleView : MonoBehaviour
 
         settingsGroup = Column(cork, "Settings");
         var scol = (RectTransform)settingsGroup.transform;
-        MenuNote(scol, 0, "Toàn màn hình", "", "notice_blue", -0.8f, "pin_red", () => { dm.ToggleFullscreen(); RefreshSettings(); }, out var s0);
+        MenuNote(scol, 0, "Toàn màn hình", "", "notice_blue", -0.8f, "pin_red", () => { dm.ToggleFullscreen(); StartCoroutine(RefreshLater()); }, out var s0);
         MenuNote(scol, 1, "Âm lượng", "", "notice_cream", 1.2f, "pin_brass", () => { dm.CycleVolume(); RefreshSettings(); }, out var s1);
-        MenuNote(scol, 2, "Độ phân giải", "", "notice_green", -1.2f, "pin_blue", () => { dm.CycleResolution(); RefreshSettings(); }, out var s2);
+        MenuNote(scol, 2, "Độ phân giải", "", "notice_green", -1.2f, "pin_blue", () => { dm.CycleResolution(); StartCoroutine(RefreshLater()); }, out var s2);
         MenuNote(scol, 3, "Quay lại", "", "notice_pink", 1.0f, "pin_red", () => StartCoroutine(Swap(settingsGroup, menuGroup)), out _);
         settingSubs.AddRange(new[] { s0, s1, s2 });
         Hide(settingsGroup);
@@ -236,12 +236,20 @@ public class TitleView : MonoBehaviour
         else gameObject.SetActive(false);
     }
 
+    IEnumerator RefreshLater()
+    {
+        RefreshSettings();
+        yield return null;
+        yield return null;
+        RefreshSettings();
+    }
+
     void RefreshSettings()
     {
         if (settingSubs.Count < 3) return;
         settingSubs[0].text = Screen.fullScreen ? "Đang bật" : "Đang tắt";
         settingSubs[1].text = $"{Mathf.RoundToInt(AudioListener.volume * 100)}%  · bấm để đổi";
-        settingSubs[2].text = $"{Screen.width} × {Screen.height}";
+        settingSubs[2].text = Screen.fullScreen ? $"{Screen.width} × {Screen.height}" : $"{Screen.width} × {Screen.height} · kéo góc cửa sổ để đổi cỡ";
     }
 
     void SkipIntro() { skipping = true; advance = true; }

@@ -180,8 +180,44 @@ public class DayManager : MonoBehaviour
 
     public void ToggleFullscreen()
     {
-        Screen.fullScreen = !Screen.fullScreen;
-        PlayerPrefs.SetInt("FoS.Fullscreen", Screen.fullScreen ? 1 : 0);
+        bool full = !Screen.fullScreen;
+        if (full)
+        {
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
+        }
+        else
+        {
+            var size = DefaultWindowSize();
+            Screen.SetResolution(size.x, size.y, FullScreenMode.Windowed);
+            PlayerPrefs.SetInt("FoS.Width", size.x);
+            PlayerPrefs.SetInt("FoS.Height", size.y);
+        }
+        PlayerPrefs.SetInt("FoS.Fullscreen", full ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    // Cửa sổ mặc định: khung 16:9 chiếm khoảng 80% màn hình thật, không phụ thuộc máy to hay nhỏ.
+    static Vector2Int DefaultWindowSize()
+    {
+        float scale = Mathf.Min(Display.main.systemWidth * 0.8f / UIFactory.RefWidth, Display.main.systemHeight * 0.8f / UIFactory.RefHeight);
+        return new Vector2Int(Mathf.RoundToInt(UIFactory.RefWidth * scale), Mathf.RoundToInt(UIFactory.RefHeight * scale));
+    }
+
+    static Vector2Int[] ResolutionChoices()
+    {
+        var list = Screen.resolutions.Select(r => new Vector2Int(r.width, r.height))
+                         .Where(r => r.x >= 800 && r.y >= 600)
+                         .Distinct().OrderBy(r => r.x * r.y).ToList();
+        var native = new Vector2Int(Display.main.systemWidth, Display.main.systemHeight);
+        if (!list.Contains(native)) list.Add(native);
+        return list.ToArray();
+    }
+
+    void OnApplicationQuit()
+    {
+        if (Screen.fullScreen) return;
+        PlayerPrefs.SetInt("FoS.Width", Screen.width);
+        PlayerPrefs.SetInt("FoS.Height", Screen.height);
         PlayerPrefs.Save();
     }
 
@@ -195,14 +231,14 @@ public class DayManager : MonoBehaviour
 
     public void CycleResolution()
     {
-        var resolutions = Screen.resolutions;
-        if (resolutions == null || resolutions.Length == 0) return;
-        int current = System.Array.FindIndex(resolutions, r => r.width == Screen.width && r.height == Screen.height);
-        var next = resolutions[(current + 1 + resolutions.Length) % resolutions.Length];
+        var choices = ResolutionChoices();
+        if (choices.Length == 0) return;
+        int current = System.Array.FindIndex(choices, r => r.x == Screen.width && r.y == Screen.height);
+        var next = choices[(current + 1) % choices.Length];
         var mode = Screen.fullScreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
-        Screen.SetResolution(next.width, next.height, mode, next.refreshRateRatio);
-        PlayerPrefs.SetInt("FoS.Width", next.width);
-        PlayerPrefs.SetInt("FoS.Height", next.height);
+        Screen.SetResolution(next.x, next.y, mode);
+        PlayerPrefs.SetInt("FoS.Width", next.x);
+        PlayerPrefs.SetInt("FoS.Height", next.y);
         PlayerPrefs.Save();
     }
 
@@ -230,11 +266,15 @@ public class DayManager : MonoBehaviour
 
     void ApplySettings()
     {
-        Screen.fullScreen = PlayerPrefs.GetInt("FoS.Fullscreen", 1) == 1;
         AudioListener.volume = PlayerPrefs.GetFloat("FoS.Volume", 1f);
+#if !UNITY_EDITOR
+        bool full = PlayerPrefs.GetInt("FoS.Fullscreen", 1) == 1;
         int width = PlayerPrefs.GetInt("FoS.Width", 0);
         int height = PlayerPrefs.GetInt("FoS.Height", 0);
-        if (width > 0 && height > 0) Screen.SetResolution(width, height, Screen.fullScreen);
+        if (full) Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
+        else if (width > 0 && height > 0) Screen.SetResolution(width, height, FullScreenMode.Windowed);
+        else { var size = DefaultWindowSize(); Screen.SetResolution(size.x, size.y, FullScreenMode.Windowed); }
+#endif
     }
 
     public static void QuitGame()

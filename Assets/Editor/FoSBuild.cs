@@ -24,6 +24,9 @@ public static class FoSBuild
     {
         if (EditorApplication.isPlaying) { Debug.LogWarning("[Build] Thoát Play mode trước khi build."); return; }
         Directory.CreateDirectory(Root);
+        PlayerSettings.resizableWindow = true;
+        PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
+        PlayerSettings.defaultIsNativeResolution = true;
         var original = EditorUserBuildSettings.activeBuildTarget;
         var log = new StringBuilder();
         string[] scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();

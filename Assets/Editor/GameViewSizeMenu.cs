@@ -9,6 +9,9 @@ public static class GameViewSizeMenu
     [MenuItem("FoS/Dev/Khung hình/16:10 (1440x900)")] static void Mac() => Set(1440, 900);
     [MenuItem("FoS/Dev/Khung hình/4:3 (1024x768)")] static void Classic() => Set(1024, 768);
     [MenuItem("FoS/Dev/Khung hình/21:9 (2520x1080)")] static void Ultra() => Set(2520, 1080);
+    [MenuItem("FoS/Dev/Khung hình/Nhỏ 800x600")] static void Small() => Set(800, 600);
+    [MenuItem("FoS/Dev/Khung hình/Laptop 1366x768")] static void Laptop() => Set(1366, 768);
+    [MenuItem("FoS/Dev/Khung hình/4K 3840x2160")] static void Uhd() => Set(3840, 2160);
 
     // Unity không có API công khai để đổi khung Game view, nên dùng reflection vào GameViewSizes (chỉ dùng trong Editor để kiểm tra bố cục).
     static void Set(int w, int h)
