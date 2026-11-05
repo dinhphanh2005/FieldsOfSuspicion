@@ -106,7 +106,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "Kh\u00e1ch \u0111i m\u1ed9t m\u00ecnh hay c\u00f3 l\u00ednh theo h\u1ea3 b\u00e1c?"
-      reply: "T\u00f4i ch\u1ec9 l\u00e0 ng\u01b0\u1eddi m\u1edf c\u1eeda th\u00f4i, c\u1eadu \u1ea1. \u0110\u1eebng h\u1ecfi l\u00e0m t\u00f4i s\u1ee3."
+      reply: "T\u00f4i ch\u1ec9 l\u00e0 ng\u01b0\u1eddi m\u1edf c\u1eeda th\u00f4i, c\u1eadu \u1ea1. ...M\u00e0 \u00f4ng ch\u1ee7 d\u1eb7n t\u1ed1i nay m\u1edf c\u1eeda sau, kh\u00f4ng m\u1edf c\u1eeda ch\u00ednh. Kh\u00e1ch g\u00ec m\u00e0 ph\u1ea3i \u0111i c\u1eeda sau, c\u1eadu nh\u1ec9?"
       replyVariants: []
     farewell:
       tomas: "Ch\u00fac b\u00e1c t\u1ed1i nay \u00eam \u1ea3."

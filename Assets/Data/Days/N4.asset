@@ -93,7 +93,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "\u0110\u1ea1i \u00fay h\u1eb9n \u0103n t\u1ed1i v\u1edbi ai v\u1eady ch\u1ecb?"
-      reply: "Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec \u0111\u1ebfn t\u00f4i c\u00f2n kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi, c\u1eadu l\u1ea1i c\u00e0ng kh\u00f4ng."
+      reply: "Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec \u0111\u1ebfn t\u00f4i c\u00f2n kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi. ...T\u00f4i ch\u1ec9 bi\u1ebft \u00f4ng \u1ea5y d\u1eb7n nh\u00e0 Vaule d\u1ecdn b\u00e0n cho ba ng\u01b0\u1eddi. \u00d4ng Vaule, \u0111\u1ea1i \u00fay, c\u00f2n ai n\u1eefa th\u00ec t\u00f4i ch\u1ecbu."
       replyVariants: []
     farewell:
       tomas: "Ch\u1ecb v\u1ec1 k\u1ebbo \u01b0\u1edbt."
@@ -129,7 +129,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "C\u00f4 nghe ai n\u00f3i?"
-      reply: "Ngu\u1ed3n tin l\u00e0 n\u1ed3i c\u01a1m c\u1ee7a t\u00f4i, anh n\u00f4ng d\u00e2n. H\u00f4m nay anh h\u1ecfi c\u00f2n nhi\u1ec1u h\u01a1n c\u1ea3 l\u00ednh \u0111\u1ed3n \u0111\u1ea5y."
+      reply: "Ngu\u1ed3n tin l\u00e0 n\u1ed3i c\u01a1m c\u1ee7a t\u00f4i, anh n\u00f4ng d\u00e2n. ...Th\u00f4i \u0111\u01b0\u1ee3c, k\u1ec3 m\u1ed9t n\u1eeda: ng\u01b0\u1eddi n\u00f3i v\u1edbi t\u00f4i l\u00e0 m\u1ed9t tay l\u00ednh \u0111\u1ed3n say r\u01b0\u1ee3u. L\u00ednh Lenmar m\u00e0 l\u1ea1i r\u00e0nh chuy\u1ec7n trong nh\u00e0 Straka, anh kh\u00f4ng th\u1ea5y l\u1ea1 \u00e0?"
       replyVariants: []
     farewell:
       tomas: "H\u1eb9n c\u00f4 h\u00f4m kh\u00e1c."
