@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class HudView : MonoBehaviour
 {
+    static readonly string[] DayShort = { "CN", "T2", "T3", "T4", "T5", "T6", "T7" };
+
     DayManager dm;
     TextMeshProUGUI phase, info, susLabel;
     Image susPill;
@@ -132,18 +134,19 @@ public class HudView : MonoBehaviour
         if (detailBox.gameObject.activeSelf)
         {
             var sb = new StringBuilder();
-            sb.Append($"<b>Cửa sổ {SuspicionRules.WindowNights} đêm: {w} / {SuspicionRules.BurnThreshold}</b>" +
-                      $"  <color=#9C8C7B>(cộng dồn cả ván: {s.SuspicionTotal})</color>\n");
+            sb.Append($"<b>Nghi ngờ hiện tại: {w} / {SuspicionRules.BurnThreshold}</b>" +
+                      $"  <color=#9C8C7B>(tính {SuspicionRules.WindowNights} đêm gần nhất · cả tuần: {s.SuspicionTotal})</color>\n");
             for (int c = 0; c < 4; c++)
             {
                 var ch = (SuspicionChannel)c;
                 sb.Append($"• {SuspicionRules.ChannelName(ch)}: {s.ChannelWindow(ch)}" +
                           (s.pendingByChannel[c] > 0 ? $"  <color=#E0B04B>(+{s.pendingByChannel[c]} hôm nay)</color>" : "") + "\n");
             }
-            sb.Append("<color=#9C8C7B>Từng đêm: ");
-            for (int n = 0; n < s.nightlySuspicion.Count; n++) sb.Append($"N{n + 1}={s.nightlySuspicion[n]}  ");
-            sb.Append("\n<size=90%>Điểm hôm nay được chốt lúc tổng kết. Chỉ 3 đêm gần nhất được tính: " +
-                      "nằm im vài đêm thì nghi ngờ giảm dần.</size></color>");
+            sb.Append("<color=#9C8C7B>Theo đêm: ");
+            for (int n = 0; n < s.nightlySuspicion.Count; n++)
+                sb.Append((n > 0 ? "  ·  " : "") + $"{DayShort[Mathf.Min(n, DayShort.Length - 1)]} {s.nightlySuspicion[n]}");
+            sb.Append($"\n<size=90%>Mỗi tối điểm được chốt. Chuyện quá {SuspicionRules.WindowNights} đêm thì làng quên dần. " +
+                      $"Chạm {SuspicionRules.BurnThreshold} là bị lộ.</size></color>");
             string d = sb.ToString();
             if (d != lastDetail) { detail.text = d; lastDetail = d; }
         }

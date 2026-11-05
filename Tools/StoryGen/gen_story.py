@@ -61,8 +61,10 @@ def variants(vs, indent):
 def line(name, l, indent=4):
     pad = ' ' * indent
     tomas, reply, vs = (l + ([],))[:3] if len(l) == 2 else l
-    return (f'{pad}{name}:\n{pad}  tomas: {q(tomas)}\n{pad}  reply: {q(reply)}\n'
-            f'{pad}  replyVariants: {variants(vs, indent + 2)}\n')
+    reply_vs = [v for v in vs if len(v) == 3]
+    tomas_vs = [v[1:] for v in vs if len(v) == 4 and v[0] == 'T']
+    return (f'{pad}{name}:\n{pad}  tomas: {q(tomas)}\n{pad}  tomasVariants: {variants(tomas_vs, indent + 2)}\n'
+            f'{pad}  reply: {q(reply)}\n{pad}  replyVariants: {variants(reply_vs, indent + 2)}\n')
 
 
 def strip_accents(s):
@@ -90,7 +92,7 @@ def check():
                 l = v.get(k)
                 if l:
                     texts.append((d['day'], v['customer'], l[1]))
-                    for vv in (l[2] if len(l) > 2 else []): texts.append((d['day'], v['customer'], vv[2]))
+                    for vv in (l[2] if len(l) > 2 else []): texts.append((d['day'], v['customer'], vv[-1]))
     for day, who, t in texts:
         for cid in re.findall(r'\{\{.+?\|(\w+)\}\}', t or ''):
             if cid not in clue_ids: errors.append(f'N{day} {who}: manh mối {cid} không tồn tại')

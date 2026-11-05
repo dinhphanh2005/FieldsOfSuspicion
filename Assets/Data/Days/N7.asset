@@ -44,25 +44,30 @@ MonoBehaviour:
     pressSuspicion: 2
     sell:
       tomas: "Ch\u1ecb l\u1ea5y bao nhi\u00eau \u1ea1?"
-      reply: "Ba b\u00f3. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n."
+      tomasVariants: []
+      reply: "Ba b\u00f3. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n.\n*Emel tr\u1ea3 ti\u1ec1n nh\u01b0ng ch\u01b0a \u0111i ngay. C\u00f4 \u0111\u1ee9ng nh\u00ecn d\u00f2ng ng\u01b0\u1eddi ngo\u00e0i ch\u1ee3.*"
       replyVariants: []
     discount:
       tomas: "H\u00f4m nay ch\u1ee3 phi\u00ean, em b\u1edbt cho ch\u1ecb."
-      reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi l\u00e0m \u0103n t\u1eed t\u1ebf."
+      tomasVariants: []
+      reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi l\u00e0m \u0103n t\u1eed t\u1ebf.\n*Emel tr\u1ea3 ti\u1ec1n nh\u01b0ng ch\u01b0a \u0111i ngay. C\u00f4 \u0111\u1ee9ng nh\u00ecn d\u00f2ng ng\u01b0\u1eddi ngo\u00e0i ch\u1ee3.*"
       replyVariants: 
       - condition: 8
         param: ""
-        text: "T\u00f4i kh\u00f4ng c\u1ea7n c\u1eadu b\u1edbt. T\u00f4i c\u1ea7n c\u1eadu n\u00f3i th\u1eadt."
+        text: "T\u00f4i kh\u00f4ng c\u1ea7n c\u1eadu b\u1edbt. T\u00f4i c\u1ea7n c\u1eadu n\u00f3i th\u1eadt.\n*Emel tr\u1ea3 \u0111\u1ee7 ti\u1ec1n, \u0111\u1eb7t m\u1ea1nh xu\u1ed1ng qu\u1ea7y.*"
     ask:
       tomas: "Tu\u1ea7n n\u00e0y \u0111\u1ed3n m\u1ec7t ch\u1ecb nh\u1ec9?"
-      reply: "M\u1ec7t. T\u1ed1i nay c\u1ea3 \u0111\u1ed3n ra g\u00e1c ch\u1ee3 phi\u00ean, t\u1eeb qu\u1ea3ng tr\u01b0\u1eddng ra t\u1edbi b\u1edd s\u00f4ng. C\u00f2n c\u00e1i danh s\u00e1ch ng\u01b0\u1eddi ra \u0111\u01b0\u1eddng \u0111\u00eam c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec t\u00f4i mong l\u00e0 kh\u00f4ng c\u00f3 t\u00ean c\u1eadu."
+      tomasVariants: []
+      reply: "M\u1ec7t. T\u1ed1i nay c\u1ea3 \u0111\u1ed3n ra g\u00e1c ch\u1ee3 phi\u00ean, t\u1eeb qu\u1ea3ng tr\u01b0\u1eddng ra t\u1edbi b\u1edd s\u00f4ng.\n*Emel kh\u00f4ng nh\u00ecn Tomas.*\nC\u00f2n c\u00e1i danh s\u00e1ch ng\u01b0\u1eddi ra \u0111\u01b0\u1eddng \u0111\u00eam c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec t\u00f4i mong l\u00e0 kh\u00f4ng c\u00f3 t\u00ean c\u1eadu."
       replyVariants: []
     press:
       tomas: "Danh s\u00e1ch \u0111\u00f3 c\u00f3 nh\u1eefng ai h\u1ea3 ch\u1ecb?"
-      reply: "\u0110\u00fang c\u00e2u t\u00f4i kh\u00f4ng mu\u1ed1n nghe nh\u1ea5t, Tomas."
+      tomasVariants: []
+      reply: "*Emel quay h\u1eb3n l\u1ea1i.*\n\u0110\u00fang c\u00e2u t\u00f4i kh\u00f4ng mu\u1ed1n nghe nh\u1ea5t, Tomas."
       replyVariants: []
     farewell:
       tomas: "Ch\u00fac ch\u1ecb cu\u1ed1i tu\u1ea7n vui."
+      tomasVariants: []
       reply: "C\u1eadu c\u0169ng v\u1eady, Tomas."
       replyVariants: 
       - condition: 8

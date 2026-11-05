@@ -71,7 +71,7 @@ public class EndingView : MonoBehaviour
         int shrikeDone = s.handlerOrderResults.Count(r => r.handler == Handler.Shrike && r.followed);
         sb.Append($"Làm theo lệnh Rook: {rookDone}/{rookAll} · lệnh Shrike: {shrikeDone}/{shrikeAll}\n");
         sb.Append($"Manh mối đã ghi: {s.fragments.Count} · Tiền còn: {s.money} xu · Kết thúc ở đêm {GameState.WeekdayOf(s.day).ToLower()}\n");
-        sb.Append($"<color=#8C7B6B><size=90%>Nghi ngờ 3 đêm cuối: {s.SuspicionWindow}/{SuspicionRules.BurnThreshold} · cộng dồn cả ván: {s.SuspicionTotal}</size></color>");
+        sb.Append($"<color=#8C7B6B><size=90%>Nghi ngờ lúc kết thúc: {s.SuspicionWindow}/{SuspicionRules.BurnThreshold} (tính {SuspicionRules.WindowNights} đêm cuối) · cả tuần: {s.SuspicionTotal}</size></color>");
         stats.text = sb.ToString();
         UIFactory.FitHeight(card, 590);
     }

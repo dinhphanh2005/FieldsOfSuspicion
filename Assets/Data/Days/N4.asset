@@ -41,26 +41,31 @@ MonoBehaviour:
     discountAccepted: 1
     pressSuspicion: 1
     sell:
-      tomas: "B\u00e1c l\u1ea5y nh\u01b0 h\u00f4m qua nh\u00e9?"
-      reply: "Hai b\u00f3. Kh\u00e1ch s\u1eafp t\u1edbi r\u1ed3i."
+      tomas: "H\u00e0nh th\u00ec ch\u00e1u kh\u00f4ng c\u00f3, c\u00f2n c\u00e0 r\u1ed1t th\u00ec b\u00e1c l\u1ea5y nh\u01b0 h\u00f4m qua nh\u00e9?"
+      tomasVariants: []
+      reply: "Hai b\u00f3. Kh\u00e1ch s\u1eafp t\u1edbi r\u1ed3i, c\u1ea3 nh\u00e0 cu\u1ed1ng h\u1ebft c\u1ea3 l\u00ean.\n*Perrin nh\u00e9t b\u00f3 rau v\u00e0o gi\u1ecf, \u0111\u00e8 l\u00ean m\u1ea5y c\u1ee7 h\u00e0nh.*"
       replyVariants: []
     discount:
       tomas: "B\u00e1c l\u00e0 kh\u00e1ch quen r\u1ed3i, ch\u00e1u b\u1edbt cho b\u00e1c."
-      reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi t\u1ed1t. Coi nh\u01b0 t\u00f4i tr\u1ea3 \u01a1n: \u00f4ng ch\u1ee7 b\u1ea3o ph\u1ea3i d\u1ecdn xong m\u1ecdi th\u1ee9 tr\u01b0\u1edbc {{t\u1ed1i th\u1ee9 N\u0103m|K11}}. V\u1eady l\u00e0 mai \u0111\u1ea5y, ch\u1ee9 ch\u1eb3ng ph\u1ea3i cu\u1ed1i tu\u1ea7n nh\u01b0 t\u00f4i t\u01b0\u1edfng."
+      tomasVariants: []
+      reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi t\u1ed1t. Coi nh\u01b0 t\u00f4i tr\u1ea3 \u01a1n: \u00f4ng ch\u1ee7 b\u1ea3o ph\u1ea3i d\u1ecdn xong m\u1ecdi th\u1ee9 tr\u01b0\u1edbc {{t\u1ed1i th\u1ee9 N\u0103m|K11}}.\n*Perrin \u0111\u1ebfm \u0111\u1ebfm tr\u00ean \u0111\u1ea7u ng\u00f3n tay, r\u1ed3i gi\u1eadt m\u00ecnh.*\nV\u1eady l\u00e0 mai \u0111\u1ea5y, ch\u1ee9 ch\u1eb3ng ph\u1ea3i cu\u1ed1i tu\u1ea7n nh\u01b0 t\u00f4i t\u01b0\u1edfng."
       replyVariants: []
     ask:
       tomas: "Kh\u00e1ch s\u1eafp t\u1edbi ch\u01b0a b\u00e1c?"
-      reply: "S\u1eafp r\u1ed3i. Ng\u01b0\u1eddi ta n\u00f3i l\u00e0 {{m\u1ed9t s\u0129 quan Lenmar|K12}}, nh\u01b0ng \u00f4ng ch\u1ee7 ch\u1eb3ng n\u00f3i v\u1edbi t\u00f4i t\u00ean tu\u1ed5i g\u00ec c\u1ea3."
+      tomasVariants: []
+      reply: "S\u1eafp r\u1ed3i. Ng\u01b0\u1eddi ta n\u00f3i l\u00e0 {{m\u1ed9t s\u0129 quan Lenmar|K12}}, nh\u01b0ng \u00f4ng ch\u1ee7 ch\u1eb3ng n\u00f3i v\u1edbi t\u00f4i t\u00ean tu\u1ed5i g\u00ec c\u1ea3.\n*Perrin th\u1edf d\u00e0i.*\n\u0110\u1ebfn kh\u00e1ch \u1edf m\u1ea5y h\u00f4m t\u00f4i c\u0169ng kh\u00f4ng \u0111\u01b0\u1ee3c bi\u1ebft."
       replyVariants: []
     press:
       tomas: "Kh\u00e1ch \u1edf l\u1ea1i l\u00e2u kh\u00f4ng b\u00e1c?"
-      reply: "H\u00f4m nay c\u1eadu h\u1ecfi l\u1eafm th\u1ebf... Nghe b\u1ea3o ch\u1ec9 \u0103n b\u1eefa {{t\u1ed1i th\u1ee9 N\u0103m|K11}} r\u1ed3i \u0111i ngay trong \u0111\u00eam."
+      tomasVariants: []
+      reply: "H\u00f4m nay c\u1eadu h\u1ecfi l\u1eafm th\u1ebf... Nghe b\u1ea3o ch\u1ec9 \u0103n b\u1eefa {{t\u1ed1i th\u1ee9 N\u0103m|K11}} r\u1ed3i \u0111i ngay trong \u0111\u00eam.\n*Perrin v\u1ed9i nh\u00ecn ra c\u1eeda.*"
       replyVariants: 
       - condition: 13
         param: "K11"
-        text: "Kh\u00f4ng l\u00e2u \u0111\u00e2u. \u0102n xong b\u1eefa t\u1ed1i l\u00e0 \u0111i ngay trong \u0111\u00eam, nghe b\u1ea3o v\u1eady. C\u1eadu h\u1ecfi nhi\u1ec1u th\u1ebf, \u00f4ng ch\u1ee7 t\u00f4i m\u00e0 nghe th\u1ea5y th\u00ec kh\u1ed5."
+        text: "Kh\u00f4ng l\u00e2u \u0111\u00e2u. \u0102n xong b\u1eefa t\u1ed1i l\u00e0 \u0111i ngay trong \u0111\u00eam, nghe b\u1ea3o v\u1eady.\n*Perrin v\u1ed9i nh\u00ecn ra c\u1eeda.*\nC\u1eadu h\u1ecfi nhi\u1ec1u th\u1ebf, \u00f4ng ch\u1ee7 t\u00f4i m\u00e0 nghe th\u1ea5y th\u00ec kh\u1ed5."
     farewell:
       tomas: "B\u00e1c v\u1ec1 c\u1ea9n th\u1eadn, \u0111\u01b0\u1eddng ven s\u00f4ng ng\u1eadp \u0111\u1ea5y."
+      tomasVariants: []
       reply: "Bi\u1ebft r\u1ed3i. L\u1ea1i ph\u1ea3i \u0111i v\u00f2ng qua ch\u1ee3."
       replyVariants: []
     exit: "Perrin l\u1ed9i qua v\u0169ng n\u01b0\u1edbc tr\u01b0\u1edbc c\u1eeda, c\u00e0u nh\u00e0u v\u1ec1 \u0111\u00f4i gi\u00e0y m\u1edbi."
@@ -81,22 +86,27 @@ MonoBehaviour:
     pressSuspicion: 1
     sell:
       tomas: "Ch\u1ecb l\u1ea5y nh\u01b0 m\u1ecdi khi \u1ea1."
-      reply: "\u1eea. Nh\u01b0 m\u1ecdi khi."
+      tomasVariants: []
+      reply: "\u1eea, nh\u01b0 m\u1ecdi khi.\n*Emel gi\u0169 n\u01b0\u1edbc m\u01b0a tr\u00ean vai \u00e1o.*\nMai m\u00e0 m\u01b0a th\u1ebf n\u00e0y th\u00ec b\u1ed9 qu\u00e2n ph\u1ee5c t\u00f4i l\u00e0 c\u1ea3 bu\u1ed5i c\u0169ng h\u1ecfng."
       replyVariants: []
     discount:
       tomas: "Tr\u1eddi m\u01b0a, em b\u1edbt cho ch\u1ecb."
-      reply: "C\u1ea3m \u01a1n. T\u00f4i \u0111ang ph\u1ea3i ti\u1ebft ki\u1ec7m t\u1eebng xu, mai c\u00f2n ph\u1ea3i tr\u1ef1c \u0111\u1ed3n t\u1edbi khuya."
+      tomasVariants: []
+      reply: "C\u1ea3m \u01a1n. T\u00f4i \u0111ang ph\u1ea3i ti\u1ebft ki\u1ec7m t\u1eebng xu, mai c\u00f2n ph\u1ea3i tr\u1ef1c \u0111\u1ed3n t\u1edbi khuya.\n*Emel gi\u0169 n\u01b0\u1edbc m\u01b0a tr\u00ean vai \u00e1o.*\nL\u1ea1i c\u00f2n c\u00e1i b\u1eefa t\u1ed1i kia n\u1eefa."
       replyVariants: []
     ask:
       tomas: "Mai ch\u1ecb lo b\u1eefa t\u1ed1i cho ai th\u1ebf?"
-      reply: "Cho {{\u0111\u1ea1i \u00fay Doran|K10}}. \u00d4ng \u1ea5y c\u00f3 h\u1eb9n \u0103n t\u1ed1i \u1edf nh\u00e0 tr\u01b0\u1edfng l\u00e0ng, b\u1eaft t\u00f4i l\u00e0 ph\u1eb3ng b\u1ed9 qu\u00e2n ph\u1ee5c t\u1eeb h\u00f4m nay."
+      tomasVariants: []
+      reply: "Cho {{\u0111\u1ea1i \u00fay Doran|K10}}. \u00d4ng \u1ea5y c\u00f3 h\u1eb9n \u0103n t\u1ed1i \u1edf nh\u00e0 tr\u01b0\u1edfng l\u00e0ng, b\u1eaft t\u00f4i l\u00e0 ph\u1eb3ng b\u1ed9 qu\u00e2n ph\u1ee5c t\u1eeb h\u00f4m nay.\n*Emel nh\u00fan vai.*\n\u0110\u1ea1i \u00fay m\u00e0 ch\u1ecbu ng\u1ed3i \u0103n v\u1edbi d\u00e2n l\u00e0ng, chuy\u1ec7n l\u1ea1 \u0111\u1ea5y."
       replyVariants: []
     press:
       tomas: "\u0110\u1ea1i \u00fay h\u1eb9n \u0103n t\u1ed1i v\u1edbi ai v\u1eady ch\u1ecb?"
-      reply: "Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec \u0111\u1ebfn t\u00f4i c\u00f2n kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi. ...T\u00f4i ch\u1ec9 bi\u1ebft \u00f4ng \u1ea5y d\u1eb7n nh\u00e0 Vaule d\u1ecdn b\u00e0n cho ba ng\u01b0\u1eddi. \u00d4ng Vaule, \u0111\u1ea1i \u00fay, c\u00f2n ai n\u1eefa th\u00ec t\u00f4i ch\u1ecbu."
+      tomasVariants: []
+      reply: "Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec \u0111\u1ebfn t\u00f4i c\u00f2n kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi.\n*Emel ng\u1eadp ng\u1eebng m\u1ed9t l\u00fac.*\n...T\u00f4i ch\u1ec9 bi\u1ebft \u00f4ng \u1ea5y d\u1eb7n nh\u00e0 Vaule d\u1ecdn b\u00e0n cho ba ng\u01b0\u1eddi. \u00d4ng Vaule, \u0111\u1ea1i \u00fay, c\u00f2n ai n\u1eefa th\u00ec t\u00f4i ch\u1ecbu."
       replyVariants: []
     farewell:
       tomas: "Ch\u1ecb v\u1ec1 k\u1ebbo \u01b0\u1edbt."
+      tomasVariants: []
       reply: "M\u01b0a th\u1ebf n\u00e0y th\u00ec ch\u1eb3ng ai ra \u0111\u01b0\u1eddng. C\u1eadu c\u0169ng th\u1ebf."
       replyVariants: []
     exit: "Emel k\u00e9o c\u1ed5 \u00e1o l\u00ean, b\u01b0\u1edbc ra m\u00e0n m\u01b0a."
@@ -117,22 +127,33 @@ MonoBehaviour:
     pressSuspicion: 1
     sell:
       tomas: "C\u00f4 mua rau kh\u00f4ng?"
+      tomasVariants: []
       reply: "Kh\u00f4ng. Nh\u01b0ng anh n\u00ean mua tin c\u1ee7a t\u00f4i."
       replyVariants: []
     discount:
-      tomas: "C\u00f4 c\u1ee9 l\u1ea5y m\u1ed9t b\u00f3, k\u1ec3 t\u00f4i nghe chuy\u1ec7n g\u00ec \u0111i."
-      reply: "M\u1ed9t b\u00f3 rau \u0111\u1ed5i m\u1ed9t tin nh\u1eb9: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i. C\u00f2n tin n\u1eb7ng th\u00ec t\u00e1m xu."
-      replyVariants: []
+      tomas: "Tin n\u1eb7ng \u0111\u1ec3 sau. C\u00f4 c\u1ee9 l\u1ea5y m\u1ed9t b\u00f3 rau, k\u1ec3 t\u00f4i nghe chuy\u1ec7n nh\u1eb9 tr\u01b0\u1edbc \u0111\u00e3."
+      tomasVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "C\u00f4 l\u1ea5y th\u00eam m\u1ed9t b\u00f3 rau, k\u1ec3 t\u00f4i nghe chuy\u1ec7n g\u00ec nh\u1eb9 nh\u00e0ng h\u01a1n \u0111i."
+      reply: "M\u1ed9t b\u00f3 rau \u0111\u1ed5i m\u1ed9t tin nh\u1eb9: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i.\n*Sable \u00f4m b\u00f3 rau, nghi\u00eang \u0111\u1ea7u.*\nC\u00f2n tin n\u1eb7ng th\u00ec t\u00e1m xu."
+      replyVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "Tin n\u1eb7ng anh mua r\u1ed3i, b\u00f3 rau n\u00e0y \u0111\u1ed5i th\u00eam m\u1ed9t tin nh\u1eb9: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i.\n*Sable \u00f4m b\u00f3 rau, nghi\u00eang \u0111\u1ea7u.*"
     ask:
       tomas: "Tin g\u00ec m\u00e0 n\u1eb7ng th\u1ebf?"
-      reply: "T\u00e1m xu. Tin n\u1eb7ng th\u00ec gi\u00e1 c\u0169ng n\u1eb7ng. ...Ng\u01b0\u1eddi ta \u0111\u1ed3n {{c\u00f3 ng\u01b0\u1eddi ph\u00eda Straka \u0111ang b\u00e1n tin cho Lenmar|K14}}. Ai th\u00ec t\u00f4i kh\u00f4ng bi\u1ebft. Nh\u01b0ng n\u1ebfu t\u00f4i l\u00e0 anh, t\u00f4i s\u1ebd kh\u00f4ng tin h\u1ebft nh\u1eefng g\u00ec m\u00ecnh \u0111\u1ecdc tr\u00ean b\u1ea3ng tin."
+      tomasVariants: []
+      reply: "T\u00e1m xu. Tin n\u1eb7ng th\u00ec gi\u00e1 c\u0169ng n\u1eb7ng.\n*Tomas \u0111\u1eb7t t\u00e1m xu l\u00ean qu\u1ea7y. Sable \u0111\u1ebfm l\u1ea1i hai l\u1ea7n r\u1ed3i m\u1edbi c\u1ea5t.*\nNg\u01b0\u1eddi ta \u0111\u1ed3n {{c\u00f3 ng\u01b0\u1eddi ph\u00eda Straka \u0111ang b\u00e1n tin cho Lenmar|K14}}. Ai th\u00ec t\u00f4i kh\u00f4ng bi\u1ebft. Nh\u01b0ng n\u1ebfu t\u00f4i l\u00e0 anh, t\u00f4i s\u1ebd kh\u00f4ng tin h\u1ebft nh\u1eefng g\u00ec m\u00ecnh \u0111\u1ecdc tr\u00ean b\u1ea3ng tin."
       replyVariants: []
     press:
       tomas: "C\u00f4 nghe ai n\u00f3i?"
-      reply: "Ngu\u1ed3n tin l\u00e0 n\u1ed3i c\u01a1m c\u1ee7a t\u00f4i, anh n\u00f4ng d\u00e2n. ...Th\u00f4i \u0111\u01b0\u1ee3c, k\u1ec3 m\u1ed9t n\u1eeda: ng\u01b0\u1eddi n\u00f3i v\u1edbi t\u00f4i l\u00e0 m\u1ed9t tay l\u00ednh \u0111\u1ed3n say r\u01b0\u1ee3u. L\u00ednh Lenmar m\u00e0 l\u1ea1i r\u00e0nh chuy\u1ec7n trong nh\u00e0 Straka, anh kh\u00f4ng th\u1ea5y l\u1ea1 \u00e0?"
+      tomasVariants: []
+      reply: "Ngu\u1ed3n tin l\u00e0 n\u1ed3i c\u01a1m c\u1ee7a t\u00f4i, anh n\u00f4ng d\u00e2n.\n*Sable ng\u00f3 ra c\u1eeda, r\u1ed3i h\u1ea1 gi\u1ecdng.*\n...Th\u00f4i \u0111\u01b0\u1ee3c, k\u1ec3 m\u1ed9t n\u1eeda: ng\u01b0\u1eddi n\u00f3i v\u1edbi t\u00f4i l\u00e0 m\u1ed9t tay l\u00ednh \u0111\u1ed3n say r\u01b0\u1ee3u. L\u00ednh Lenmar m\u00e0 l\u1ea1i r\u00e0nh chuy\u1ec7n trong nh\u00e0 Straka, anh kh\u00f4ng th\u1ea5y l\u1ea1 \u00e0?"
       replyVariants: []
     farewell:
       tomas: "H\u1eb9n c\u00f4 h\u00f4m kh\u00e1c."
+      tomasVariants: []
       reply: "H\u00f4m kh\u00e1c tin s\u1ebd \u0111\u1eaft h\u01a1n."
       replyVariants: []
     exit: "Sable k\u00e9o t\u1ea5m v\u1ea3i d\u1ea7u l\u00ean \u0111\u1ea7u, bi\u1ebfn m\u1ea5t sau g\u00f3c ph\u1ed1."

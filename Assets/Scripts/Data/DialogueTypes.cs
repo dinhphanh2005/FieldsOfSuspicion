@@ -14,6 +14,7 @@ public class LineVariant
 public class DialogueLine
 {
     [TextArea(1, 3)] public string tomas;
+    public List<LineVariant> tomasVariants = new();
     [TextArea(2, 5)] public string reply;
     public List<LineVariant> replyVariants = new();
 }

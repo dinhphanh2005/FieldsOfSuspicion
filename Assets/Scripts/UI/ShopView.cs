@@ -235,15 +235,29 @@ public class ShopView : MonoBehaviour
         Render();
     }
 
-    void Say(DialogueLine line, string note = null)
+    void Say(DialogueLine line, string note = null, string action = null)
     {
         fresh = log.Count;
+        string tomas = Conditions.Pick(S, line.tomas, line.tomasVariants);
         string reply = Conditions.Pick(S, line.reply, line.replyVariants);
-        // Ghi lại manh mối khách vừa nói để lựa chọn sau trong cùng lượt khách không lặp lại đúng tin đó.
+        // Khách nhớ đã nói manh mối nào và người chơi đã làm gì trong lượt này, để câu sau không nói lại hoặc nói sai thứ tự.
         foreach (var id in IntelMarkup.ClueIds(reply)) S.SaidThisVisit.Add(id);
-        log.Add($"<b>Tomas:</b> {line.tomas}");
-        log.Add($"<b>{Speaker}:</b> {reply}" +
-                (note != null ? $"  <size=85%><color=#{NarrationColor}>({note})</color></size>" : ""));
+        if (!string.IsNullOrEmpty(action)) S.SaidThisVisit.Add("@" + action);
+
+        log.Add($"<b>Tomas:</b> {tomas}");
+        // Một câu trả lời có thể gồm nhiều nhịp: dòng bọc trong *...* là hành động (in nghiêng), các dòng khác là lời khách.
+        var beats = (reply ?? "").Split('\n');
+        for (int i = 0; i < beats.Length; i++)
+        {
+            string beat = beats[i].Trim();
+            if (beat.Length == 0) continue;
+            bool last = i == beats.Length - 1;
+            string tail = last && note != null ? $"  <size=85%><color=#{NarrationColor}>({note})</color></size>" : "";
+            if (beat.Length > 1 && beat.StartsWith("*") && beat.EndsWith("*"))
+                log.Add(Narration(beat.Substring(1, beat.Length - 2)) + tail);
+            else
+                log.Add($"<b>{Speaker}:</b> {beat}" + tail);
+        }
     }
 
     void Leave()
@@ -393,7 +407,7 @@ public class ShopView : MonoBehaviour
         S.stock -= quantity;
         if (v.sellPrice > 0) S.salesToday += quantity;
         S.money += revenue;
-        Say(v.sell, $"{quantity} bó rau · +{revenue} xu");
+        Say(v.sell, $"{quantity} bó rau · +{revenue} xu", "sell");
         AfterAction();
     }
 
@@ -410,7 +424,7 @@ public class ShopView : MonoBehaviour
         string outcome = quantity > 0 ? (revenue > 0 ? $"{quantity} bó rau · +{revenue} xu" : $"tặng {quantity} bó rau") : "không xuất rau · không thu tiền";
         // Bớt giá có thu tiền là lấy lòng: lần hỏi dồn sau đó nhẹ đi 1 điểm.
         if (v.discountAccepted && v.discountPrice > 0) goodwill = true;
-        Say(v.discount, outcome);
+        Say(v.discount, outcome, "discount");
         AfterAction();
     }
 
@@ -430,7 +444,7 @@ public class ShopView : MonoBehaviour
             S.money -= v.askCost;
             S.energy -= EconomyRules.TalkEnergy;
             askCount = 1;
-            Say(v.ask, v.askCost > 0 ? $"−{v.askCost} xu" : null);
+            Say(v.ask, v.askCost > 0 ? $"−{v.askCost} xu" : null, "ask");
         }
         else if (askCount == 1)
         {
@@ -438,7 +452,7 @@ public class ShopView : MonoBehaviour
             askCount = 2;
             S.energy -= EconomyRules.TalkEnergy;
             S.AddSuspicion(v.customer.channel, v.pressSuspicion - (goodwill ? 1 : 0), $"hỏi dồn {Speaker}");
-            Say(v.press, $"{Speaker} có vẻ bắt đầu để ý tới cậu");
+            Say(v.press, $"{Speaker} có vẻ bắt đầu để ý tới cậu", "press");
         }
         AfterAction();
     }
