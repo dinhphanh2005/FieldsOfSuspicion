@@ -5,10 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Màn tiêu đề = bảng tin làng Sellowe (cùng chất liệu với màn bảng tin trong game):
-//   tờ áp phích lớn bên trái (tên game), các mẩu giấy ghim bên phải là menu.
-// Ván mới → "Lệnh điều động" hiện từng dòng trên tờ giấy (bấm để hiện tiếp) → ký nhận → đóng dấu → N1.
-// Một font duy nhất: font chữ của game (Be Vietnam Pro), tiêu đề chỉ in đậm.
 public class TitleView : MonoBehaviour
 {
     DayManager dm;
@@ -48,7 +44,6 @@ public class TitleView : MonoBehaviour
         dm = manager;
         var root = (RectTransform)transform;
 
-        // ---- Tường gỗ + bảng bần khung gỗ ----
         UIFactory.MakeBox(root, UIFactory.Hex("2B2019"));
         UIFactory.AddGrain(root, 0.18f);
         var frame = UIFactory.Place(root, "Board_Frame", 56, 40, 1168, 640);
@@ -59,7 +54,6 @@ public class TitleView : MonoBehaviour
         UIFactory.Skin(cork.GetComponent<Image>(), "board_cork");
         UIFactory.AddGrain(cork, 0.3f);
 
-        // ---- Áp phích tên game ----
         var poster = Note(cork, "Poster", 60, 160, 600, 290, "notice_cream", 0f, "pin_red");
         Bold(UIFactory.Place(poster, "Kicker", 46, 46, 508, 22), "SELLOWE  ·  THÔNG BÁO", 14, UIFactory.Hex("8C3A2B")).characterSpacing = 4;
         var title = Bold(UIFactory.Place(poster, "Title", 44, 78, 520, 150), "CÁNH ĐỒNG\nNGỜ VỰC", 60, UIFactory.Ink);
@@ -67,8 +61,6 @@ public class TitleView : MonoBehaviour
         title.characterSpacing = 2;
         UIFactory.MakeBox(UIFactory.Place(poster, "Rule", 46, 236, 508, 2), UIFactory.Hex("3A2E25"), false);
 
-
-        // ---- Menu: mẩu giấy ghim ----
         menuGroup = Column(cork, "Menu");
         var col = (RectTransform)menuGroup.transform;
         MenuNote(col, 0, "Ván mới", "Tuần đầu tiên ở Sellowe", "notice_cream", 1.4f, "pin_brass", () => StartCoroutine(Intro()), out _);
@@ -94,9 +86,6 @@ public class TitleView : MonoBehaviour
         blackGroup.blocksRaycasts = false;
     }
 
-    // ---------------- Dựng phần tử ----------------
-
-    // Một tờ giấy ghim trên bảng: ảnh giấy + bóng + đinh ghim, nghiêng nhẹ
     static RectTransform Note(RectTransform parent, string name, float x, float y, float w, float h, string paper, float tilt, string pin)
     {
         var rt = UIFactory.Place(parent, name, x, y, w, h);
@@ -119,7 +108,6 @@ public class TitleView : MonoBehaviour
         return col.gameObject.AddComponent<CanvasGroup>();
     }
 
-    // Mục menu = một mẩu giấy. Rê chuột: giấy được nhấc lên (thẳng lại, to hơn chút, bóng đậm hơn)
     Button MenuNote(RectTransform col, int i, string label, string sub, string paper, float tilt, string pin, Action onClick, out TextMeshProUGUI subText)
     {
         var rt = Note(col, "Note_" + label, 10 + (i % 2 == 0 ? 0 : 26), i * 124, 360, 100, paper, tilt, pin);
@@ -148,10 +136,9 @@ public class TitleView : MonoBehaviour
         introHit.transition = Selectable.Transition.None;
         introHit.onClick.AddListener(() => advance = true);
 
-        // Tờ lệnh điều động
         var paper = UIFactory.MakeRectAt(intro, "Order", new Vector2(0, 16), new Vector2(680, 560));
         UIFactory.MakeSurface(paper, UIFactory.Hex("F2E9D3"), 4);
-        UIFactory.AddGrain(paper, 0.12f);   // giấy trơn: ảnh giấy cũ có nếp gấp ngang trông như đường kẻ lệch
+        UIFactory.AddGrain(paper, 0.12f);
         UIFactory.AddShadow(paper, 12);
         paper.GetComponent<Image>().raycastTarget = false;
 
@@ -170,7 +157,6 @@ public class TitleView : MonoBehaviour
             orderLines.Add(tx);
         }
 
-        // Ký nhận
         var sign = UIFactory.Place(paper, "Sign", 56, 418, 568, 56);
         signGroup = sign.gameObject.AddComponent<CanvasGroup>();
         UIFactory.MakeText(UIFactory.Place(sign, "Label", 0, 0, 110, 56), "Ký nhận:", 18, UIFactory.Ink, TextAlignmentOptions.MidlineLeft);
@@ -205,7 +191,6 @@ public class TitleView : MonoBehaviour
         signHint = UIFactory.MakeText(UIFactory.Place(paper, "SignHint", 56, 482, 568, 22), SignHintText, 14, UIFactory.Hex("6B5B4C"));
         signHint.transform.SetParent(sign, true);
 
-        // Dấu "ĐÃ NHẬN"
         stamp = UIFactory.MakeRectAt(paper, "Stamp", new Vector2(212, -164), new Vector2(170, 60));
         stamp.localRotation = Quaternion.Euler(0, 0, 9);
         var ink = new Color(0.66f, 0.17f, 0.12f, 0.85f);
@@ -224,8 +209,6 @@ public class TitleView : MonoBehaviour
         skipButton.GetComponentInChildren<TextMeshProUGUI>().color = UIFactory.Light;
         Hide(introGroup);
     }
-
-    // ---------------- Luồng ----------------
 
     public void Show()
     {
@@ -282,7 +265,6 @@ public class TitleView : MonoBehaviour
         skipping = false;
         yield return Fade(blackGroup, 0, 0.5f);
 
-        // Từng dòng hiện ra khi bấm (dòng đầu hiện ngay)
         for (int i = 0; i < orderLines.Count; i++)
         {
             if (i > 0 && !skipping)
@@ -294,7 +276,6 @@ public class TitleView : MonoBehaviour
             yield return FadeText(orderLines[i], skipping ? 0.05f : 0.45f);
         }
 
-        // Ký nhận
         introHit.interactable = false;
         skipButton.gameObject.SetActive(false);
         introHint.gameObject.SetActive(false);
@@ -305,7 +286,6 @@ public class TitleView : MonoBehaviour
             advance = false;
             while (!advance) yield return null;
             if (!string.IsNullOrWhiteSpace(nameInput.text)) break;
-            // Chưa ký: nhắc bằng chữ đỏ và đặt lại con trỏ vào ô tên
             signHint.text = "Cần ký tên trước đã — bấm vào dòng kẻ và gõ tên của bạn.";
             signHint.color = UIFactory.Red;
             nameInput.ActivateInputField();
@@ -316,12 +296,10 @@ public class TitleView : MonoBehaviour
         signGroup.interactable = false;
         GameAudio.Sfx("pen");
         signHint.text = "";
-        signBtn.gameObject.SetActive(false);   // dấu "ĐÃ NHẬN" đóng đúng chỗ nút, không đè lên dòng ký
-        // Tên vừa ký điền luôn vào dòng "Người nhận"
+        signBtn.gameObject.SetActive(false);
         orderLines[0].text = $"Người nhận: <color=#1F3A5F><i><noparse>{playerName}</noparse></i></color>";
         yield return FadeText(orderLines[0], 0.3f);
 
-        // Đóng dấu: dấu đập xuống (to → vừa) kèm tiếng
         yield return new WaitForSecondsRealtime(0.35f);
         GameAudio.Sfx("drop", 0.8f);
         for (float k = 0; k < 1; k += Time.unscaledDeltaTime / 0.18f)
@@ -377,7 +355,6 @@ public class TitleView : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    // Chỉ dùng cho công cụ chụp xem trước trong Editor (không chạy game): dựng sẵn từng trạng thái, không coroutine.
     public void PreviewState(int mode)
     {
         Hide(menuGroup); Hide(settingsGroup); Hide(introGroup);
@@ -405,7 +382,6 @@ public class TitleView : MonoBehaviour
         if (introHint && introHint.gameObject.activeInHierarchy) introHint.alpha = 0.45f + 0.2f * Mathf.Sin(t * 2.4f);
         if (nameInput && nameInput.interactable && signGroup.alpha > 0.5f)
         {
-            // Ô ký tên: đang gõ → gạch chân đỏ đậm, nền xanh mực nhạt; chưa bấm vào → gạch chân nhấp nháy để mời bấm
             bool focused = nameInput.isFocused;
             bool empty = string.IsNullOrWhiteSpace(nameInput.text);
             underline.color = focused ? UIFactory.Red : Color.Lerp(UIFactory.Ink, UIFactory.Red, empty ? 0.5f + 0.5f * Mathf.Sin(t * 3f) : 0f);

@@ -6,8 +6,6 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-// Build bản chạy độc lập (không cần Unity Editor) cho macOS và Windows.
-// Kết quả ở thư mục Builds/ cạnh Assets/, kèm Builds/build.log ghi kết quả từng bản.
 public static class FoSBuild
 {
     const string AppName = "FieldsOfSuspicion";

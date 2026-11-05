@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Âm thanh của game: nhạc nền theo buổi (chuyển mượt) + hiệu ứng ngắn.
-// File nằm ở Assets/Resources/Audio, tạo bằng Tools/AudioGen/gen_audio.py.
-// Gọi từ mọi nơi: GameAudio.Sfx("click"), GameAudio.Music("night").
 public class GameAudio : MonoBehaviour
 {
     static GameAudio instance;
@@ -45,7 +42,6 @@ public class GameAudio : MonoBehaviour
         return c;
     }
 
-    // name: "click" | "page" | "bell" | "pen" | "drop"
     public static void Sfx(string name, float volume = 1f)
     {
         if (!instance) return;
@@ -53,7 +49,6 @@ public class GameAudio : MonoBehaviour
         if (c) instance.sfx.PlayOneShot(c, SfxVolume * volume);
     }
 
-    // name: "day" | "night" | null (tắt dần)
     public static void Music(string name, float fade = 1.2f)
     {
         if (!instance || name == instance.currentMusic) return;

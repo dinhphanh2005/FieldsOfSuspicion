@@ -4,31 +4,24 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// Hàm tiện ích dựng UI bằng code.
-//
-// Khung chung của MỌI màn (canvas 1280×720):
-//   - HUD trên cùng, cao 44  (DayManager tạo, dùng chung)
-//   - "Sân khấu" ở giữa, cao 608 — nội dung riêng của từng màn, đặt theo tọa độ pixel từ góc trên trái
-//   - Thanh nút dưới cùng, cao 68 — nút phụ bên trái, nút chính (đỏ) luôn ở góc phải
 public static class UIFactory
 {
     public const float HudHeight = 44;
     public const float BarHeight = 68;
 
-    public static readonly Color Ink       = Hex("3A2E25");   // chữ tối trên nền sáng
-    public static readonly Color Paper     = Hex("F4ECD8");   // giấy, nút phụ
-    public static readonly Color Light     = Hex("EDE3D1");   // chữ sáng trên nền tối
+    public static readonly Color Ink       = Hex("3A2E25");
+    public static readonly Color Paper     = Hex("F4ECD8");
+    public static readonly Color Light     = Hex("EDE3D1");
     public static readonly Color Muted     = Hex("8C7B6B");
     public static readonly Color NightBox  = Hex("2F2924");
-    public static readonly Color Highlight = Hex("E0B04B");   // vàng: đang chọn / trong lộ trình
-    public static readonly Color ButtonTan = Hex("E2D4B5");   // nút lựa chọn trong khung thoại
-    public static readonly Color Frame     = Hex("2A221C");   // HUD + thanh nút
+    public static readonly Color Highlight = Hex("E0B04B");
+    public static readonly Color ButtonTan = Hex("E2D4B5");
+    public static readonly Color Frame     = Hex("2A221C");
     public static readonly Color FrameLine = Hex("4A3B2F");
-    public static readonly Color Red       = Hex("8C3A2B");   // nút chính
+    public static readonly Color Red       = Hex("8C3A2B");
     public static readonly Color Gold      = Hex("E0B04B");
     public static readonly Color PaperEdge = Hex("C9B994");
 
-    // Font tiêu đề (Lora). DayManager gán lúc Awake; null thì dùng font mặc định.
     public static TMP_FontAsset TitleFont;
     static readonly Dictionary<string, Sprite> spriteByName = new Dictionary<string, Sprite>();
 
@@ -41,9 +34,6 @@ public static class UIFactory
             if (!sprite) continue;
             spriteByName[sprite.name] = sprite;
 
-            // Unity imports single-sprite PNGs as "filename_0" when their importer
-            // metadata contains a one-entry sprite sheet. UI skins use the filename
-            // stem (for example "plot_empty"), so expose that stable alias as well.
             if (sprite.name.EndsWith("_0"))
             {
                 var alias = sprite.name.Substring(0, sprite.name.Length - 2);
@@ -70,9 +60,6 @@ public static class UIFactory
         return c;
     }
 
-    // ---------------- Đặt vị trí ----------------
-
-    // RectTransform con, kéo giãn theo anchor, chừa lề "pad" mỗi phía
     public static RectTransform MakeRect(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, float pad = 0)
     {
         var go = new GameObject(name, typeof(RectTransform));
@@ -85,7 +72,6 @@ public static class UIFactory
         return rt;
     }
 
-    // RectTransform đặt theo tâm cha + kích thước
     public static RectTransform MakeRectAt(Transform parent, string name, Vector2 position, Vector2 size)
     {
         var rt = MakeRect(parent, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
@@ -94,7 +80,6 @@ public static class UIFactory
         return rt;
     }
 
-    // Đặt theo pixel tính từ góc TRÊN TRÁI của cha (giống thiết kế): x sang phải, y xuống dưới
     public static RectTransform Place(Transform parent, string name, float x, float y, float w, float h)
     {
         var rt = MakeRect(parent, name, new Vector2(0, 1), new Vector2(0, 1));
@@ -104,7 +89,6 @@ public static class UIFactory
         return rt;
     }
 
-    // Vùng sân khấu: giữa HUD và thanh nút
     public static RectTransform MakeStage(Transform panel)
     {
         var rt = MakeRect(panel, "Stage", Vector2.zero, Vector2.one);
@@ -112,8 +96,6 @@ public static class UIFactory
         rt.offsetMax = new Vector2(0, -HudHeight);
         return rt;
     }
-
-    // ---------------- Hình khối ----------------
 
     public static Image MakeBox(RectTransform rt, Color color, bool raycast = true)
     {
@@ -123,7 +105,6 @@ public static class UIFactory
         return img;
     }
 
-    // Mặt phẳng sạch, viền mảnh; không dùng ảnh khung co giãn nên kích thước panel an toàn.
     public static Image MakeSurface(RectTransform rt, Color color, float radius = 7, bool raycast = true)
     {
         var img = MakeBox(rt, color, raycast);
@@ -134,7 +115,6 @@ public static class UIFactory
         return img;
     }
 
-    // Sprite trắng bo góc bán kính 16, cắt 9 mảnh; Round() chỉnh để ra bán kính bất kỳ
     static Sprite rounded;
     static Sprite RoundedSprite
     {
@@ -157,7 +137,6 @@ public static class UIFactory
         }
     }
 
-    // Tam giác nhỏ chỉ sang PHẢI (font không có ký tự ▸)
     static Sprite arrow;
     public static Sprite ArrowSprite
     {
@@ -169,7 +148,6 @@ public static class UIFactory
             for (int y = 0; y < n; y++)
             for (int x = 0; x < n; x++)
             {
-                // cạnh trái thẳng đứng, đỉnh nhọn bên phải; khử răng cưa 1px
                 float half = (n / 2f) * (1f - (x + 0.5f) / n);
                 float d = half - Mathf.Abs(y + 0.5f - n / 2f);
                 tex.SetPixel(x, y, new Color(1, 1, 1, Mathf.Clamp01(d + 0.5f)));
@@ -187,7 +165,6 @@ public static class UIFactory
         img.pixelsPerUnitMultiplier = 16f / Mathf.Max(1, radius);
     }
 
-    // Lớp hạt nhiễu lặp lại (vải bần của bảng tin, giấy cũ...)
     static Sprite noise;
     public static Image AddGrain(RectTransform parent, float alpha)
     {
@@ -209,13 +186,12 @@ public static class UIFactory
         var img = rt.gameObject.AddComponent<Image>();
         img.sprite = noise;
         img.type = Image.Type.Tiled;
-        img.pixelsPerUnitMultiplier = 0.5f;   // hạt to gấp đôi
+        img.pixelsPerUnitMultiplier = 0.5f;
         img.color = new Color(1, 1, 1, alpha);
         img.raycastTarget = false;
         return img;
     }
 
-    // Đổ bóng nhẹ cho khung giấy / thẻ
     public static void AddShadow(Component c, float distance = 5)
     {
         var s = c.gameObject.AddComponent<Shadow>();
@@ -223,7 +199,6 @@ public static class UIFactory
         s.effectDistance = new Vector2(distance * 0.4f, -distance);
     }
 
-    // Viền mảnh (dùng cho nút tròn trên bản đồ)
     public static Outline AddOutline(Component c, Color color, float width = 2)
     {
         var o = c.gameObject.AddComponent<Outline>();
@@ -231,8 +206,6 @@ public static class UIFactory
         o.effectDistance = new Vector2(width, -width);
         return o;
     }
-
-    // ---------------- Chữ ----------------
 
     public static TextMeshProUGUI MakeText(RectTransform rt, string text, float size, Color color,
                                            TextAlignmentOptions align = TextAlignmentOptions.TopLeft)
@@ -248,7 +221,6 @@ public static class UIFactory
         return t;
     }
 
-    // Tiêu đề (font Lora đậm)
     public static TextMeshProUGUI MakeTitle(RectTransform rt, string text, float size, Color color,
                                             TextAlignmentOptions align = TextAlignmentOptions.TopLeft)
     {
@@ -258,7 +230,6 @@ public static class UIFactory
         return t;
     }
 
-    // Nhãn mục nhỏ in hoa, giãn chữ (ĐÊM NAY, LỘ TRÌNH...)
     public static TextMeshProUGUI MakeLabel(RectTransform rt, string text, Color color, float size = 15)
     {
         var t = MakeTitle(rt, text, size, color);
@@ -266,7 +237,6 @@ public static class UIFactory
         return t;
     }
 
-    // Đoạn chữ trong VerticalLayoutGroup (tự cao theo nội dung)
     public static TextMeshProUGUI AddLine(RectTransform list, string text, float size, Color color,
                                           TextAlignmentOptions align = TextAlignmentOptions.TopLeft, bool title = false)
     {
@@ -274,16 +244,12 @@ public static class UIFactory
         return title ? MakeTitle(rt, text, size, color, align) : MakeText(rt, text, size, color, align);
     }
 
-    // Đường kẻ ngang trong VerticalLayoutGroup
     public static Image AddRule(RectTransform list, Color color, float thickness = 1)
     {
         var rt = MakeRect(list, "Rule", Vector2.zero, Vector2.one);
-        // Tối thiểu 2px: đường 1px bị co giãn theo cửa sổ (canvas scale lẻ) nên lúc hiện lúc mất, trông đứt đoạn
         Size(rt, Mathf.Max(2, thickness));
         return MakeBox(rt, color, false);
     }
-
-    // ---------------- Nút ----------------
 
     public static Button MakeButton(Transform parent, string name, string label, UnityAction onClick, float fontSize = 18)
     {
@@ -293,7 +259,6 @@ public static class UIFactory
         var btn = rt.gameObject.AddComponent<Button>();
         btn.targetGraphic = img;
         ApplyColors(btn);
-        // Không dùng ảnh hover/pressed có sẵn (ảnh hover có mũi tên ◀ chỉ ngược): đổi màu + ButtonFeel
         btn.onClick.AddListener(() => GameAudio.Sfx("click", 0.7f));
         if (onClick != null) btn.onClick.AddListener(onClick);
         var labelRect = MakeRect(rt, "Label", Vector2.zero, Vector2.one, 6);
@@ -303,11 +268,9 @@ public static class UIFactory
         return btn;
     }
 
-    // Màu trạng thái của nút. Nút bị tắt: tối đi nhưng vẫn đục (không lộ đường kẻ phía sau).
     public static void ApplyColors(Button btn)
     {
         var cb = btn.colors;
-        // Màu nhân với màu ảnh: thường hơi trầm, rê chuột sáng lên hẳn, bấm thì tối lại
         cb.normalColor      = new Color(0.92f, 0.92f, 0.92f, 1);
         cb.highlightedColor = Color.white;
         cb.pressedColor     = new Color(0.80f, 0.80f, 0.80f, 1);
@@ -332,7 +295,6 @@ public static class UIFactory
         };
     }
 
-    // Bật/tắt nút + làm mờ chữ khi tắt
     public static void SetInteractable(Button b, bool on)
     {
         b.interactable = on;
@@ -343,9 +305,6 @@ public static class UIFactory
 
     public static void SetColor(Button b, Color c) => ((Image)b.targetGraphic).color = c;
 
-    // ---------------- Thanh nút dưới cùng ----------------
-
-    // Thanh nút của một panel. Thêm nút bằng BarButton, đẩy nút sang phải bằng BarSpacer.
     public static RectTransform MakeActionBar(Transform panel)
     {
         var bar = MakeRect(panel, "ActionBar", Vector2.zero, new Vector2(1, 0));
@@ -370,11 +329,9 @@ public static class UIFactory
         return bar;
     }
 
-    // Nút trên thanh: rộng theo chữ. primary = nút chính màu đỏ.
     public static Button BarButton(RectTransform bar, string label, UnityAction onClick, bool primary = false)
     {
         var b = MakeButton(bar, "Btn_" + (primary ? "Primary" : "Secondary"), label, onClick, 16);
-        // Nút rộng = [icon] + chữ + lề 20 mỗi bên. Icon là phần tử riêng trong layout (không đè lên chữ).
         var h = b.gameObject.AddComponent<HorizontalLayoutGroup>();
         h.padding = new RectOffset(20, 20, 0, 0);
         h.spacing = 8;
@@ -386,7 +343,7 @@ public static class UIFactory
         var t = b.GetComponentInChildren<TextMeshProUGUI>();
         t.textWrappingMode = TextWrappingModes.NoWrap;
         t.margin = Vector4.zero;
-        b.GetComponent<ButtonFeel>().content = null;   // chữ do layout đặt chỗ: chỉ sáng lên + lún, không nhích
+        b.GetComponent<ButtonFeel>().content = null;
         string iconName = IconFor(label);
         var iconSprite = string.IsNullOrEmpty(iconName) ? null : SpriteAsset(iconName);
         if (iconSprite)
@@ -416,8 +373,6 @@ public static class UIFactory
 
     static string IconFor(string label)
     {
-        // Thứ tự quan trọng: cụm cụ thể trước, cụm chung sau ("bảng tin" phải xét trước "tin",
-        // "giao tin"/"hốc cây" là việc ban đêm chứ không phải đọc thư).
         string s = (label ?? string.Empty).ToLowerInvariant();
         if (s.Contains("ruộng") || s.Contains("thu hoạch")) return "icon_carrot";
         if (s.Contains("sổ tay") || s.Contains("gấp sổ")) return "icon_notebook";
@@ -453,7 +408,6 @@ public static class UIFactory
         rt.gameObject.AddComponent<LayoutElement>().flexibleWidth = 0.25f;
     }
 
-    // Dòng chữ gợi ý nhỏ trên thanh
     public static TextMeshProUGUI BarHint(RectTransform bar, string text)
     {
         var rt = MakeRect(bar, "Hint", Vector2.zero, Vector2.one);
@@ -470,10 +424,6 @@ public static class UIFactory
         return t;
     }
 
-    // ---------------- Panel dựng tay trong scene ----------------
-
-    // Các phần tử dựng tay trong scene (tiêu đề "Text (TMP)", nút Btn_*, Img_Customer) không dùng nữa:
-    // mọi màn giờ dựng bằng code theo cùng một khung. Ẩn chúng đi, nền panel về màu khung.
     public static void StylePanel(GameObject panel)
     {
         foreach (Transform child in panel.transform)
@@ -484,8 +434,6 @@ public static class UIFactory
         if (bg) bg.color = Hex("3B2D22");
     }
 
-    // Ảnh nền phủ kín panel (giữ tỉ lệ, cắt phần thừa). sprite null thì giữ màu nền.
-    // dim > 0: phủ thêm một lớp tối để chữ dễ đọc.
     public static void SetBackground(GameObject panel, Sprite sprite, float dim = 0)
     {
         if (!sprite) return;
@@ -506,9 +454,6 @@ public static class UIFactory
         }
     }
 
-    // ---------------- Layout ----------------
-
-    // Lấy component, chưa có thì thêm. (Không dùng ?? với object của Unity: trong Editor nó trả "null giả".)
     public static T Get<T>(GameObject go) where T : Component
     {
         var c = go.GetComponent<T>();
@@ -520,11 +465,10 @@ public static class UIFactory
         var le = Get<LayoutElement>(c.gameObject);
         le.minHeight = minHeight;
         le.preferredHeight = minHeight;
-        le.flexibleHeight = 0;   // không giãn chiếm chỗ trống trong VerticalLayoutGroup
+        le.flexibleHeight = 0;
         return le;
     }
 
-    // Trong HorizontalLayoutGroup: các phần tử chia đều chiều ngang, bất kể chữ bên trong dài ngắn
     public static void EqualWidth(Component c)
     {
         var le = Get<LayoutElement>(c.gameObject);
@@ -533,7 +477,6 @@ public static class UIFactory
         le.flexibleWidth = 1;
     }
 
-    // Trong VerticalLayoutGroup: phần tử này ăn hết chỗ còn trống
     public static LayoutElement Flexible(Component c, float minHeight)
     {
         var le = Get<LayoutElement>(c.gameObject);
@@ -542,7 +485,6 @@ public static class UIFactory
         return le;
     }
 
-    // Khối tự cao theo nội dung (giấy thư, thẻ...): VerticalLayoutGroup + ContentSizeFitter
     public static VerticalLayoutGroup AutoHeight(RectTransform rt, int padX, int padTop, int padBottom, float spacing)
     {
         var v = VList(rt, spacing, 0);
@@ -551,7 +493,6 @@ public static class UIFactory
         return v;
     }
 
-    // Dựng layout ngay; khối cao quá maxHeight thì thu nhỏ cả khối cho vừa (chữ dài bất thường vẫn không tràn)
     public static void FitHeight(RectTransform rt, float maxHeight)
     {
         rt.localScale = Vector3.one;
@@ -561,11 +502,9 @@ public static class UIFactory
         rt.localScale = new Vector3(s, s, 1);
     }
 
-    // Vùng cuộn dọc. root đã được đặt kích thước; trả về "content" để thêm phần tử con
-    // (content có VerticalLayoutGroup và tự cao theo nội dung).
     public static RectTransform MakeScroll(RectTransform root, out ScrollRect scroll)
     {
-        MakeBox(root, new Color(0, 0, 0, 0));   // để bắt được thao tác cuộn ở chỗ trống
+        MakeBox(root, new Color(0, 0, 0, 0));
         scroll = root.gameObject.AddComponent<ScrollRect>();
 
         var viewport = MakeRect(root, "Viewport", Vector2.zero, Vector2.one);
@@ -586,7 +525,6 @@ public static class UIFactory
         return content;
     }
 
-    // Dựng lại layout ngay và cuộn xuống cuối
     public static void ScrollToBottom(ScrollRect scroll)
     {
         Canvas.ForceUpdateCanvases();
@@ -618,7 +556,6 @@ public static class UIFactory
         return h;
     }
 
-    // Xóa hết con. Tắt trước rồi mới Destroy để layout bỏ qua ngay trong frame này.
     public static void Clear(Transform t)
     {
         for (int i = t.childCount - 1; i >= 0; i--)

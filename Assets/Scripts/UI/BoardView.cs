@@ -4,13 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Buổi sáng: bảng tin làng (bảng bần khung gỗ, thẻ ghim) + ruộng.
-// - Mỗi thông báo là một thẻ; lệnh mật (Null Cipher) nằm lẫn với thông báo thường.
-// - "Cách đọc lệnh": hiện mẩu giấy hướng dẫn và tô đỏ chữ cái đầu mỗi câu.
-// - "Thu hoạch": 1 lần/ngày, tốn năng lượng, thêm rau vào kho.
 public class BoardView : MonoBehaviour
 {
-    // Chữ cái đầu câu: đầu đoạn hoặc sau . ? ! và khoảng trắng
     static readonly Regex SentenceStart = new Regex(@"(^|[.?!]\s+)(\S)");
 
     DayManager dm;
@@ -21,8 +16,8 @@ public class BoardView : MonoBehaviour
     TextMeshProUGUI energyStat, apStat, stockStat;
     readonly List<Button> plotButtons = new List<Button>();
     readonly List<Image> plotArt = new List<Image>();
-    int hintLevel;           // 0 = tắt · 1 = tô chữ đầu câu · 2 = giải sẵn lệnh
-    bool hintIntroduced;     // ngày đầu tự bật mức 1, sau đó giữ lựa chọn của người chơi
+    int hintLevel;
+    bool hintIntroduced;
     bool hintOn => hintLevel > 0;
     DaySO day;
 
@@ -33,7 +28,6 @@ public class BoardView : MonoBehaviour
         dm = manager;
         var stage = UIFactory.MakeStage(transform);
 
-        // Khung gỗ + mặt bần
         var frame = UIFactory.Place(stage, "Board_Frame", 24, 16, 1232, 576);
         UIFactory.MakeSurface(frame, UIFactory.Hex("5B3D28"), 10);
         UIFactory.AddShadow(frame, 10);
@@ -42,15 +36,13 @@ public class BoardView : MonoBehaviour
         UIFactory.Skin(cork.GetComponent<Image>(), "board_cork");
         UIFactory.AddGrain(cork, 0.35f);
 
-        // Hàng thẻ: canh trên, mỗi thẻ cao theo chữ
         cards = UIFactory.MakeRect(cork, "Board_Cards", Vector2.zero, Vector2.one);
-        cards.offsetMin = new Vector2(0, 102); // chừa riêng dải dưới cho hướng dẫn, không phủ lên thẻ
+        cards.offsetMin = new Vector2(0, 102);
         var h = UIFactory.HList(cards, 20, 0);
         h.padding = new RectOffset(24, 24, 30, 24);
         h.childAlignment = TextAnchor.UpperLeft;
         h.childForceExpandHeight = false;
 
-        // Mẩu giấy hướng dẫn đọc lệnh, ghim ở đáy bảng
         hintNote = UIFactory.MakeRect(cork, "Board_HintNote", new Vector2(0, 0), new Vector2(1, 0));
         hintNote.pivot = new Vector2(0.5f, 0);
         hintNote.sizeDelta = new Vector2(-48, 72);
@@ -78,14 +70,11 @@ public class BoardView : MonoBehaviour
     {
         day = today;
         if (farmPanel) farmPanel.gameObject.SetActive(false);
-        // Ngày đầu: bật sẵn gợi ý đọc lệnh mật để người chơi mới không bị lạc
         if (!hintIntroduced) { hintIntroduced = true; SetHint(1); return; }
         BuildCards();
         RefreshFarm();
     }
 
-    // Dựng thẻ, nếu thẻ dài (lệnh mật nhiều câu + dòng giải sẵn) không vừa bảng thì thu nhỏ chữ dần,
-    // tránh để layout ép thẻ lại làm các dòng chữ đè lên nhau.
     void BuildCards()
     {
         foreach (int size in new[] { 16, 15, 14, 13 })
@@ -125,7 +114,6 @@ public class BoardView : MonoBehaviour
             UIFactory.EqualWidth(card);
             n++;
 
-            // Đinh ghim
             var pin = UIFactory.MakeRectAt(card, "Pin", Vector2.zero, new Vector2(14, 14));
             pin.anchorMin = pin.anchorMax = new Vector2(0.5f, 1);
             pin.anchoredPosition = new Vector2(0, -12);
@@ -134,7 +122,7 @@ public class BoardView : MonoBehaviour
             pin.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
 
             var v = UIFactory.VList(card, 10, 0);
-            v.padding = new RectOffset(34, 34, 36, 28);   // chừa mép giấy (ảnh giấy có viền rách + bóng)
+            v.padding = new RectOffset(34, 34, 36, 28);
 
             UIFactory.AddLine(card, m.title, bodySize + 4, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
             string body = hintOn ? SentenceStart.Replace(m.body, x => $"{x.Groups[1].Value}<b><color=#B8442E>{x.Groups[2].Value}</color></b>") : m.body;
@@ -170,7 +158,7 @@ public class BoardView : MonoBehaviour
         farmPanel = UIFactory.MakeRect(stage, "Farm_Overlay", Vector2.zero, Vector2.one);
         UIFactory.MakeBox(farmPanel, new Color(0.08f, 0.07f, 0.06f, 0.78f));
         var card = UIFactory.MakeRect(farmPanel, "Farm_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
-        card.sizeDelta = new Vector2(920, 470);   // khung gỗ của ảnh dày ~40px: nội dung đặt lùi vào trong
+        card.sizeDelta = new Vector2(920, 470);
         UIFactory.MakeSurface(card, UIFactory.Hex("E7D7B5"), 8);
         UIFactory.Skin(card.GetComponent<Image>(), "farm_card");
         UIFactory.AddShadow(card, 12);
@@ -186,7 +174,6 @@ public class BoardView : MonoBehaviour
             int plotId = i;
             var b = UIFactory.MakeButton(grid, "Plot_" + i, "", () => OnPlot(plotId), 16);
             UIFactory.Size(b, 184);
-            // Ô ruộng: thẻ giấy trơn bo góc (ảnh nút ngang bị kéo dọc sẽ có dải tối đè lên chữ)
             UIFactory.Round((Image)b.targetGraphic, 8);
             b.transition = Selectable.Transition.ColorTint;
             var label = b.GetComponentInChildren<TextMeshProUGUI>();
@@ -197,9 +184,6 @@ public class BoardView : MonoBehaviour
             label.rectTransform.offsetMin = new Vector2(5, 4);
             label.rectTransform.offsetMax = new Vector2(-5, -2);
 
-            // Keep crop art separate from the Button targetGraphic. SpriteSwap can
-            // replace the targetGraphic for a growing (disabled) plot; the crop
-            // illustration must remain visible in every interaction state.
             var artRect = UIFactory.MakeRect(b.transform, "Plot_Art", new Vector2(0.5f, 1), new Vector2(0.5f, 1));
             artRect.pivot = new Vector2(0.5f, 1);
             artRect.sizeDelta = new Vector2(106, 106);
@@ -288,7 +272,6 @@ public class BoardView : MonoBehaviour
                 string plotSprite = empty ? "plot_empty" : plot.ready ? "plot_ready" : plot.daysGrowing == 0 ? "plot_seeded" : "plot_growing";
                 UIFactory.Skin(plotArt[id], plotSprite);
                 plotArt[id].preserveAspect = true;
-                // Không làm mờ ô đang lớn (chữ sẽ không đọc được); bấm vào ô đang lớn chỉ không có tác dụng
                 bool canAct = S.actionPoints > 0 && (plot.ready || empty);
                 b.interactable = true;
                 foreach (var tx in b.GetComponentsInChildren<TMP_Text>()) tx.alpha = 1f;

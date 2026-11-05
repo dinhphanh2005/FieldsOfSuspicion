@@ -5,7 +5,6 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-// Collects ScriptableObject content into one runtime-referenced asset before a player build.
 public sealed class FoSContentCatalogBuilder : IPreprocessBuildWithReport
 {
     const string CatalogPath = "Assets/Resources/FoSContentCatalog.asset";
@@ -27,7 +26,6 @@ public sealed class FoSContentCatalogBuilder : IPreprocessBuildWithReport
         catalog.cases = LoadAll<CaseSO>();
         catalog.endings = LoadAll<EndingSO>();
         catalog.crops = LoadAll<CropSO>();
-        // Tên file khớp đúng cảnh (trước đây bị tráo: tiệm hiện ảnh bảng tin, đêm hiện ảnh mặt bàn...)
         catalog.bgNews = LoadSprite("bg_news");
         catalog.bgBoard = LoadSprite("bg_board");
         catalog.bgShop = LoadSprite("bg_shop");

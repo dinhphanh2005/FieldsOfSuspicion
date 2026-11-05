@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Dữ liệu cây trồng. Logic ruộng dùng id và snapshot riêng trong GameState.
 [CreateAssetMenu(menuName = "FoS/Crop", fileName = "Crop_Carrot")]
 public class CropSO : ScriptableObject
 {

@@ -1,13 +1,12 @@
 using System;
 using UnityEngine;
 
-// Sự kiện của vòng chơi. Sprint 3: TelemetryLogger đăng ký các sự kiện này để ghi CSV.
 public static class GameEvents
 {
-    public static event Action<string> IntelCaptured;       // mã manh mối vừa ghi
-    public static event Action<DropRecord> DropDelivered;   // đêm vừa giao tin
-    public static event Action<int, string> SuspicionAdded; // điểm, lý do
-    public static event Action<int> DayResolved;            // ngày vừa tổng kết
+    public static event Action<string> IntelCaptured;
+    public static event Action<DropRecord> DropDelivered;
+    public static event Action<int, string> SuspicionAdded;
+    public static event Action<int> DayResolved;
     public static event Action<EndingId> EndingReached;
     public static event Action<string, Handler, bool> HandlerOrderResolved;
 

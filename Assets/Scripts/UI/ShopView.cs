@@ -4,21 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Tiệm buổi chiều — bố cục kiểu visual novel:
-//   nhân vật đứng sau quầy (giữa trái), bảng "Khách chiều nay" góc trên phải,
-//   khung thoại ngang dưới đáy có thẻ tên; lựa chọn nằm trong khung thoại, cột bên phải.
-//   Thanh nút dưới: "Sổ tay" (trái) · "Sang buổi tối" (phải).
-//
-// Một lượt khách: dẫn truyện khách bước vào → câu chào → các lượt hỏi–đáp → câu chào về → dẫn truyện khách rời đi.
-// Khung thoại GIỮ CẢ CUỘC TRÒ CHUYỆN (cuộn được), đoạn cũ in mờ hơn. Hết việc để làm thì khách tự chào về.
-//   - Bán hàng / Bớt giá: 1 lần mỗi khách (chọn một trong hai), tốn 1 bó rau.
-//   - Hỏi chuyện: lần 1 = Hỏi chuyện, lần 2 = Hỏi dồn (cộng nghi ngờ vào kênh của khách).
-//   - Tiễn khách: kết thúc sớm.
 public class ShopView : MonoBehaviour
 {
     enum Mode { Prompt, Closed, Open }
 
-    // Một nút lựa chọn: chữ bên trái, ghi chú nhỏ bên phải
     class Choice
     {
         public Button button;
@@ -40,13 +29,13 @@ public class ShopView : MonoBehaviour
     Mode mode;
     DaySO day;
     List<CustomerVisit> activeVisits = new List<CustomerVisit>();
-    int index;          // khách thứ mấy trong ngày
-    int askCount;       // 0 chưa hỏi, 1 đã hỏi chuyện, 2 đã hỏi dồn
-    bool traded;        // đã bán hoặc bớt giá
-    bool goodwill;      // đã bớt giá cho khách này hôm nay → hỏi dồn bị cộng nghi ngờ ít hơn 1
-    bool leaving;       // khách đã chào về
-    readonly List<string> log = new List<string>();   // các đoạn thô (còn {{...}}), hiện nối tiếp nhau
-    int fresh;          // log[fresh..] là lượt mới nhất (in đậm), trước đó in mờ
+    int index;
+    int askCount;
+    bool traded;
+    bool goodwill;
+    bool leaving;
+    readonly List<string> log = new List<string>();
+    int fresh;
 
     GameState S => dm.State;
     CustomerVisit Visit => day && index < activeVisits.Count ? activeVisits[index] : null;
@@ -59,14 +48,12 @@ public class ShopView : MonoBehaviour
 
         BuildQueue(stage);
 
-        // Nhân vật: chân chạm mặt quầy
         var pr = UIFactory.Place(stage, "Shop_Portrait", 250, 28, 330, 360);
         portrait = pr.gameObject.AddComponent<Image>();
         portrait.preserveAspect = true;
         portrait.raycastTarget = false;
         portrait.enabled = false;
 
-        // Mặt quầy gỗ chạy ngang, che phần dưới nhân vật
         var counter = UIFactory.Place(stage, "Shop_Counter", 0, 372, 1280, 40);
         UIFactory.MakeBox(counter, UIFactory.Hex("5A3D29"), false);
         var edge = UIFactory.Place(counter, "Edge", 0, 0, 1280, 4);
@@ -104,7 +91,6 @@ public class ShopView : MonoBehaviour
         UIFactory.Skin(box.GetComponent<Image>(), "dialogue_box");
         UIFactory.AddShadow(box, 8);
 
-        // Thẻ tên dính mép trên trái khung thoại, rộng theo chữ
         nameTag = UIFactory.Place(stage, "Shop_NameTag", 52, 380, 0, 38);
         UIFactory.MakeSurface(nameTag, UIFactory.Hex("5B3A29"), 5, false);
         UIFactory.Skin(nameTag.GetComponent<Image>(), "name_tag");
@@ -114,18 +100,16 @@ public class ShopView : MonoBehaviour
         nameText = UIFactory.MakeTitle(UIFactory.MakeRect(nameTag, "Text", Vector2.zero, Vector2.one), "", 19, UIFactory.Light, TextAlignmentOptions.Midline);
         nameText.textWrappingMode = TextWrappingModes.NoWrap;
 
-        // Lời thoại: bên trái, cuộn được
         var scrollRoot = UIFactory.MakeRect(box, "Dialogue_Scroll", Vector2.zero, Vector2.one);
-        scrollRoot.offsetMin = new Vector2(30, 28);       // viền hoa văn dưới của khung thoại dày ~20px
-        scrollRoot.offsetMax = new Vector2(-340, -46);   // chừa chỗ cho thẻ tên, chữ không chui dưới thẻ
+        scrollRoot.offsetMin = new Vector2(30, 28);
+        scrollRoot.offsetMax = new Vector2(-340, -46);
         var content = UIFactory.MakeScroll(scrollRoot, out scroll);
         dialogue = UIFactory.MakeText(UIFactory.MakeRect(content, "Dialogue", Vector2.zero, Vector2.one), "", 17, UIFactory.Ink);
         dialogue.lineSpacing = 10;
         dialogue.paragraphSpacing = 10;
-        dialogue.raycastTarget = true;   // để bấm được cụm từ màu
+        dialogue.raycastTarget = true;
         dialogue.gameObject.AddComponent<ClickableText>().LinkClicked += OnIntelClicked;
 
-        // Đường kẻ dọc + cột lựa chọn bên phải
         var vr = UIFactory.MakeRect(box, "Divider", new Vector2(1, 0), new Vector2(1, 1));
         vr.sizeDelta = new Vector2(1, -28);
         vr.anchoredPosition = new Vector2(-318, 0);
@@ -134,7 +118,7 @@ public class ShopView : MonoBehaviour
         var col = UIFactory.MakeRect(box, "Choices", new Vector2(1, 0), new Vector2(1, 1));
         col.pivot = new Vector2(1, 0.5f);
         col.sizeDelta = new Vector2(290, 0);
-        col.anchoredPosition = new Vector2(-22, 0);      // chừa viền hoa văn bên phải khung thoại
+        col.anchoredPosition = new Vector2(-22, 0);
         var v = UIFactory.VList(col, 7, 0);
         v.padding = new RectOffset(10, 4, 20, 20);
         v.childAlignment = TextAnchor.MiddleCenter;
@@ -173,8 +157,6 @@ public class ShopView : MonoBehaviour
         return new Choice { button = b, label = label, note = note };
     }
 
-    // ---------------- Luồng ----------------
-
     public void Begin(DaySO today)
     {
         day = today;
@@ -206,7 +188,6 @@ public class ShopView : MonoBehaviour
 
     void StayClosed()
     {
-        // Nghỉ chiều nay: không mất năng lượng, để dành cho đường dài an toàn ban đêm (nhưng không nghe được tin gì)
         mode = Mode.Closed;
         log.Clear();
         fresh = 0;
@@ -236,7 +217,7 @@ public class ShopView : MonoBehaviour
         }
 
         if (portrait.enabled) portrait.sprite = v.customer.portrait;
-        GameAudio.Sfx("bell", 0.6f);   // chuông cửa khi khách bước vào
+        GameAudio.Sfx("bell", 0.6f);
         nameText.text = v.customer.displayName;
 
         string entrance = Conditions.Pick(S, v.entrance, v.entranceVariants);
@@ -244,16 +225,14 @@ public class ShopView : MonoBehaviour
         log.Add($"<b>{Speaker}:</b> {Conditions.Pick(S, v.greeting, v.greetingVariants)}");
         if (NeedsVegFirst(v) && S.stock <= 0)
         {
-            // Rau là cái cớ để khách đứng lại nói chuyện: kho trống thì khách về luôn, hôm đó mất tin
             log.Add(Narration("Tomas lục khắp kho: không còn bó rau nào."));
             log.Add($"<b>{Speaker}:</b> Hết rau rồi à? Thôi, để hôm khác vậy.");
-            log.Add(Narration($"{Speaker} quay ra cửa, đi tìm hàng rau khác."));   // không dùng câu rời đi mặc định: câu đó tả khách ôm rau
+            log.Add(Narration($"{Speaker} quay ra cửa, đi tìm hàng rau khác."));
             leaving = true;
         }
         Render();
     }
 
-    // Thêm một lượt hỏi–đáp vào cuối cuộc trò chuyện
     void Say(DialogueLine line, string note = null)
     {
         fresh = log.Count;
@@ -262,7 +241,6 @@ public class ShopView : MonoBehaviour
                 (note != null ? $"  <size=85%><color=#{NarrationColor}>({note})</color></size>" : ""));
     }
 
-    // Khách chào về + dẫn truyện rời đi
     void Leave()
     {
         leaving = true;
@@ -271,7 +249,6 @@ public class ShopView : MonoBehaviour
         if (!string.IsNullOrEmpty(exit)) log.Add(Narration(exit));
     }
 
-    // Sau mỗi lựa chọn: nếu không còn gì để làm thì khách tự chào về
     void AfterAction()
     {
         if (!leaving && !CanTrade && !CanAsk) Leave();
@@ -279,13 +256,10 @@ public class ShopView : MonoBehaviour
     }
 
     bool HasStockFor(int quantity) => quantity == 0 || S.stock > 0;
-    // Kho thiếu thì bán hết chỗ còn lại (-1 = khách lấy hết kho)
     int QuantityAvailable(int requested) => requested < 0 ? S.stock : Mathf.Min(requested, S.stock);
     bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);
     bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(DiscountQuantity(Visit));
     bool CanTrade => CanSell || CanDiscount;
-    // Khách tới mua rau (Emel, Perrin) chỉ đứng lại nói chuyện khi đã được giao rau.
-    // Người bán tin (Sable, hỏi chuyện mất tiền) thì không cần.
     static bool NeedsVegFirst(CustomerVisit v) => v.askCost == 0 && v.sellQuantity != 0;
     bool AskLocked => Visit != null && NeedsVegFirst(Visit) && !traded;
     bool Tired => S.energy < EconomyRules.TalkEnergy;
@@ -307,7 +281,7 @@ public class ShopView : MonoBehaviour
         RefreshNotebookButton();
         dialogue.ForceMeshUpdate();
         UIFactory.ScrollToBottom(scroll);
-        if (isActiveAndEnabled) StartCoroutine(ScrollNextFrame());   // TMP đo xong chiều cao ở frame sau
+        if (isActiveAndEnabled) StartCoroutine(ScrollNextFrame());
     }
 
     System.Collections.IEnumerator ScrollNextFrame()
@@ -318,9 +292,6 @@ public class ShopView : MonoBehaviour
 
     public void RefreshNotebookButton() => UIFactory.SetLabel(notebookBtn, $"Sổ tay  ·  {S.fragments.Count} manh mối");
 
-    // ---------------- Lựa chọn ----------------
-
-    // Mỗi chế độ dùng các ô lựa chọn theo thứ tự; ô thừa thì ẩn
     void SetChoice(int i, string label, string note = "", bool on = true, bool gold = false)
     {
         var c = choices[i];
@@ -333,7 +304,6 @@ public class ShopView : MonoBehaviour
         UIFactory.SetInteractable(c.button, on);
     }
 
-    // Giá bán cố định theo từng khách (bỏ nút "Giá bán" 04/11: nó không ảnh hưởng gì thấy được)
     List<CustomerVisit> AllVisits() => day && day.visits != null
         ? day.visits.Where(v => v != null).ToList()
         : new List<CustomerVisit>();
@@ -349,11 +319,11 @@ public class ShopView : MonoBehaviour
                 SetChoice(1, "Nghỉ chiều nay");
                 return;
             case Mode.Closed:
-                return;   // chỉ còn nút "Sang buổi tối" ở thanh dưới
+                return;
         }
 
         var v = Visit;
-        if (v == null || !v.customer) return;   // hết khách: dùng nút "Sang buổi tối" ở thanh dưới
+        if (v == null || !v.customer) return;
 
         if (leaving)
         {
@@ -430,15 +400,13 @@ public class ShopView : MonoBehaviour
         if (v.discountPrice > 0) S.salesToday += quantity;
         S.money += revenue;
         string outcome = quantity > 0 ? (revenue > 0 ? $"{quantity} bó rau · +{revenue} xu" : $"tặng {quantity} bó rau") : "không xuất rau · không thu tiền";
-        if (v.discountAccepted && v.discountPrice > 0) goodwill = true;   // lấy lòng: lần hỏi dồn sau đó nhẹ đi 1 điểm
+        if (v.discountAccepted && v.discountPrice > 0) goodwill = true;
         Say(v.discount, outcome);
         AfterAction();
     }
 
     int DiscountUnitPrice(CustomerVisit visit) => visit.discountAccepted ? visit.discountPrice : visit.sellPrice;
 
-    // Bớt giá = bán đúng số bó khách định mua, nhưng rẻ hơn mỗi bó (2 bó × 6 xu thay vì 2 bó × 10 xu).
-    // Riêng biếu không (giá 0) và trao đổi đặc biệt (đổi rau lấy tin) giữ số bó ghi trong kịch bản.
     static int DiscountQuantity(CustomerVisit visit) =>
         visit.discountPrice > 0 && string.IsNullOrEmpty(visit.discountActionLabel) && visit.sellQuantity != 0
             ? visit.sellQuantity
@@ -460,7 +428,6 @@ public class ShopView : MonoBehaviour
             if (Tired) return;
             askCount = 2;
             S.energy -= EconomyRules.TalkEnergy;
-            // Bớt giá rồi mới hỏi dồn thì khách dễ bỏ qua hơn: bớt 1 điểm (Emel ngày chợ phiên 2 → 1, người khác 1 → 0)
             S.AddSuspicion(v.customer.channel, v.pressSuspicion - (goodwill ? 1 : 0), $"hỏi dồn {Speaker}");
             Say(v.press, $"{Speaker} có vẻ bắt đầu để ý tới cậu");
         }
@@ -475,8 +442,6 @@ public class ShopView : MonoBehaviour
         if (isNew && clue && barHint) barHint.text = $"<color=#E0B04B>Đã ghi vào sổ tay:</color> {clue.keyword}  <color=#9C8C7B>[{IntelThreadNames.Of(clue.kind)}]</color>";
         Render();
     }
-
-    // ---------------- Bảng khách ----------------
 
     void RefreshQueue()
     {

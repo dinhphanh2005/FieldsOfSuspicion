@@ -1,11 +1,9 @@
 #if UNITY_EDITOR
 using UnityEditor;
 
-// Menu chạy bản chơi tự động để rà UI (chỉ trong Editor).
 [InitializeOnLoad]
 public static class DevAutoTourMenu
 {
-    // Thoát Play mode thì xoá cờ, để lần bấm Play sau là chơi bình thường
     static DevAutoTourMenu()
     {
         EditorApplication.playModeStateChanged += s =>

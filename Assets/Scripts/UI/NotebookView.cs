@@ -6,12 +6,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Sổ tay — trái tim của lối chơi suy luận (lấy cảm hứng từ cuốn sổ trong Do Not Feed the Monkeys):
-//   Trang "Manh mối": những mẩu tin nhỏ đã ghi khi nghe khách nói chuyện, xếp theo chủ đề.
-//   Trang "Hồ sơ":    mỗi hồ sơ là một câu hỏi Văn phòng cần trả lời, viết thành câu có ô trống.
-//                     Người chơi TỰ ghép manh mối vào ô trống → được một bản báo cáo (mẩu tin lớn).
-//                     Sổ tay KHÔNG nói ghép đúng hay sai: hậu quả hiện ra ở Tin tức sáng hôm sau.
-// Ban đêm, người chơi chọn một bản báo cáo đã ghép xong để mang ra hốc cây sồi.
 public class NotebookView : MonoBehaviour
 {
     DayManager dm;
@@ -32,7 +26,6 @@ public class NotebookView : MonoBehaviour
         dm = manager;
         var stage = UIFactory.MakeStage(transform);
 
-        // Trang sổ: giấy kẻ lề đỏ
         page = UIFactory.Place(stage, "Notebook_Page", 90, 12, 1100, 584);
         UIFactory.MakeSurface(page, UIFactory.Hex("F3EAD6"), 8);
         UIFactory.Skin(page.GetComponent<Image>(), "notebook_page");
@@ -48,14 +41,12 @@ public class NotebookView : MonoBehaviour
         tabCases = Tab(page, "Tab_Cases", 896, 22, () => SwitchTab(true));
         UIFactory.MakeBox(UIFactory.Place(page, "TabLine", 96, 70, 964, 1), new Color(0.23f, 0.18f, 0.15f, 0.25f), false);
 
-        // --- Trang Manh mối ---
         cluesRoot = UIFactory.Place(page, "Clues", 96, 82, 964, 486);
         var cl = UIFactory.MakeScroll(UIFactory.MakeRect(cluesRoot, "Scroll", Vector2.zero, Vector2.one), out _);
         cluesText = UIFactory.AddLine(cl, "", 17, UIFactory.Ink);
         cluesText.lineSpacing = 6;
         cluesText.paragraphSpacing = 4;
 
-        // --- Trang Hồ sơ ---
         casesRoot = UIFactory.Place(page, "Cases", 96, 82, 964, 486);
         var listRoot = UIFactory.Place(casesRoot, "CaseList", 0, 0, 286, 486);
         caseList = UIFactory.MakeScroll(listRoot, out _);
@@ -76,8 +67,6 @@ public class NotebookView : MonoBehaviour
         var b = UIFactory.MakeButton(UIFactory.Place(parent, name, x, y, 172, 38), name, "", onClick, 16);
         return b;
     }
-
-    // ---------------- Mở / chuyển trang ----------------
 
     public void Open(bool casesTab, string caseId)
     {
@@ -121,8 +110,6 @@ public class NotebookView : MonoBehaviour
 
     List<CaseSO> OpenCases() => dm.AllCases.Where(c => CaseEvaluator.IsOpen(c, S)).ToList();
 
-    // ---------------- Trang Manh mối ----------------
-
     void BuildClues()
     {
         var sb = new StringBuilder();
@@ -144,8 +131,6 @@ public class NotebookView : MonoBehaviour
         cluesText.text = sb.Length > 0 ? sb.ToString()
             : "<color=#8C7B6B>Sổ tay còn trống. Buổi chiều, khi khách nói chuyện, bấm vào cụm từ gạch chân màu đỏ để ghi lại.</color>";
     }
-
-    // ---------------- Trang Hồ sơ ----------------
 
     string Status(CaseSO c)
     {
@@ -207,7 +192,6 @@ public class NotebookView : MonoBehaviour
         brief.fontStyle = FontStyles.Italic;
         UIFactory.AddLine(caseDetail, Status(c), 14, UIFactory.Hex("8C3A2B"));
 
-        // Câu báo cáo đang ghép
         var box = UIFactory.MakeRect(caseDetail, "Sentence", Vector2.zero, Vector2.one);
         UIFactory.MakeSurface(box, UIFactory.Hex("EADFC6"), 6);
         UIFactory.AutoHeight(box, 18, 14, 14, 0);
@@ -226,7 +210,6 @@ public class NotebookView : MonoBehaviour
             return;
         }
 
-        // Các ô trống: bấm để chọn ô, rồi chọn manh mối bên dưới
         for (int i = 0; i < c.slots.Count; i++)
         {
             int slot = i;
@@ -240,7 +223,6 @@ public class NotebookView : MonoBehaviour
             UIFactory.SetColor(b, slot == activeSlot ? UIFactory.Hex("F6DFA0") : Color.white);
         }
 
-        // Manh mối ghép được vào ô đang chọn
         var kind = c.slots[activeSlot].kind;
         var options = S.fragments.Select(dm.FindIntel).Where(x => x && x.kind == kind).ToList();
         UIFactory.AddLine(caseDetail, $"<b>Ô \"{c.slots[activeSlot].label}\"</b> — chọn một manh mối loại <i>{IntelThreadNames.Of(kind)}</i>:", 15, UIFactory.Ink);
@@ -278,7 +260,6 @@ public class NotebookView : MonoBehaviour
     void Choose(CaseSO c, string clueId)
     {
         S.SetAnswer(c, activeSlot, clueId);
-        // Tự nhảy sang ô trống tiếp theo cho nhanh
         var answers = S.Draft(c).answers;
         if (!string.IsNullOrEmpty(clueId))
             for (int k = 1; k <= c.slots.Count; k++)

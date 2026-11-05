@@ -1,4 +1,3 @@
-// Tên hiện cho người chơi.
 public static class IntelThreadNames
 {
     public static string Of(IntelThread t)

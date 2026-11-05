@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Runtime manifest. Giữ mọi nội dung viết sẵn trong bản build (FoSContentCatalogBuilder điền trước khi build).
 [CreateAssetMenu(menuName = "FoS/Content Catalog", fileName = "FoSContentCatalog")]
 public class ContentCatalog : ScriptableObject
 {

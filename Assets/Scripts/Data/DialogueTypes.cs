@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Biến thể câu: nếu điều kiện đúng thì dùng text này thay cho câu mặc định.
-// Có nhiều biến thể thì lấy biến thể ĐẦU TIÊN thỏa điều kiện.
 [Serializable]
 public class LineVariant
 {
@@ -12,8 +10,6 @@ public class LineVariant
     [TextArea(2, 5)] public string text;
 }
 
-// Một lựa chọn trong khung thoại: câu của Tomas + câu đáp của khách.
-// Cụm từ chứa tin viết dạng {{cụm từ|F02}}.
 [Serializable]
 public class DialogueLine
 {
@@ -22,8 +18,6 @@ public class DialogueLine
     public List<LineVariant> replyVariants = new();
 }
 
-// Một lượt khách ghé tiệm trong một ngày.
-// Thứ tự hiện: entrance (dẫn truyện) → greeting → các lượt hỏi–đáp → farewell → exit (dẫn truyện).
 [Serializable]
 public class CustomerVisit
 {
@@ -61,11 +55,11 @@ public class CustomerVisit
     [Tooltip("Điểm nghi ngờ khi Hỏi dồn (Thấp = 1, Emel N7 = 2)")]
     public int pressSuspicion = 1;
 
-    public DialogueLine sell;       // Bán hàng
-    public DialogueLine discount;   // Bớt giá
-    public DialogueLine ask;        // Hỏi chuyện
-    public DialogueLine press;      // Hỏi dồn = bấm Hỏi chuyện lần 2 trong cùng lượt khách
-    public DialogueLine farewell;   // Tiễn khách (cũng tự chạy khi không còn gì để làm)
+    public DialogueLine sell;
+    public DialogueLine discount;
+    public DialogueLine ask;
+    public DialogueLine press;
+    public DialogueLine farewell;
 
     [Tooltip("Dẫn truyện khi khách rời đi (in nghiêng)")]
     [TextArea(2, 4)] public string exit;

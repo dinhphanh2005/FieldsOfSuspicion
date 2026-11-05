@@ -1,7 +1,5 @@
 using System.Text.RegularExpressions;
 
-// Đổi "{{cụm từ|F02}}" trong lời thoại sang rich text của TextMeshPro.
-// Chưa ghi: hiện màu + bấm được (thẻ <link>). Đã ghi: xám nhạt hơn thoại thường, không bấm được.
 public static class IntelMarkup
 {
     const string FreshColor    = "B8442E";

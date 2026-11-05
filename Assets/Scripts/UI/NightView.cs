@@ -4,21 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Ban đêm: lên lộ trình trên bản đồ → chọn MỘT bản báo cáo đã ghép xong → "Đi giao tin". Hoặc "Ở nhà tối nay".
-// Bố cục: bản đồ bên trái, bảng tối bên phải (Đêm nay / Lộ trình / Báo cáo), nút ở thanh dưới.
-// Ra hốc cây mà không chọn báo cáo cũng được (vd. làm theo lệnh "Qua cầu") — chỉ là không gửi gì.
-// Luật lộ trình: bắt đầu ở Nhà, chỉ đi theo cạnh nối và đang mở, không quay lại nút cũ,
-// tối đa 4 bước, kết thúc ở Hốc cây sồi. Bấm lại nút cuối của lộ trình = bỏ bước đó.
-//
-// Rủi ro mỗi đêm = bảng đường gốc (mục 9 PDF) + luật của ngày (DaySO.night):
-// đóng đường (ngập), đổi mức rủi ro (lính canh), rủi ro ẩn — người chơi thấy mức GỐC
-// cho tới khi sổ tay có mảnh tin tương ứng (Cầu Bắc + F08). Điểm nghi ngờ luôn tính theo mức THẬT.
 public class NightView : MonoBehaviour
 {
     class Node { public string id, name; public Vector2 pos; }
     class Edge { public string a, b; public RouteRisk baseRisk; }
 
-    // Trạng thái của một cạnh trong đêm đang chơi
     class EdgeState
     {
         public Edge edge;
@@ -31,7 +21,6 @@ public class NightView : MonoBehaviour
 
     static readonly Node[] Nodes =
     {
-        // Tọa độ pixel trong tấm bản đồ 812×576, tính từ góc trên trái
         new Node { id = "home",   name = "Nhà",            pos = new Vector2(110, 330) },
         new Node { id = "well",   name = "Giếng làng",     pos = new Vector2(260, 200) },
         new Node { id = "market", name = "Chợ",            pos = new Vector2(440, 330) },
@@ -41,7 +30,6 @@ public class NightView : MonoBehaviour
         new Node { id = "oak",    name = "Hốc cây sồi",    pos = new Vector2(700, 400) },
     };
 
-    // Bảng đường gốc (mục 9 PDF, đêm N1)
     static readonly Edge[] Edges =
     {
         new Edge { a = "home",   b = "river",  baseRisk = RouteRisk.Safe },
@@ -88,14 +76,12 @@ public class NightView : MonoBehaviour
 
     void BuildMap(RectTransform stage)
     {
-        // Tấm bản đồ giấy da: dải tiêu đề trên, chú giải dưới, các địa điểm ở giữa
         var card = UIFactory.Place(stage, "Night_MapCard", 24, 16, 812, 576);
         UIFactory.MakeSurface(card, UIFactory.Hex("E6D7B8"), 8);
         UIFactory.Skin(card.GetComponent<Image>(), "map_night");
         UIFactory.AddShadow(card, 10);
         UIFactory.AddGrain(card, 0.12f);
 
-        // Bản đồ là ảnh tối: dải tiêu đề + chú giải nền tối, chữ sáng
         var head = UIFactory.Place(card, "Head", 0, 0, 812, 46);
         UIFactory.MakeBox(head, new Color(0.1f, 0.08f, 0.07f, 0.82f), false);
         var mapTitleRect = UIFactory.MakeRect(head, "Title", Vector2.zero, Vector2.one, 0);
@@ -111,7 +97,6 @@ public class NightView : MonoBehaviour
         mapSub.fontSizeMax = 14;
         mapSub.textWrappingMode = TextWrappingModes.NoWrap;
         mapSub.overflowMode = TextOverflowModes.Ellipsis;
-
 
         foreach (var e in Edges)
         {
@@ -131,8 +116,6 @@ public class NightView : MonoBehaviour
             string id = n.id;
             var b = UIFactory.MakeButton(rt, "Button", n.name, () => OnNode(id), 16);
             UIFactory.Skin((Image)b.targetGraphic, n.id == "home" ? "node_plate_home" : "node_plate_normal");
-            // Biểu tượng trung tính cho từng địa điểm (không dùng hình chim bách thanh / khăn tay:
-            // đó là manh mối của cốt truyện, đặt lên bản đồ sẽ lộ đáp án).
             string nodeIcon = n.id == "home" ? "icon_home" : n.id == "well" ? "icon_bell" : n.id == "market" ? "icon_coins" :
                               n.id == "church" ? "icon_calendar" : n.id == "bridge" ? "icon_moon" : n.id == "river" ? "icon_lantern" : "icon_oak";
             var nodeIconRt = UIFactory.MakeRect(b.transform, "LocationIcon", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
@@ -142,10 +125,10 @@ public class NightView : MonoBehaviour
             UIFactory.Skin(UIFactory.MakeBox(nodeIconRt, Color.white, false), nodeIcon);
             var nodeLabel = b.GetComponentInChildren<TextMeshProUGUI>();
             nodeLabel.rectTransform.offsetMin = new Vector2(33, 6);
-            nodeLabel.rectTransform.offsetMax = new Vector2(-10, -6);   // chừa mép phải của tấm biển
+            nodeLabel.rectTransform.offsetMax = new Vector2(-10, -6);
             var nodeFeel = b.GetComponent<ButtonFeel>();
-            if (nodeFeel) nodeFeel.content = null;                      // không nhích chữ khi rê/bấm: chữ dài sẽ chạm mép
-            nodeLabel.textWrappingMode = TextWrappingModes.NoWrap;   // "Đường ven sông" không xuống dòng
+            if (nodeFeel) nodeFeel.content = null;
+            nodeLabel.textWrappingMode = TextWrappingModes.NoWrap;
             nodeLabel.enableAutoSizing = true;
             nodeLabel.fontSizeMin = 12;
             nodeLabel.fontSizeMax = 16;
@@ -172,7 +155,6 @@ public class NightView : MonoBehaviour
         LegendItem(items, "closed", "đường đóng");
     }
 
-    // Một mục chú giải: vạch màu + chữ
     static void LegendItem(RectTransform parent, string spriteName, string label)
     {
         var bar = UIFactory.MakeRect(parent, "Swatch", Vector2.zero, Vector2.one);
@@ -215,7 +197,7 @@ public class NightView : MonoBehaviour
         UIFactory.MakeLabel(UIFactory.MakeRect(side, "IntelLabel", Vector2.zero, Vector2.one), "BÁO CÁO GỬI ĐÊM NAY", UIFactory.Gold);
         Gap(4);
         var listRoot = UIFactory.MakeRect(side, "IntelList", Vector2.zero, Vector2.one);
-        UIFactory.Flexible(listRoot, 90);           // ăn hết chỗ còn lại, quá dài thì cuộn
+        UIFactory.Flexible(listRoot, 90);
         intelList = UIFactory.MakeScroll(listRoot, out intelScroll);
         intelList.GetComponent<VerticalLayoutGroup>().spacing = 7;
     }
@@ -231,7 +213,6 @@ public class NightView : MonoBehaviour
         Refresh();
     }
 
-    // Bảng gốc + luật của ngày → rủi ro thật / rủi ro người chơi thấy / đóng
     void ApplyDayRules()
     {
         var notes = new List<string>();
@@ -263,8 +244,6 @@ public class NightView : MonoBehaviour
         notesText.text = notes.Count > 0 ? string.Join("\n", notes) : "<color=#9C8C7B>Không nghe nói có gì bất thường.</color>";
     }
 
-    // Danh sách báo cáo gửi được đêm nay: hồ sơ đã mở, chưa gửi, còn trong hạn, đã ghép đủ ô.
-    // Hồ sơ còn thiếu ô thì hiện mờ kèm lời nhắc mở sổ tay.
     void BuildReportList()
     {
         UIFactory.Clear(intelList);
@@ -282,8 +261,6 @@ public class NightView : MonoBehaviour
             var b = UIFactory.MakeButton(intelList, "Report_" + id,
                 $"<size=80%><color=#7A6A5A>{c.title.ToUpper()}</color>{deadline}</size>\n{body}",
                 () => SelectReport(id, complete), 15);
-            // Nền trơn bo góc thay cho ảnh nút: ảnh nút có viền trong suốt dày nên khung thấy được nhỏ hơn ô thật,
-            // chữ dài trông như tràn ra ngoài.
             UIFactory.Round((Image)b.targetGraphic, 6);
             if (c.isFinal) UIFactory.AddButtonIcon(b, "icon_seal_straka");
             var t = b.GetComponentInChildren<TextMeshProUGUI>();
@@ -293,8 +270,6 @@ public class NightView : MonoBehaviour
             t.textWrappingMode = TextWrappingModes.Normal;
             t.rectTransform.offsetMin = new Vector2(14, 8);
             t.rectTransform.offsetMax = new Vector2(-10, -8);
-            // Nút cao theo chữ: đo với bề rộng thật của ô chữ (cột phải rộng 404 − lề 40 − đệm nút 24 − lề icon),
-            // nên câu dài (báo cáo cuối) không tràn ra ngoài khung.
             float textWidth = ReportListWidth - 24 - t.margin.x - t.margin.z;
             float textHeight = t.GetPreferredValues(t.text, textWidth, 0).y;
             UIFactory.Size(b, Mathf.Max(64, textHeight + 20));
@@ -314,12 +289,12 @@ public class NightView : MonoBehaviour
         intelScroll.verticalNormalizedPosition = 1;
     }
 
-    const float ReportListWidth = 364;   // = bề rộng cột phải (404) trừ lề trái/phải 20
+    const float ReportListWidth = 364;
 
     void SelectReport(string id, bool complete)
     {
         if (!complete) { dm.OpenNotebook(true, id); return; }
-        selectedCase = selectedCase == id ? null : id;   // bấm lần nữa để bỏ chọn
+        selectedCase = selectedCase == id ? null : id;
         RefreshMapAndPanel();
     }
 
@@ -332,13 +307,11 @@ public class NightView : MonoBehaviour
 
     void OnNode(string id)
     {
-        if (route.Count > 1 && id == Last) route.RemoveAt(route.Count - 1);   // bỏ bước cuối
+        if (route.Count > 1 && id == Last) route.RemoveAt(route.Count - 1);
         else if (CanAdd(id)) route.Add(id);
         RefreshMapAndPanel();
     }
 
-    // Số bước tối đa đêm nay: 4, nhưng không quá số năng lượng còn lại
-    // Luôn đi được tối đa 4 bước (đưa tin là việc chính). Hết năng lượng vẫn đi, nhưng mỗi bước quá sức +2 nghi ngờ.
     int StepLimit => MaxSteps;
     int FreeSteps => S.energy / EconomyRules.StepEnergy;
     int OverSteps => Mathf.Max(0, route.Count - 1 - FreeSteps);
@@ -346,7 +319,6 @@ public class NightView : MonoBehaviour
     bool CanAdd(string id) =>
         Last != "oak" && route.Count - 1 < StepLimit && !route.Contains(id) && OpenEdge(Last, id) != null;
 
-    // Gọi lại khi gấp sổ tay (bản nháp báo cáo có thể vừa đổi)
     public void Refresh()
     {
         BuildReportList();
@@ -390,7 +362,6 @@ public class NightView : MonoBehaviour
                      : selectedCase == null ? "Chưa chọn báo cáo: ra hốc cây sồi mà không gửi gì"
                      : "";
 
-        // Chữ đổi độ dài → dựng lại layout ngay, tránh đè lên nhau
         LayoutRebuilder.ForceRebuildLayoutImmediate(side);
     }
 
@@ -398,7 +369,6 @@ public class NightView : MonoBehaviour
     {
         string invalidReason = RoutePlanner.Validate(route, StepLimit, IsOpenEdge);
         if (invalidReason != null) { barHint.text = invalidReason; return; }
-        // Rủi ro thật của từng đoạn: đoạn Cao (trạm gác, đồn) → kênh Emel; còn lại → lính tuần
         foreach (var es in RouteEdges())
             S.AddSuspicion(es.actual == RouteRisk.High ? SuspicionChannel.Emel : SuspicionChannel.Patrol,
                            SuspicionRules.Points(es.actual), $"đi qua {FindNode(es.edge.a).name} – {FindNode(es.edge.b).name}");

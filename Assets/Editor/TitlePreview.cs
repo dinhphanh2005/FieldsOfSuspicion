@@ -5,8 +5,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Chụp màn tiêu đề + phần mở đầu ngay trong Editor, KHÔNG vào Play mode, không đụng scene đang mở
-// (dựng trong preview scene riêng rồi huỷ). Ảnh lưu vào DevShots/title_preview/.
 public static class TitlePreview
 {
     [MenuItem("FoS/Dev/Chụp màn tiêu đề (không chạy game)")]

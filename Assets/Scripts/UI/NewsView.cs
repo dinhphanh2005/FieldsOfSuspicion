@@ -4,10 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Sáng sớm: đọc thư (nếu có) rồi đọc báo.
-//   - Thư: tin có isLetter (lá thư N1) và thư nhắc tiền nhà của bà Mabry. Mỗi lá một trang giấy thư.
-//   - Báo "TIN SELLOWE": 1 tin chính (priority cao nhất thỏa điều kiện) + các tin phụ, chia cột.
-// Nút chính trên thanh dưới: "Đọc tiếp" / "Đọc báo" khi còn thư, "Ra bảng tin làng" ở trang báo.
 public class NewsView : MonoBehaviour
 {
     class Letter { public string title, note, body; }
@@ -18,7 +14,7 @@ public class NewsView : MonoBehaviour
     TextMeshProUGUI hint;
 
     readonly List<Letter> letters = new List<Letter>();
-    int page;           // 0..letters.Count-1 = thư, letters.Count = báo
+    int page;
     DaySO day;
     GameState state;
     string recap;
@@ -29,12 +25,10 @@ public class NewsView : MonoBehaviour
         dm = manager;
         stage = UIFactory.MakeStage(transform);
 
-        // Giấy thư: rộng 600, cao theo chữ, giữa sân khấu, hơi lệch
         letterSheet = Sheet("Letter_Sheet", 600, UIFactory.Hex("F2E9D3"), -1f);
         letterContent = letterSheet;
         UIFactory.AutoHeight(letterSheet, 52, 40, 36, 8);
 
-        // Tờ báo: rộng 780
         newsSheet = Sheet("News_Sheet", 780, UIFactory.Hex("F1E8D2"), -0.6f);
         newsContent = newsSheet;
         UIFactory.AutoHeight(newsSheet, 44, 26, 30, 0);
@@ -50,15 +44,12 @@ public class NewsView : MonoBehaviour
         var rt = UIFactory.MakeRect(stage, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         rt.pivot = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = new Vector2(width, 0);
-        // Không nghiêng, giấy trơn: tờ giấy nghiêng làm đường kẻ thành bậc thang (trông đứt đoạn),
-        // còn ảnh giấy cũ có sẵn nếp gấp / dòng kẻ mờ chồng lên đường kẻ thật.
         UIFactory.MakeSurface(rt, color, 4);
         UIFactory.AddGrain(rt, 0.1f);
         UIFactory.AddShadow(rt, 10);
         return rt;
     }
 
-    // Trả về mọi thư/tin đã hiện (để DayManager xử lý grantsIntel)
     public List<NewsSO> Show(DaySO today, GameState s, string rentLetter = null, string nightRecap = "")
     {
         day = today;
@@ -127,7 +118,6 @@ public class NewsView : MonoBehaviour
         }
         UIFactory.Size(UIFactory.MakeRect(letterContent, "Gap", Vector2.zero, Vector2.one), 8);
 
-        // Mỗi đoạn một dòng chữ; đoạn cuối ngắn (lời dặn, chữ ký) thì in nghiêng, canh phải
         var paras = (l.body ?? "").Split(new[] { "\n\n" }, System.StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < paras.Length; i++)
         {
@@ -143,18 +133,14 @@ public class NewsView : MonoBehaviour
     {
         UIFactory.Clear(newsContent);
 
-        // Keep the masthead art and TMP label on separate GameObjects: Unity UI permits
-        // only one Graphic per object, so putting Image beside TMP causes a warning and
-        // leaves a null component that fails while building the newspaper.
         var mastRow = UIFactory.MakeRect(newsContent, "Masthead", Vector2.zero, Vector2.one);
         UIFactory.Size(mastRow, 72);
         var mastImage = UIFactory.MakeBox(mastRow, Color.white, false);
-        mastImage.color = new Color(0, 0, 0, 0);   // ảnh news_masthead có sẵn chữ → không dùng, tránh chữ chồng hai lớp
+        mastImage.color = new Color(0, 0, 0, 0);
         var mastTextRect = UIFactory.MakeRect(mastRow, "Masthead_Title", Vector2.zero, Vector2.one, 8);
         var mast = UIFactory.MakeTitle(mastTextRect, "TIN SELLOWE", 46, UIFactory.Ink, TextAlignmentOptions.Center);
         mast.characterSpacing = 18;
 
-        // Dòng ngày tháng giữa hai đường kẻ
         UIFactory.Size(UIFactory.MakeRect(newsContent, "Gap", Vector2.zero, Vector2.one), 6);
         UIFactory.AddRule(newsContent, UIFactory.Ink, 3);
         var dl = UIFactory.MakeRect(newsContent, "Dateline", Vector2.zero, Vector2.one);
@@ -196,9 +182,8 @@ public class NewsView : MonoBehaviour
             }
         }
 
-        // Tin phụ: chia cột đều, ngăn bằng đường kẻ dọc
         var side = day.news.Where(n => n && n.isSide && !n.isLetter && Conditions.Check(state, n.condition, n.param))
-                           .OrderByDescending(n => n.priority).Take(3).ToList();   // tối đa 3 cột cho dễ đọc
+                           .OrderByDescending(n => n.priority).Take(3).ToList();
         shown.AddRange(side);
         if (side.Count > 0)
         {
@@ -208,7 +193,7 @@ public class NewsView : MonoBehaviour
 
             var cols = UIFactory.MakeRect(newsContent, "Columns", Vector2.zero, Vector2.one);
             var hl = UIFactory.HList(cols, 0, 0);
-            hl.childForceExpandWidth = false;   // đường kẻ dọc giữ đúng 2px
+            hl.childForceExpandWidth = false;
             for (int i = 0; i < side.Count; i++)
             {
                 if (i > 0)

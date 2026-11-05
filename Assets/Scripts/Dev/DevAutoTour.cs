@@ -9,9 +9,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// CHỈ DÙNG TRONG EDITOR. Menu "FoS/Dev/Tự chơi một lượt (chụp màn hình)".
-// Tự bấm qua cả 7 ngày như người chơi thật (tìm nút theo chữ trên nút rồi bấm), chụp từng màn
-// ở đúng 1280×720 vào thư mục DevShots/ để rà UI. Ghi log mọi bước + lỗi vào DevShots/tour.log.
 public class DevAutoTour : MonoBehaviour
 {
     public const string PrefKey = "FoS.DevAutoTour";
@@ -25,8 +22,6 @@ public class DevAutoTour : MonoBehaviour
         UnityEditor.EditorPrefs.DeleteKey(PrefKey);
         UnityEditor.EditorPrefs.DeleteKey(PrefKey + ".at");
         if (string.IsNullOrEmpty(plan)) return;
-        // Chỉ chạy khi vừa bấm menu FoS/Dev (trong 60 giây). Cờ cũ còn sót lại thì bỏ qua:
-        // bấm Play bình thường KHÔNG bao giờ tự chơi.
         if (!long.TryParse(stamp, out long ticks) || (System.DateTime.UtcNow - new System.DateTime(ticks)).TotalSeconds > 60)
         {
             Debug.Log("[Tour] Bỏ qua cờ tự chơi cũ.");
@@ -60,7 +55,7 @@ public class DevAutoTour : MonoBehaviour
         canvas = FindFirstObjectByType<Canvas>();
         Log("Kế hoạch: " + plan);
 
-        yield return Wait(3.2f);                 // chờ màn tiêu đề hiện dần xong
+        yield return Wait(3.2f);
         yield return Shot("title");
         Click("Cài đặt");
         yield return Wait(0.8f);
@@ -101,8 +96,6 @@ public class DevAutoTour : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
     }
 
-    // ---------------- Các buổi ----------------
-
     IEnumerator News(int day)
     {
         for (int page = 0; page < 6 && dm.CurrentPhase == Phase.News; page++)
@@ -120,12 +113,10 @@ public class DevAutoTour : MonoBehaviour
         if (day == 1)
         {
             Click("Giải sẵn lệnh"); yield return Wait(); yield return Shot($"N{day}_board_decoded");
-            // Giữ chế độ giải sẵn cả tuần: thẻ dài nhất (lệnh + lời giải) là trường hợp dễ tràn nhất
         }
-        if (plan == "nofarm") { ClickPrimary(); yield return Wait(); yield break; }   // không đụng tới ruộng: kiểm tra hết rau
+        if (plan == "nofarm") { ClickPrimary(); yield return Wait(); yield break; }
         Click("Ruộng");
         yield return Wait();
-        // Thu hoạch ô chín, gieo ô trống
         for (int i = 0; i < 6; i++) ClickNamed("Plot_" + i);
         yield return Wait();
         yield return Shot($"N{day}_farm");
@@ -135,10 +126,8 @@ public class DevAutoTour : MonoBehaviour
         yield return Wait();
     }
 
-    // Lượt hỏi theo ngày: k = khách thứ k trong ngày → danh sách hành động
     static readonly Dictionary<string, string[]> Script = new Dictionary<string, string[]>
     {
-        // Giao rau trước, hỏi chuyện sau (khách mua rau chỉ nói chuyện khi đã được giao rau)
         ["1_0"] = new[] { "sell", "ask" },
         ["2_0"] = new[] { "sell", "ask" },
         ["2_1"] = new[] { "discount", "ask" },
@@ -161,7 +150,6 @@ public class DevAutoTour : MonoBehaviour
         yield return Shot($"N{day}_shop_prompt");
         if (plan == "broke")
         {
-            // Không bán hàng: kiểm tra thư nhắc tiền nhà và kết thúc Bị đuổi nhà
             Click("Nghỉ chiều nay");
             yield return Wait();
             yield return Shot($"N{day}_shop_closed");
@@ -176,9 +164,7 @@ public class DevAutoTour : MonoBehaviour
             yield return Shot($"N{day}_shop_v{k}_greet");
             if (Script.TryGetValue($"{day}_{k}", out var acts))
             {
-                // Đường Shrike: mua tin của Sable N2 để có manh mối "kho thóc bỏ trống" (mồi nhử)
                 if (plan == "shrike" && day == 2 && k == 2) acts = new[] { "ask" };
-                // Kiểm tra năng lượng: hỏi dồn mọi khách (bán thường / bớt giá trước)
                 if (plan == "pressall") acts = new[] { "sell", "ask", "press" };
                 if (plan == "pressdisc") acts = new[] { "discount", "ask", "press" };
                 foreach (var a in acts)
@@ -205,7 +191,6 @@ public class DevAutoTour : MonoBehaviour
         yield return Wait();
     }
 
-    // Báo cáo gửi mỗi đêm (đường "theo Rook, ghép đúng") và lộ trình
     static readonly Dictionary<int, (string caseId, string[] answers, string[] route)> NightPlan = new()
     {
         [1] = ("C0", new[] { "K01" }, new[] { "river", "oak" }),
@@ -217,7 +202,6 @@ public class DevAutoTour : MonoBehaviour
         [7] = ("C4", new[] { "K_SHRIKE", "K17" }, new[] { "river", "oak" }),
     };
 
-    // Đường "theo Shrike": tin Sable, đi qua chợ, qua cầu → phải Bại lộ trước đêm cuối
     static readonly Dictionary<int, (string caseId, string[] answers, string[] route)> ShrikePlan = new()
     {
         [1] = ("C0", new[] { "K01" }, new[] { "river", "oak" }),
@@ -234,13 +218,11 @@ public class DevAutoTour : MonoBehaviour
         if (dm.CurrentPhase != Phase.Night) yield break;
         yield return Shot($"N{day}_night");
         var p = plan == "shrike" ? ShrikePlan[day] : plan == "broke" ? (null, null, null) : NightPlan[day];
-        // Các đường kết thúc khác: giống đường Rook, chỉ khác báo cáo cuối đêm N7
-        if (day == 7 && plan == "defection") p = ("C4", new[] { "K_ROOK", "K18" }, new[] { "river", "oak" });      // tố nhầm Rook → Đào tẩu
-        if (day == 7 && plan == "weak")      p = ("C4", new[] { "K_SHRIKE", "K19" }, new[] { "river", "oak" });    // tố đúng, bằng chứng yếu
-        if (day == 7 && plan == "cold")      p = (null, null, null);                                               // không gửi → Bị bỏ rơi
+        if (day == 7 && plan == "defection") p = ("C4", new[] { "K_ROOK", "K18" }, new[] { "river", "oak" });
+        if (day == 7 && plan == "weak")      p = ("C4", new[] { "K_SHRIKE", "K19" }, new[] { "river", "oak" });
+        if (day == 7 && plan == "cold")      p = (null, null, null);
         if (p.caseId == null) { Click("Ở nhà tối nay"); yield return Wait(); yield break; }
 
-        // Soạn báo cáo trong sổ tay, chọn manh mối bằng cách bấm nút như người chơi
         if (p.answers.Length == 0) goto walk;
         Click("Sổ tay");
         yield return Wait();
@@ -272,8 +254,6 @@ public class DevAutoTour : MonoBehaviour
         ClickPrimary();
         yield return Wait();
     }
-
-    // ---------------- Bấm nút ----------------
 
     static string Plain(string s) => Regex.Replace(s ?? "", "<.*?>", "");
 
@@ -329,8 +309,6 @@ public class DevAutoTour : MonoBehaviour
             }
         }
     }
-
-    // ---------------- Chụp màn ----------------
 
     IEnumerator Wait(float s = 0.6f) { yield return new WaitForSecondsRealtime(s); }
 

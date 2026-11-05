@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// Mẩu giấy trên bảng tin: rê chuột thì giấy được "nhấc lên" — thẳng lại, to hơn 4%, bóng đổ xa hơn.
 public class NoteFeel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     float baseTilt, k;

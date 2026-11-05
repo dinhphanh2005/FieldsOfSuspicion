@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Toàn bộ nội dung viết sẵn của một ngày.
 [CreateAssetMenu(menuName = "FoS/Day", fileName = "N0")]
 public class DaySO : ScriptableObject
 {

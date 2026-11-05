@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
-"""Sinh toàn bộ nội dung truyện (ScriptableObject .asset) cho Fields of Suspicion.
-
-Chạy từ thư mục gốc project:   python3 Tools/StoryGen/gen_story.py
-- Xoá và sinh lại Assets/Data/{Clues,Cases,Board,News,Days,Endings}. Giữ nguyên Assets/Data/Customers.
-- GUID sinh tất định (uuid5 theo đường dẫn) nên chạy lại nhiều lần vẫn giữ nguyên tham chiếu.
-- Nội dung truyện nằm trong story.py cùng thư mục (sửa ở đó rồi chạy lại).
-- Kiểm tra tự động: mọi lệnh Null Cipher khớp chữ cái đầu câu; mọi {{cụm từ|Kxx}} trỏ tới manh mối có thật;
-  mọi hồ sơ đều có thể ghép đúng bằng manh mối có trong game.
-"""
 import json, os, re, shutil, sys, unicodedata, uuid
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 DATA = os.path.join(ROOT, 'Assets', 'Data')
 sys.path.insert(0, os.path.dirname(__file__))
-import story as S  # noqa: E402
+import story as S
 
 SCRIPT = {
     'Day': '95882f6ac5394bcab16c6fcc67c686ce', 'Clue': '7b767cb1fc474758b978a546ca1c709c',
@@ -74,8 +65,6 @@ def line(name, l, indent=4):
             f'{pad}  replyVariants: {variants(vs, indent + 2)}\n')
 
 
-# ---------------------------------------------------------------- kiểm tra
-
 def strip_accents(s):
     s = s.replace('Đ', 'D').replace('đ', 'd')
     return ''.join(ch for ch in unicodedata.normalize('NFD', s) if unicodedata.category(ch) != 'Mn')
@@ -122,8 +111,6 @@ def check():
         if c['id'] not in obtainable: errors.append(f"Manh mối {c['id']} không có cách nào lấy được")
     return errors
 
-
-# ---------------------------------------------------------------- sinh asset
 
 def main():
     errs = check()

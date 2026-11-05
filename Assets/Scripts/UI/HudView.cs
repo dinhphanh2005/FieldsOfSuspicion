@@ -3,9 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Thanh trên cùng, hiện ở mọi pha:
-//   trái: tên buổi (N2 · THỨ HAI · BUỔI CHIỀU) + tiền, rau, năng lượng, thư nhắc tiền nhà
-//   phải: viên "Nghi ngờ: Thấp/Vừa/Cao" — bấm để xem chi tiết từng kênh (số liệu cho NCKH).
 public class HudView : MonoBehaviour
 {
     DayManager dm;
@@ -29,7 +26,6 @@ public class HudView : MonoBehaviour
         line.sizeDelta = new Vector2(0, 1);
         UIFactory.MakeBox(line, UIFactory.FrameLine, false);
 
-        // Tên buổi: chữ vàng font tiêu đề
         var pr = UIFactory.Place(root, "HUD_Phase", 32, 0, 318, UIFactory.HudHeight);
         phase = UIFactory.MakeTitle(pr, "", 16, UIFactory.Gold, TextAlignmentOptions.MidlineLeft);
         phase.characterSpacing = 2;
@@ -50,13 +46,10 @@ public class HudView : MonoBehaviour
         info.fontSizeMax = 14;
         info.overflowMode = TextOverflowModes.Ellipsis;
 
-        // Viên nghi ngờ ở góc phải
         var pill = UIFactory.MakeRect(root, "HUD_Suspicion", new Vector2(1, 0.5f), new Vector2(1, 0.5f));
         pill.pivot = new Vector2(1, 0.5f);
         pill.sizeDelta = new Vector2(170, 30);
         pill.anchoredPosition = new Vector2(-20, 0);
-        // Viên tròn màu trơn (không dùng ảnh meter_suspicion_*: ảnh đó có sẵn mắt + vạch,
-        // đè chữ "Nghi ngờ" lên sẽ rối). Màu viên đổi theo mức.
         susPill = UIFactory.MakeBox(pill, UIFactory.Hex("3D4A33"));
         UIFactory.Round(susPill, 15);
         var suspicionIconRt = UIFactory.MakeRect(pill, "SuspicionIcon", new Vector2(0, 0.5f), new Vector2(0, 0.5f));
@@ -78,7 +71,6 @@ public class HudView : MonoBehaviour
         susLabel.fontSizeMax = 15;
         susLabel.textWrappingMode = TextWrappingModes.NoWrap;
 
-        // Bảng chi tiết thả xuống dưới viên nghi ngờ
         detailBox = UIFactory.MakeRect(root, "HUD_Detail", Vector2.one, Vector2.one);
         detailBox.pivot = Vector2.one;
         detailBox.sizeDelta = new Vector2(440, 0);

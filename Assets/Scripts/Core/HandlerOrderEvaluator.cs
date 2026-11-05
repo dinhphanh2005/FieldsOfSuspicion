@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-// Chấm xem người chơi có làm theo lệnh Null Cipher hay không — dựa vào HÀNH ĐỘNG trong ngày,
-// game không bắt người chơi gõ lời giải. Kết quả dùng cho màn kết thúc ("hồ sơ nhiệm vụ") và CSV.
 public static class HandlerOrderEvaluator
 {
     public static void ResolveDay(GameState state, DaySO today, DaySO[] allDays, Func<string, IntelSO> findClue)
@@ -12,7 +10,6 @@ public static class HandlerOrderEvaluator
         string sent = drop != null ? drop.caseId : null;
         string accused = drop != null && drop.answers.Count > 0 ? drop.answers[0] : null;
 
-        // Lệnh N6 (báo tên vào đêm mai) chỉ chấm được ở đêm N7.
         if (state.day == GameState.LastDay)
         {
             var yesterday = allDays == null ? null : allDays.FirstOrDefault(d => d && d.day == state.day - 1);

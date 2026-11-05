@@ -9,10 +9,9 @@ class SaveEnvelope
     public string gameStateJson;
 }
 
-// Tất cả trạng thái runtime chỉ chứa kiểu dữ liệu JsonUtility hỗ trợ và id, không chứa tham chiếu asset.
 public static class SaveSystem
 {
-    public const int CurrentVersion = 2;   // 2: hồ sơ + manh mối (thay mảnh tin rời)
+    public const int CurrentVersion = 2;
     public static string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
     public static bool HasSave => File.Exists(SavePath);
 

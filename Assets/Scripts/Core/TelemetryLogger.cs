@@ -3,13 +3,10 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-// Ghi một dòng snapshot mỗi ngày và các sự kiện phát sinh trong ngày ra CSV cục bộ.
 public sealed class TelemetryLogger : MonoBehaviour
 {
     StringBuilder events = new StringBuilder();
-    // v2: thêm cột run, report, suspicion_cumulative. File mới để không lẫn cột với bản cũ.
     public string CsvPath => Path.Combine(Application.persistentDataPath, "telemetry_v2.csv");
-    // Mã ván chơi (đặt lúc bắt đầu ván mới) để tách nhiều ván trong cùng một file CSV
     public string RunId = DateTime.Now.ToString("yyyyMMdd-HHmmss");
 
     void OnEnable()

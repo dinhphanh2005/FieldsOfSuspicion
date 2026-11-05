@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-// Bảng mã: lệnh Null Cipher → việc người chơi cần làm. Dùng cho chế độ "Giải sẵn" trên bảng tin
-// và dòng tóm tắt sáng hôm sau. Khoá = HandlerMessageSO.answer (viết hoa, không dấu).
 public static class HandlerOrders
 {
     static readonly Dictionary<string, string> Meanings = new Dictionary<string, string>

@@ -1,11 +1,9 @@
 using System;
 
-// Bộ suy luận logistic dùng trọng số fit offline. Không điều khiển luật kết thúc trong game.
 public static class BurnPredictor
 {
     public const int FeatureCount = 4;
 
-    // Thứ tự feature: nghi ngờ cửa sổ, kênh Emel, kênh tuần tra, số lần trễ tiền nhà.
     public static float[] Features(GameState state) => new float[]
     {
         state.SuspicionWindow,

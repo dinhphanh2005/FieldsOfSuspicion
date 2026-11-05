@@ -4,9 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// Màn kết thúc: tờ giấy giữa màn hình — tên kết thúc, đoạn kết, rồi "hồ sơ nhiệm vụ":
-// từng bản báo cáo đã gửi (đúng/sai — lúc này mới lộ), số lệnh của Rook / Shrike đã làm theo,
-// và nghi ngờ theo cửa sổ trượt so với cộng dồn (số liệu cho phần NCKH).
 public class EndingView : MonoBehaviour
 {
     TextMeshProUGUI title, body, stats;
@@ -19,7 +16,7 @@ public class EndingView : MonoBehaviour
         card = UIFactory.MakeRect(stage, "Ending_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         card.sizeDelta = new Vector2(900, 0);
         UIFactory.MakeSurface(card, UIFactory.Hex("F2E9D3"), 10);
-        UIFactory.Skin(card.GetComponent<UnityEngine.UI.Image>(), "panel_ending");   // giấy sáng → chữ tối
+        UIFactory.Skin(card.GetComponent<UnityEngine.UI.Image>(), "panel_ending");
         UIFactory.AddShadow(card, 10);
         UIFactory.AutoHeight(card, 60, 44, 40, 0);
 
@@ -60,7 +57,6 @@ public class EndingView : MonoBehaviour
             var drop = s.DropFor(c.id);
             string verdict = drop == null ? "<color=#8C7B6B>không gửi</color>"
                            : drop.correct ? "<color=#4F7F4A>ĐÚNG</color>"
-                           // Báo cáo cuối: nêu đúng tên kẻ phản bội nhưng bằng chứng không chứng minh được
                            : c.isFinal && drop.answers.Count > 0 && CaseEvaluator.SlotCorrect(c, 0, drop.answers[0])
                                ? "<color=#A8741F>ĐÚNG NGƯỜI · bằng chứng yếu</color>"
                            : "<color=#A82C1F>SAI</color>";

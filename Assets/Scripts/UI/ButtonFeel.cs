@@ -2,18 +2,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// Cảm giác bấm cho mọi nút dựng bằng code:
-//   rê chuột → nền sáng lên (ColorBlock), chữ nhích sang phải vài px; dấu ▸ hiện ra nếu nút có marker
-//   nhấn     → cả nút lún nhẹ (thu nhỏ 3%)
-// Chuyển động lerp ~0,1 s, dùng thời gian thật nên vẫn mượt khi game tạm dừng.
 public class ButtonFeel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public RectTransform content;      // phần chữ/biểu tượng được nhích
-    public Graphic marker;             // ▸ (tuỳ chọn)
+    public RectTransform content;
+    public Graphic marker;
     public float nudge = 3f;
 
     Button button;
-    float applied;          // độ nhích đang áp lên content (cộng dồn theo hiệu số → không đè thay đổi vị trí từ code khác)
+    float applied;
     bool hover, down;
     float k, press;
 

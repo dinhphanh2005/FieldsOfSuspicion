@@ -1,19 +1,4 @@
-# -*- coding: utf-8 -*-
-"""NỘI DUNG TRUYỆN — Fields of Suspicion / Cánh Đồng Ngờ Vực (bản 2, 04/11/2026)
 
-Ý tưởng chính (lấy cảm hứng từ cuốn sổ trong Do Not Feed the Monkeys):
-  Khách nói chuyện → người chơi bấm cụm từ tô màu → được MANH MỐI nhỏ (K..).
-  Văn phòng đặt câu hỏi → HỒ SƠ (C..) là một câu có ô trống.
-  Người chơi tự ghép manh mối vào ô trống → BẢN BÁO CÁO (mẩu tin lớn) → mang ra hốc cây sồi.
-  Game không nói đúng/sai. Hậu quả hiện ở Tin tức sáng hôm sau.
-Cú twist: Shrike (ông Sev, lò gạch) là kẻ phản bội. Lệnh của hắn luôn đẩy Tomas vào chỗ chết.
-
-Cú pháp:  {{cụm từ trong lời thoại|mã manh mối}}
-Dòng thoại: L(câu của Tomas, câu đáp của khách, (điều kiện, tham số, câu thay thế)...)
-"""
-
-# ============================================================ MANH MỐI
-# kind: Who/What/Where/When/State/Evidence/Detail(chỉ để đọc, không ghép vào ô)
 CLUES = [
     dict(id='K_ROOK', keyword='Rook (bà Rosa, xóm Bắc)', kind='Who', thread='Traitor', source='Thư của Văn phòng',
          text='Người liên lạc lâu năm của Straka. Lệnh của Rook ký tên “bà Rosa, xóm Bắc”.'),
@@ -57,7 +42,6 @@ CLUES = [
          text='Lính tuần gặp một bà cụ ở xóm Bắc đứng nói chuyện với họ khá lâu lúc chập tối. Bà nói đang đi tìm gà lạc.'),
 ]
 
-# ============================================================ HỒ SƠ (mẩu tin lớn)
 CASES = [
     dict(id='C0', title='Báo cáo đầu tiên', first=1, last=1, opens='K01', correctSus=1, channel='Emel',
          brief='Văn phòng muốn thử đường dây: cậu đã nghe được gì? Đồn Lenmar đang trông chờ điều gì?',
@@ -84,7 +68,6 @@ CASES = [
                 dict(label='Bằng chứng', kind='Evidence', correct=['K15', 'K16', 'K17'])]),
 ]
 
-# ============================================================ BẢNG TIN (lệnh Null Cipher đã kiểm tra bằng script)
 ROSA, SEV = 'Liên hệ: bà Rosa, xóm Bắc', 'Liên hệ: ông Sev, lò gạch'
 BOARD = [
     dict(name='N1_GioiNghiem', handler='None', title='Giờ giới nghiêm', signature='Đồn Lenmar',
@@ -133,7 +116,6 @@ BOARD = [
          body='Bán gạch vỡ làm nền. Ai cần lát sân, lấp hố đều được. Ở lò gạch, sau giờ trưa. Rẻ hơn gạch mới một nửa. Ông Sev chở giúp nếu mua nhiều. Ở xa cũng chở, thêm chút công. Không nhận đổi trả.'),
 ]
 
-# ============================================================ TIN TỨC
 LETTER = ('Wren,\n\n'
           'Từ hôm nay cậu là Tomas Rell, người thuê lại căn nhà và mảnh ruộng của bà Mabry ở Sellowe. '
           'Ban ngày cậu trồng rau, bán hàng và lắng nghe. Ban đêm cậu làm việc cho chúng tôi.\n\n'
@@ -193,7 +175,6 @@ NEWS = [
          sub='Lính đồn đứng gác ở quảng trường từ sáng sớm. Đại úy Doran cho đối chiếu danh sách những ai ra đường sau giờ giới nghiêm cả tuần nay.'),
 ]
 
-# ============================================================ KẾT THÚC
 ENDINGS = [
     dict(id='Burned', title='Bại lộ',
          text='Sáng nay lính gõ cửa trước khi gà gáy. Trung úy Emel đứng sau họ, tay cầm cuốn sổ ghi tên những người ra đường sau giờ giới nghiêm. Tên Tomas Rell được gạch chân ba lần.\n\n“Cà rốt của cậu ngon thật,” cô nói. “Tiếc là chỉ có thế là thật.”'),
@@ -213,10 +194,8 @@ ENDINGS = [
 def L(tomas, reply, *variants):
     return (tomas, reply, list(variants))
 
-# ============================================================ 7 NGÀY
 DAYS = []
 
-# ---------------- N1 · Chủ Nhật — làm quen: thư, lệnh mật đầu tiên, ghi manh mối đầu tiên, báo cáo thử
 DAYS.append(dict(day=1, news=['N1_Letter', 'N1_YenA'], board=['N1_GioiNghiem', 'C1R', 'C1S'],
     night=[dict(a='home', b='river', note='Đêm đầu tiên. Đường ven sông vắng tanh, an toàn.')],
     visits=[
@@ -231,7 +210,6 @@ DAYS.append(dict(day=1, news=['N1_Letter', 'N1_YenA'], board=['N1_GioiNghiem', '
          exit='Emel kẹp bó rau dưới nách, đi thẳng về phía đồn mà không ngoái lại.'),
 ]))
 
-# ---------------- N2 · Thứ Hai — hai lệnh, hai hướng: đoàn xe (Rook) hay kho thóc (Shrike)? Hai nguồn giờ giấc mâu thuẫn.
 DAYS.append(dict(day=2, news=['N2_KiemTraGiay', 'N2_GiaThoc'], board=['N2_ChoPhien', 'C2R', 'C2S'],
     night=[dict(a='bridge', b='oak', risk='High', note='Lính canh đoàn xe quân nhu ở cầu Bắc.'),
            dict(a='river', b='oak', risk='High', note='Lính tuần dọc bờ sông mở đường cho đoàn xe.'),
@@ -267,7 +245,6 @@ DAYS.append(dict(day=2, news=['N2_KiemTraGiay', 'N2_GiaThoc'], board=['N2_ChoPhi
          exit='Sable nháy mắt, rồi lẫn vào dòng người ngoài chợ.'),
 ]))
 
-# ---------------- N3 · Thứ Ba — hậu quả đầu tiên; Emel làm lộ cái bẫy kho thóc; mạch nhà Vaule bắt đầu
 DAYS.append(dict(day=3, news=['N3_XeBiChan', 'N3_XeThoat', 'N3_KhoBiBat', 'N3_KhoCho', 'N3_Default', 'N3_SideXe', 'Side_Cho', 'Side_Cau'],
     board=['N3_TreoThuong', 'N3_NhaOtto', 'C3R', 'C3S'],
     night=[dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
@@ -298,7 +275,6 @@ DAYS.append(dict(day=3, news=['N3_XeBiChan', 'N3_XeThoat', 'N3_KhoBiBat', 'N3_Kh
          exit='Emel đi rồi, mùi thuốc lá rẻ tiền còn vương lại trên quầy.'),
 ]))
 
-# ---------------- N4 · Thứ Tư — ghép "ai" + "khi nào" của vị khách; Sable lộ trạm gác cầu Bắc và tin đồn kẻ phản bội
 DAYS.append(dict(day=4, news=['N4_NuocLen', 'N4_KhoRut', 'N4_KhoBiBat', 'N4_VauleSai', 'N4_SideKho', 'Side_Cho', 'Side_Cau'],
     board=['N4_NuocSongLen', 'C4R', 'C4S'],
     night=[dict(a='home', b='river', closed=True, note='Đường ven sông ngập, không đi được.'),
@@ -334,7 +310,6 @@ DAYS.append(dict(day=4, news=['N4_NuocLen', 'N4_KhoRut', 'N4_KhoBiBat', 'N4_Vaul
          exit='Sable kéo tấm vải dầu lên đầu, biến mất sau góc phố.'),
 ]))
 
-# ---------------- N5 · Thứ Năm — ngày cuộc gặp. Rook: nằm im. Shrike: qua cầu (nơi có trạm gác).
 DAYS.append(dict(day=5, news=['N5_QuanTro', 'N5_VauleSai', 'N5_ThueBep', 'Side_Cho', 'Side_Cau'], board=['N5_NhaThoSuaMai', 'C5R', 'C5S'],
     night=[dict(a='home', b='river', closed=True, note='Đường ven sông vẫn ngập.'),
            dict(a='river', b='oak', closed=True),
@@ -363,7 +338,6 @@ DAYS.append(dict(day=5, news=['N5_QuanTro', 'N5_VauleSai', 'N5_ThueBep', 'Side_C
          exit='Perrin vội vã đi, quên cả lấy tiền thừa.'),
 ]))
 
-# ---------------- N6 · Thứ Sáu — bằng chứng về Shrike lộ ra; Shrike quay sang tố Rook
 DAYS.append(dict(day=6, news=['N6_DoranBiChan', 'N6_SangDen', 'N6_BaCu', 'Side_Cho', 'Side_Cau'], board=['N6_TrinhGiay', 'C6R', 'C6S'],
     night=[dict(a='home', b='river', risk='Medium', note='Đường ven sông vừa mở lại, còn lầy, dễ để lại dấu chân.'),
            dict(a='bridge', b='oak', risk='High', hidden='K13', note='Cầu Bắc có trạm gác suốt đêm.')],
@@ -389,7 +363,6 @@ DAYS.append(dict(day=6, news=['N6_DoranBiChan', 'N6_SangDen', 'N6_BaCu', 'Side_C
          exit='Sable khoác gùi lên vai, ngân nga một khúc hát chợ.'),
 ]))
 
-# ---------------- N7 · Thứ Bảy — chợ phiên, đêm cuối: gửi tên kẻ phản bội
 DAYS.append(dict(day=7, news=['N7_ChoPhien', 'Side_Cho', 'Side_Cau'], board=['N7_ChoPhienHomNay', 'C7R', 'C7S'],
     night=[dict(a='well', b='market', risk='High', note='Chợ phiên: lính gác quảng trường cả đêm.'),
            dict(a='market', b='oak', risk='High'),

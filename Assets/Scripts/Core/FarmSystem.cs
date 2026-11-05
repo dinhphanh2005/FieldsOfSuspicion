@@ -10,7 +10,6 @@ public class FarmPlotState
     public bool ready;
 }
 
-// Logic thuần của ruộng; không phụ thuộc Unity scene hay hệ điều hành.
 public static class FarmSystem
 {
     public const string CarrotId = "carrot";
@@ -20,8 +19,6 @@ public static class FarmSystem
         var plots = new List<FarmPlotState>();
         for (int i = 0; i < EconomyRules.StartingPlotCount; i++)
             plots.Add(new FarmPlotState { plotId = i });
-        // Bà Mabry để lại hai luống cà rốt đã gieo từ trước: chín vào sáng thứ Hai, để tuần đầu
-        // không bị hết rau ngay (một ván chỉ có 7 ngày, cây mới gieo mất 3 ngày mới chín).
         for (int i = 0; i < 2 && i < plots.Count; i++)
         {
             plots[i].cropId = CarrotId;
@@ -52,8 +49,6 @@ public static class FarmSystem
     {
         EnsurePlots(state);
         var plot = Find(state, plotId);
-        // Theo luật ruộng: gieo chỉ tốn AP. Rau trong kho là hàng đã thu hoạch để bán,
-        // không phải hạt giống và không bị tiêu hao khi gieo.
         if (plot == null || !string.IsNullOrEmpty(plot.cropId) ||
             state.actionPoints < EconomyRules.PlantActionCost) return false;
         state.actionPoints -= EconomyRules.PlantActionCost;

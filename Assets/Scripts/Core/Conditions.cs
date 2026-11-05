@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-// Kiểm tra điều kiện hiện nội dung (tin tức, thẻ bảng tin, biến thể câu thoại).
 public static class Conditions
 {
     public static bool Check(GameState s, ShowCondition condition, string param)
     {
-        var drop = s.LastNightDrop;   // null nếu đêm qua ở nhà
+        var drop = s.LastNightDrop;
         bool lastNightCase = drop != null && drop.caseId == param;
         int window = s.SuspicionWindow;
         switch (condition)
@@ -27,7 +26,6 @@ public static class Conditions
         }
     }
 
-    // param "C3:4" → đã gửi hồ sơ C3 ĐÚNG vào đêm N4 hoặc sớm hơn
     static bool DeliveredBy(GameState s, string param)
     {
         if (string.IsNullOrEmpty(param)) return false;
@@ -36,7 +34,6 @@ public static class Conditions
         return s.deliveredDrops.Exists(d => d.correct && d.caseId == parts[0] && d.day <= lastNight);
     }
 
-    // Lấy biến thể ĐẦU TIÊN thỏa điều kiện; không có thì dùng câu mặc định.
     public static string Pick(GameState s, string fallback, List<LineVariant> variants)
     {
         if (variants != null)
