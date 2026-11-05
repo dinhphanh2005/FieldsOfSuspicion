@@ -278,7 +278,8 @@ public static class UIFactory
     public static Image AddRule(RectTransform list, Color color, float thickness = 1)
     {
         var rt = MakeRect(list, "Rule", Vector2.zero, Vector2.one);
-        Size(rt, thickness);
+        // Tối thiểu 2px: đường 1px bị co giãn theo cửa sổ (canvas scale lẻ) nên lúc hiện lúc mất, trông đứt đoạn
+        Size(rt, Mathf.Max(2, thickness));
         return MakeBox(rt, color, false);
     }
 

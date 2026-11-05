@@ -50,9 +50,10 @@ public class NewsView : MonoBehaviour
         var rt = UIFactory.MakeRect(stage, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         rt.pivot = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = new Vector2(width, 0);
-        rt.localRotation = Quaternion.Euler(0, 0, tilt);
+        // Không nghiêng, giấy trơn: tờ giấy nghiêng làm đường kẻ thành bậc thang (trông đứt đoạn),
+        // còn ảnh giấy cũ có sẵn nếp gấp / dòng kẻ mờ chồng lên đường kẻ thật.
         UIFactory.MakeSurface(rt, color, 4);
-        UIFactory.Skin(rt.GetComponent<Image>(), name == "Letter_Sheet" ? "paper_letter" : "paper_newspaper");
+        UIFactory.AddGrain(rt, 0.1f);
         UIFactory.AddShadow(rt, 10);
         return rt;
     }
@@ -118,7 +119,6 @@ public class NewsView : MonoBehaviour
     void BuildLetter(Letter l)
     {
         UIFactory.Clear(letterContent);
-        UIFactory.Skin(letterSheet.GetComponent<Image>(), l.title.Contains("Mabry") ? "paper_mabry" : "paper_letter");
         UIFactory.AddLine(letterContent, l.title, 28, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
         if (!string.IsNullOrEmpty(l.note))
         {
@@ -208,16 +208,16 @@ public class NewsView : MonoBehaviour
 
             var cols = UIFactory.MakeRect(newsContent, "Columns", Vector2.zero, Vector2.one);
             var hl = UIFactory.HList(cols, 0, 0);
-            hl.childForceExpandWidth = false;   // đường kẻ dọc giữ đúng 1px
+            hl.childForceExpandWidth = false;   // đường kẻ dọc giữ đúng 2px
             for (int i = 0; i < side.Count; i++)
             {
                 if (i > 0)
                 {
                     var vr = UIFactory.MakeRect(cols, "VRule", Vector2.zero, Vector2.one);
                     var le = vr.gameObject.AddComponent<LayoutElement>();
-                    le.minWidth = le.preferredWidth = 1;
+                    le.minWidth = le.preferredWidth = 2;
                     le.flexibleWidth = 0;
-                    UIFactory.MakeBox(vr, new Color(0.23f, 0.18f, 0.15f, 0.35f), false);
+                    UIFactory.MakeBox(vr, UIFactory.Ink, false);
                 }
                 var col = UIFactory.MakeRect(cols, "Col", Vector2.zero, Vector2.one);
                 UIFactory.EqualWidth(col);
