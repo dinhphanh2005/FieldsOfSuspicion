@@ -6,7 +6,7 @@ using UnityEngine;
 public sealed class TelemetryLogger : MonoBehaviour
 {
     StringBuilder events = new StringBuilder();
-    public string CsvPath => Path.Combine(Application.persistentDataPath, "telemetry_v2.csv");
+    public string CsvPath => Path.Combine(Application.persistentDataPath, "telemetry_v3.csv");
     public string RunId = DateTime.Now.ToString("yyyyMMdd-HHmmss");
 
     void OnEnable()
@@ -41,12 +41,11 @@ public sealed class TelemetryLogger : MonoBehaviour
             bool header = !File.Exists(CsvPath);
             using (var writer = new StreamWriter(CsvPath, true, new UTF8Encoding(true)))
             {
-                if (header) writer.WriteLine("run,day,money,stock,energy,action_points,price_level,customer_momentum,sales,clues,report,suspicion_night,suspicion_window,suspicion_cumulative,rent_warnings,p_burned,burn_model_eligible,ending,events");
+                if (header) writer.WriteLine("run,day,money,stock,energy,sales,clues,report,suspicion_night,suspicion_window,suspicion_cumulative,rent_warnings,p_burned,burn_model_eligible,ending,events");
                 var tonight = state.TonightDrop;
                 string delivered = tonight == null || !tonight.HasReport ? "" : $"{tonight.caseId}:{(tonight.correct ? 1 : 0)}";
                 string row = string.Join(",", new[] {
-                    RunId, state.day.ToString(), state.money.ToString(), state.stock.ToString(), state.energy.ToString(), state.actionPoints.ToString(),
-                    state.shopPriceLevel.ToString(), state.customerBaseMomentum.ToString(), state.salesToday.ToString(),
+                    RunId, state.day.ToString(), state.money.ToString(), state.stock.ToString(), state.energy.ToString(), state.salesToday.ToString(),
                     Csv(string.Join("|", state.fragments)), Csv(delivered),
                     state.nightlySuspicion.Count == 0 ? "0" : state.nightlySuspicion[state.nightlySuspicion.Count - 1].ToString(),
                     state.SuspicionWindow.ToString(), state.SuspicionTotal.ToString(), state.rentWarnings.ToString(),

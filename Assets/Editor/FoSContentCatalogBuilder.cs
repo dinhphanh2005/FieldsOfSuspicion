@@ -10,7 +10,10 @@ public sealed class FoSContentCatalogBuilder : IPreprocessBuildWithReport
     const string CatalogPath = "Assets/Resources/FoSContentCatalog.asset";
     public int callbackOrder => -1000;
 
-    public void OnPreprocessBuild(BuildReport report)
+    public void OnPreprocessBuild(BuildReport report) => Rebuild();
+
+    [MenuItem("FoS/Dev/Cập nhật danh mục nội dung")]
+    public static void Rebuild()
     {
         var folder = "Assets/Resources";
         if (!AssetDatabase.IsValidFolder(folder)) AssetDatabase.CreateFolder("Assets", "Resources");

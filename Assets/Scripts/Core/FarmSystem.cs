@@ -49,9 +49,7 @@ public static class FarmSystem
     {
         EnsurePlots(state);
         var plot = Find(state, plotId);
-        if (plot == null || !string.IsNullOrEmpty(plot.cropId) ||
-            state.actionPoints < EconomyRules.PlantActionCost) return false;
-        state.actionPoints -= EconomyRules.PlantActionCost;
+        if (plot == null || !string.IsNullOrEmpty(plot.cropId)) return false;
         plot.cropId = crop ? crop.id : CarrotId;
         plot.daysGrowing = 0;
         plot.ready = false;
@@ -62,8 +60,7 @@ public static class FarmSystem
     {
         EnsurePlots(state);
         var plot = Find(state, plotId);
-        if (plot == null || !plot.ready || state.actionPoints < EconomyRules.HarvestActionCost) return false;
-        state.actionPoints -= EconomyRules.HarvestActionCost;
+        if (plot == null || !plot.ready) return false;
         var crop = FindCrop(plot.cropId, crops);
         state.stock += crop ? crop.harvestYield : EconomyRules.CarrotYield;
         plot.cropId = null;

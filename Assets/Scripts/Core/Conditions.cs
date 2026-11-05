@@ -23,8 +23,17 @@ public static class Conditions
             case ShowCondition.CaseCorrect:           return s.deliveredDrops.Exists(d => d.caseId == param && d.correct);
             case ShowCondition.CaseNeverDelivered:    return !s.CaseDelivered(param);
             case ShowCondition.SaidThisVisit:         return s.SaidThisVisit.Contains(param);
+            case ShowCondition.HandlerTrust:          return HandlerTrust(s, param);
             default:                                  return false;
         }
+    }
+
+    // "Rook:2" nghĩa là người chơi đã làm theo ít nhất 2 lệnh của Rook.
+    static bool HandlerTrust(GameState s, string param)
+    {
+        var parts = (param ?? "").Split(':');
+        if (parts.Length != 2 || !System.Enum.TryParse(parts[0], out Handler handler) || !int.TryParse(parts[1], out int min)) return false;
+        return s.handlerOrderResults.FindAll(r => r.handler == handler && r.followed).Count >= min;
     }
 
     static bool DeliveredBy(GameState s, string param)

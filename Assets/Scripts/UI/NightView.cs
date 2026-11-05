@@ -13,6 +13,7 @@ public class NightView : MonoBehaviour
     {
         public Edge edge;
         public RouteRisk actual, shown;
+        public bool unknown;
         public bool closed;
         public Image line;
     }
@@ -223,6 +224,7 @@ public class NightView : MonoBehaviour
             es.actual = es.edge.baseRisk;
             es.shown = es.edge.baseRisk;
             es.closed = false;
+            es.unknown = false;
 
             var rule = rules?.Find(r => Same(r.a, r.b, es.edge.a, es.edge.b));
             if (rule != null)
@@ -236,9 +238,15 @@ public class NightView : MonoBehaviour
                     es.shown = rule.risk;
                     if (!string.IsNullOrEmpty(rule.note)) notes.Add("• " + rule.note);
                 }
+                else if (rule.risk > es.edge.baseRisk)
+                {
+                    // Chưa có manh mối thì không giấu hẳn: đoạn đường hiện "chưa rõ" để người chơi biết là đang liều.
+                    es.unknown = true;
+                    notes.Add($"• {FindNode(es.edge.a).name} – {FindNode(es.edge.b).name}: lính đồn đi lại nhiều, chưa rõ có gác hay không.");
+                }
             }
 
-            es.line.color = es.closed ? UIFactory.Hex(ClosedHex) : UIFactory.Hex(RiskHex(es.shown));
+            es.line.color = es.closed ? UIFactory.Hex(ClosedHex) : UIFactory.Hex(es.unknown ? UnknownHex : RiskHex(es.shown));
             es.line.rectTransform.sizeDelta = new Vector2(es.line.rectTransform.sizeDelta.x, es.closed ? 3 : 7);
         }
 
@@ -405,6 +413,7 @@ public class NightView : MonoBehaviour
     static Node FindNode(string id) => System.Array.Find(Nodes, n => n.id == id);
 
     const string ClosedHex = "A39787";
+    const string UnknownHex = "8E8880";
 
     static string RiskHex(RouteRisk r)
     {

@@ -1,6 +1,7 @@
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class HudView : MonoBehaviour
@@ -14,6 +15,10 @@ public class HudView : MonoBehaviour
     TextMeshProUGUI detail;
     string lastPhase, lastInfo, lastSus, lastDetail;
     Image phaseIcon;
+    RectTransform pauseRoot;
+    Button resumeBtn, volumeBtn, fullBtn, resBtn, titleBtn, quitBtn;
+    TextMeshProUGUI pauseNote;
+    int confirming;
 
     public void Init(DayManager manager)
     {
@@ -40,7 +45,7 @@ public class HudView : MonoBehaviour
         var sep = UIFactory.Place(root, "HUD_Sep", 352, 12, 1, 20);
         UIFactory.MakeBox(sep, UIFactory.FrameLine, false);
 
-        var ir = UIFactory.Place(root, "HUD_Info", 372, 0, 680, UIFactory.HudHeight);
+        var ir = UIFactory.Place(root, "HUD_Info", 372, 0, 640, UIFactory.HudHeight);
         info = UIFactory.MakeText(ir, "", 14, UIFactory.Light, TextAlignmentOptions.MidlineLeft);
         info.textWrappingMode = TextWrappingModes.NoWrap;
         info.enableAutoSizing = true;
@@ -83,6 +88,94 @@ public class HudView : MonoBehaviour
         detail = UIFactory.AddLine(detailBox, "", 15, UIFactory.Light);
         detail.lineSpacing = 6;
         detailBox.gameObject.SetActive(false);
+
+        var menu = UIFactory.MakeRect(root, "HUD_Menu", new Vector2(1, 0.5f), new Vector2(1, 0.5f));
+        menu.pivot = new Vector2(1, 0.5f);
+        menu.sizeDelta = new Vector2(104, 30);
+        menu.anchoredPosition = new Vector2(-200, 0);
+        var menuImg = UIFactory.MakeBox(menu, UIFactory.FrameLine);
+        UIFactory.Round(menuImg, 15);
+        var menuBtn = menu.gameObject.AddComponent<Button>();
+        menuBtn.targetGraphic = menuImg;
+        UIFactory.ApplyColors(menuBtn);
+        menuBtn.onClick.AddListener(() => SetPaused(true));
+        var ml = UIFactory.MakeText(UIFactory.MakeRect(menu, "Label", Vector2.zero, Vector2.one), "Menu  <size=80%><color=#9C8C7B>Esc</color></size>", 14, UIFactory.Light, TextAlignmentOptions.Center);
+        ml.textWrappingMode = TextWrappingModes.NoWrap;
+
+        BuildPause();
+    }
+
+    void BuildPause()
+    {
+        var canvas = GetComponentInParent<Canvas>().rootCanvas.transform;
+        pauseRoot = UIFactory.MakeRect(canvas, "Pause_Overlay", Vector2.zero, Vector2.one);
+        UIFactory.MakeBox(pauseRoot, new Color(0.06f, 0.05f, 0.04f, 0.82f));
+
+        var card = UIFactory.MakeSafe(pauseRoot, "Pause_Card", 420, 520);
+        UIFactory.MakeSurface(card, UIFactory.Paper, 8);
+        UIFactory.AddGrain(card, 0.12f);
+        UIFactory.AddShadow(card, 10);
+        var list = UIFactory.MakeRect(card, "List", Vector2.zero, Vector2.one);
+        var v = UIFactory.VList(list, 12, 0);
+        v.padding = new RectOffset(40, 40, 34, 30);
+
+        var title = UIFactory.MakeTitle(UIFactory.MakeRect(list, "Title", Vector2.zero, Vector2.one), "TẠM DỪNG", 26, UIFactory.Red, TextAlignmentOptions.Center);
+        UIFactory.Size(title, 40);
+        resumeBtn = PauseButton(list, "Chơi tiếp", () => SetPaused(false));
+        volumeBtn = PauseButton(list, "", () => { dm.CycleVolume(); confirming = 0; RefreshPause(); });
+        fullBtn = PauseButton(list, "", () => { dm.ToggleFullscreen(); confirming = 0; StartCoroutine(RefreshPauseLater()); });
+        resBtn = PauseButton(list, "", () => { dm.CycleResolution(); confirming = 0; StartCoroutine(RefreshPauseLater()); });
+        titleBtn = PauseButton(list, "", () => Confirm(1));
+        quitBtn = PauseButton(list, "", () => Confirm(2));
+        pauseNote = UIFactory.MakeText(UIFactory.MakeRect(list, "Note", Vector2.zero, Vector2.one), "", 14, UIFactory.Muted, TextAlignmentOptions.Center);
+        UIFactory.Size(pauseNote, 40);
+        pauseRoot.gameObject.SetActive(false);
+    }
+
+    static Button PauseButton(RectTransform parent, string label, UnityEngine.Events.UnityAction onClick)
+    {
+        var b = UIFactory.MakeButton(parent, "Pause_Btn", label, onClick, 17);
+        UIFactory.Size(b, 46);
+        return b;
+    }
+
+    // Rời ván cần bấm hai lần, vì game chỉ lưu ở cuối mỗi ngày.
+    void Confirm(int which)
+    {
+        if (confirming != which) { confirming = which; RefreshPause(); return; }
+        confirming = 0;
+        SetPaused(false);
+        if (which == 1) dm.ReturnToTitle();
+        else DayManager.QuitGame();
+    }
+
+    public bool Paused => pauseRoot && pauseRoot.gameObject.activeSelf;
+
+    public void SetPaused(bool on)
+    {
+        if (!pauseRoot) return;
+        confirming = 0;
+        pauseRoot.gameObject.SetActive(on);
+        if (on) { pauseRoot.SetAsLastSibling(); detailBox.gameObject.SetActive(false); RefreshPause(); }
+    }
+
+    System.Collections.IEnumerator RefreshPauseLater()
+    {
+        RefreshPause();
+        yield return null;
+        yield return null;
+        RefreshPause();
+    }
+
+    void RefreshPause()
+    {
+        UIFactory.SetLabel(volumeBtn, $"Âm lượng: {Mathf.RoundToInt(AudioListener.volume * 100)}%");
+        UIFactory.SetLabel(fullBtn, Screen.fullScreen ? "Toàn màn hình: Bật" : "Toàn màn hình: Tắt");
+        UIFactory.SetLabel(resBtn, $"Độ phân giải: {Screen.width} × {Screen.height}");
+        UIFactory.SetLabel(titleBtn, confirming == 1 ? "Bấm lần nữa để về màn tiêu đề" : "Về màn tiêu đề");
+        UIFactory.SetLabel(quitBtn, confirming == 2 ? "Bấm lần nữa để thoát game" : "Thoát game");
+        pauseNote.text = confirming == 0 ? "Game tự lưu ở cuối mỗi ngày."
+            : "<color=#8C3A2B>Những gì đã làm trong ngày hôm nay sẽ mất. Lần sau chọn Tiếp tục để chơi lại từ sáng nay.</color>";
     }
 
     void ToggleDetail() => detailBox.gameObject.SetActive(!detailBox.gameObject.activeSelf);
@@ -102,6 +195,9 @@ public class HudView : MonoBehaviour
 
     void Update()
     {
+        var kb = Keyboard.current;
+        if (kb != null && kb.escapeKey.wasPressedThisFrame) SetPaused(!Paused);
+
         var s = dm.State;
         if (s == null) return;
 

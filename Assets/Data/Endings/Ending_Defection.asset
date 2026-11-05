@@ -17,3 +17,5 @@ MonoBehaviour:
   text: "\u0110\u00eam \u1ea5y c\u00f3 ng\u01b0\u1eddi \u0111\u1ee9ng ch\u1edd s\u1eb5n \u1edf h\u1ed1c c\u00e2y s\u1ed3i. Kh\u00f4ng ph\u1ea3i ng\u01b0\u1eddi c\u1ee7a Straka. \u00d4ng ta tr\u00f9m \u00e1o, tr\u00ean c\u1ed5 tay \u00e1o th\u00eau m\u1ed9t con chim b\u00e1ch thanh.\n\n\u201cRook \u0111\u00e3 b\u1ecb b\u1eaft t\u1eeb m\u1ed9t gi\u1edd tr\u01b0\u1edbc, nh\u1edd c\u00f3 c\u1eadu,\u201d Shrike n\u00f3i. \u201cGi\u1edd Straka s\u1ebd coi c\u1eadu l\u00e0 k\u1ebb ph\u1ea3n b\u1ed9i. Ch\u1ec9 c\u00f2n m\u1ed9t n\u01a1i ch\u1ecbu nh\u1eadn c\u1eadu th\u00f4i.\u201d\n\nS\u00e1ng h\u00f4m sau, ti\u1ec7m rau c\u1ee7a Tomas Rell kh\u00f4ng m\u1edf c\u1eeda n\u1eefa."
   strongEvidence: ""
   weakEvidence: ""
+  rookLowTrust: ""
+  shrikeHighTrust: "\u201cC\u1ea3 tu\u1ea7n nay c\u1eadu nghe l\u1eddi t\u00f4i r\u1ed3i c\u00f2n g\u00ec,\u201d Shrike c\u01b0\u1eddi. \u201cGi\u1edd ch\u1ec9 l\u00e0 ch\u00ednh th\u1ee9c th\u00f4i.\u201d"

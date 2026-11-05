@@ -13,7 +13,7 @@ SCRIPT = {
 }
 NS = uuid.UUID('6f0f6b8e-1f6a-4c1e-9a55-0f05f0a5e001')
 COND = ['Always', 'DeliveredLastNight', 'NotDeliveredLastNight', 'RouteVisitedLastNight', 'HasFragment', 'DeliveredBy',
-        'SuspicionLow', 'SuspicionMid', 'SuspicionHigh', 'CorrectLastNight', 'WrongLastNight', 'CaseCorrect', 'CaseNeverDelivered', 'SaidThisVisit']
+        'SuspicionLow', 'SuspicionMid', 'SuspicionHigh', 'CorrectLastNight', 'WrongLastNight', 'CaseCorrect', 'CaseNeverDelivered', 'SaidThisVisit', 'HandlerTrust']
 KIND = ['Who', 'What', 'Where', 'When', 'State', 'Evidence', 'Detail']
 THREAD = ['Convoy', 'Granary', 'Vaule', 'Route', 'Traitor', 'Report', 'Village']
 HANDLER = ['None', 'Rook', 'Shrike']
@@ -188,7 +188,8 @@ def main():
     for e in S.ENDINGS:
         write_asset('Endings', 'Ending_' + e['id'], header('Ending', 'Ending_' + e['id']) +
             f"  id: {ENDING.index(e['id'])}\n  title: {q(e['title'])}\n  text: {q(e['text'])}\n"
-            f"  strongEvidence: {q(e.get('strong', ''))}\n  weakEvidence: {q(e.get('weak', ''))}\n")
+            f"  strongEvidence: {q(e.get('strong', ''))}\n  weakEvidence: {q(e.get('weak', ''))}\n"
+              f"  rookLowTrust: {q(e.get('rookLow', ''))}\n  shrikeHighTrust: {q(e.get('shrikeHigh', ''))}\n")
 
     print(f'OK: {len(S.CLUES)} manh mối, {len(S.CASES)} hồ sơ, {len(S.BOARD)} thẻ bảng tin, '
           f'{len(S.NEWS)} tin, {len(S.DAYS)} ngày, {len(S.ENDINGS)} kết thúc. Mọi lệnh mật đã kiểm tra.')

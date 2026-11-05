@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   day: 4
   news:
+  - {fileID: 11400000, guid: e44f58216e6e593eab5ab37fd1c244c0, type: 2}
   - {fileID: 11400000, guid: 448b79800a1551e4bebb019d923e1409, type: 2}
   - {fileID: 11400000, guid: 587fe752d0ec56a68a67ef73571d014b, type: 2}
   - {fileID: 11400000, guid: e46b166b8fc8523eb06f0a269873cc87, type: 2}

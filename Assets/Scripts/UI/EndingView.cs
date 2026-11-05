@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class EndingView : MonoBehaviour
 {
+    const int RookLowTrust = 2;
+    const int ShrikeHighTrust = 4;
+
     TextMeshProUGUI title, body, stats;
     RectTransform card;
 
@@ -47,6 +50,13 @@ public class EndingView : MonoBehaviour
         {
             string extra = EndingResolver.StrongEvidence(s, dm.FinalCase) ? ending.strongEvidence : ending.weakEvidence;
             if (!string.IsNullOrEmpty(extra)) text += "\n\n" + extra;
+        }
+        if (ending)
+        {
+            int rook = s.handlerOrderResults.Count(r => r.handler == Handler.Rook && r.followed);
+            int shrike = s.handlerOrderResults.Count(r => r.handler == Handler.Shrike && r.followed);
+            if (rook <= RookLowTrust && !string.IsNullOrEmpty(ending.rookLowTrust)) text += "\n\n" + ending.rookLowTrust;
+            if (shrike >= ShrikeHighTrust && !string.IsNullOrEmpty(ending.shrikeHighTrust)) text += "\n\n" + ending.shrikeHighTrust;
         }
         body.text = text;
 

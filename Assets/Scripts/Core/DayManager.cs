@@ -169,6 +169,8 @@ public class DayManager : MonoBehaviour
         ShowTitle();
     }
 
+    public void ReturnToTitle() => ShowTitle();
+
     void ShowTitle()
     {
         foreach (var panel in new[] { newsPanel, morningPanel, afternoonPanel, nightPanel, endingPanel, notebookPanel })

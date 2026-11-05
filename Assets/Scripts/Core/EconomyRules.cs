@@ -2,8 +2,6 @@ public static class EconomyRules
 {
     // Năng lượng dùng chung cho hỏi chuyện buổi chiều và từng bước đi buổi tối: hỏi nhiều thì tối phải chọn đường ngắn hơn.
     public const int MaxEnergy = 10;
-    public const int MaxActionPoints = 4;
-    public const int HarvestEnergy = 3;
     public const int HarvestYield = 3;
     public const int OpenShopEnergy = 2;
     public const int TalkEnergy = 1;
@@ -17,8 +15,6 @@ public static class EconomyRules
     public const int StartingPlotCount = 4;
     public const int CarrotGrowDays = 3;
     public const int CarrotYield = HarvestYield;
-    public const int PlantActionCost = 1;
-    public const int HarvestActionCost = 1;
 
     static readonly string[] Letters =
     {

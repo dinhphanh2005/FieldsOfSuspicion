@@ -13,7 +13,7 @@ public class BoardView : MonoBehaviour
     Button farmBtn, hintBtn;
     TextMeshProUGUI barHint;
     RectTransform farmPanel;
-    TextMeshProUGUI energyStat, apStat, stockStat;
+    TextMeshProUGUI energyStat, stockStat;
     readonly List<Button> plotButtons = new List<Button>();
     readonly List<Image> plotArt = new List<Image>();
     int hintLevel;
@@ -164,7 +164,7 @@ public class BoardView : MonoBehaviour
         UIFactory.AddShadow(card, 12);
         UIFactory.MakeTitle(UIFactory.Place(card, "Title", 52, 44, 816, 36), "MẢNH RUỘNG CỦA TOMAS", 24, UIFactory.Ink);
         UIFactory.MakeText(UIFactory.Place(card, "Help", 52, 82, 816, 30),
-            "Gieo cà rốt tốn 1 AP, không dùng rau trong kho. Cây chín sau 3 buổi sáng; thu hoạch tốn 1 AP.", 15, UIFactory.Muted);
+            "Bấm ô trống để gieo cà rốt. Cây chín sau 3 buổi sáng, bấm ô chín để thu hoạch vào kho.", 15, UIFactory.Muted);
         var grid = UIFactory.Place(card, "Plots", 52, 118, 816, 200);
         var h = UIFactory.HList(grid, 12, 0);
         h.childForceExpandWidth = true;
@@ -203,7 +203,6 @@ public class BoardView : MonoBehaviour
         statsLayout.childForceExpandWidth = false;
         statsLayout.childForceExpandHeight = true;
         energyStat = AddFarmStat(statsRect, "Energy", "icon_lantern", 205);
-        apStat = AddFarmStat(statsRect, "AP", "icon_ap", 150);
         stockStat = AddFarmStat(statsRect, "Stock", "icon_carrot", 180);
         var close = UIFactory.MakeButton(UIFactory.Place(card, "Close", 690, 372, 178, 42), "Close", "Đóng ruộng", ToggleFarm, 16);
         UIFactory.SetColor(close, UIFactory.Hex("DCCBA8"));
@@ -259,7 +258,7 @@ public class BoardView : MonoBehaviour
     {
         if (S == null) return;
         FarmSystem.EnsurePlots(S);
-        if (farmBtn) UIFactory.SetLabel(farmBtn, $"Ruộng · {S.actionPoints} AP · {S.stock} bó");
+        if (farmBtn) UIFactory.SetLabel(farmBtn, $"Ruộng · {S.stock} bó");
         if (plotButtons.Count > 0)
         {
             foreach (var b in plotButtons)
@@ -267,21 +266,18 @@ public class BoardView : MonoBehaviour
                 int id = plotButtons.IndexOf(b);
                 var plot = S.farmPlots.Find(p => p.plotId == id);
                 bool empty = string.IsNullOrEmpty(plot.cropId);
-                string state = empty ? "Ô trống\nGieo cà rốt · 1 AP" : plot.ready ? "Cà rốt chín\nThu hoạch · 1 AP" : $"Cà rốt\nĐang lớn {plot.daysGrowing}/{EconomyRules.CarrotGrowDays}";
+                string state = empty ? "Ô trống\nBấm để gieo cà rốt" : plot.ready ? "Cà rốt chín\nBấm để thu hoạch" : $"Cà rốt\nĐang lớn {plot.daysGrowing}/{EconomyRules.CarrotGrowDays}";
                 b.GetComponentInChildren<TextMeshProUGUI>().text = state;
                 string plotSprite = empty ? "plot_empty" : plot.ready ? "plot_ready" : plot.daysGrowing == 0 ? "plot_seeded" : "plot_growing";
                 UIFactory.Skin(plotArt[id], plotSprite);
                 plotArt[id].preserveAspect = true;
-                bool canAct = S.actionPoints > 0 && (plot.ready || empty);
                 b.interactable = true;
                 foreach (var tx in b.GetComponentsInChildren<TMP_Text>()) tx.alpha = 1f;
-                if (!canAct && (plot.ready || empty)) state += "\n<color=#A8442E>Hết AP hôm nay</color>";
                 b.GetComponentInChildren<TextMeshProUGUI>().text = state;
                 UIFactory.SetColor(b, UIFactory.Hex(plot.ready ? "F3E3B0" : "F4ECD8"));
             }
         }
         if (energyStat) energyStat.text = $"Năng lượng {S.energy}/{EconomyRules.MaxEnergy}";
-        if (apStat) apStat.text = $"AP {S.actionPoints}/{EconomyRules.MaxActionPoints}";
         if (stockStat) stockStat.text = $"Rau trong kho {S.stock}";
     }
 }

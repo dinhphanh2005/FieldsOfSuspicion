@@ -112,6 +112,11 @@ public class DevAutoTour : MonoBehaviour
         yield return Shot($"N{day}_board");
         if (day == 1)
         {
+            var hud = FindAnyObjectByType<HudView>();
+            if (hud) { hud.SetPaused(true); yield return Wait(0.3f); yield return Shot("pause_menu"); hud.SetPaused(false); yield return Wait(0.2f); }
+        }
+        if (day == 1)
+        {
             Click("Giải sẵn lệnh"); yield return Wait(); yield return Shot($"N{day}_board_decoded");
         }
         if (plan == "nofarm") { ClickPrimary(); yield return Wait(); yield break; }
@@ -141,7 +146,8 @@ public class DevAutoTour : MonoBehaviour
         ["5_1"] = new[] { "sell", "ask" },
         ["6_0"] = new[] { "sell", "ask" },
         ["6_1"] = new[] { "ask", "sell" },
-        ["7_0"] = new[] { "sell", "ask", "press" },
+        ["7_0"] = new[] { "sell", "ask" },
+        ["7_1"] = new[] { "sell", "ask", "press" },
     };
 
     IEnumerator Afternoon(int day)

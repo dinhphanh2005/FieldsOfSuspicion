@@ -21,6 +21,7 @@ public enum ShowCondition
     CaseCorrect,
     CaseNeverDelivered,
     SaidThisVisit,
+    HandlerTrust,
 }
 
 public enum RouteRisk { Safe, Low, Medium, High }

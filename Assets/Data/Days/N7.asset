@@ -22,6 +22,59 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 784f721d7a665c79b89b970741b3a776, type: 2}
   - {fileID: 11400000, guid: 3ac00609581f52ebbe444608df732345, type: 2}
   visits:
+  - customer: {fileID: 11400000, guid: 98d534f261fe4af994e75aef739a4b3a, type: 2}
+    requiredMomentum: 0
+    entrance: "Sable len qua \u0111\u00e1m \u0111\u00f4ng ch\u1ee3 phi\u00ean, chi\u1ebfc g\u00f9i \u0111\u00e3 v\u01a1i g\u1ea7n h\u1ebft."
+    entranceVariants: []
+    greeting: "Anh n\u00f4ng d\u00e2n! Ch\u1ee3 phi\u00ean \u0111\u00f4ng th\u1ebf n\u00e0y, t\u00f4i b\u00e1n \u0111\u01b0\u1ee3c kh\u1ed1i tin. C\u00f2n \u0111\u00fang m\u1ed9t tin cu\u1ed1i, gi\u1eef ri\u00eang cho anh."
+    greetingVariants: []
+    askCost: 15
+    sellPrice: 7
+    discountPrice: 4
+    sellQuantity: 1
+    discountQuantity: 1
+    discountActionLabel: ""
+    discountAccepted: 1
+    pressSuspicion: 1
+    sell:
+      tomas: "Tin \u0111\u1ec3 sau, c\u00f4 l\u1ea5y b\u00f3 rau \u0111\u00e3 ch\u1ee9?"
+      tomasVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "C\u00f4 l\u1ea5y b\u00f3 rau ch\u1ee9?"
+      reply: "H\u00f4m nay t\u00f4i mua th\u1eadt \u0111\u1ea5y, ch\u1ee3 phi\u00ean nh\u00e0 n\u00e0o ch\u1eb3ng mua rau.\n*Sable \u0111\u1eb7t b\u00f3 rau l\u00ean tr\u00ean c\u00f9ng g\u00f9i.*\nGi\u1edd th\u00ec t\u1edbi tin cu\u1ed1i c\u1ee7a t\u00f4i. \u0110\u1eaft nh\u1ea5t tu\u1ea7n \u0111\u1ea5y."
+      replyVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "Mua ch\u1ee9. Coi nh\u01b0 anh ti\u1ec5n t\u00f4i m\u1ed9t b\u00f3.\n*Sable \u0111\u1eb7t b\u00f3 rau l\u00ean tr\u00ean c\u00f9ng g\u00f9i.*"
+    discount:
+      tomas: "Ng\u00e0y cu\u1ed1i tu\u1ea7n, t\u00f4i b\u1edbt cho c\u00f4."
+      tomasVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "T\u00f4i b\u1edbt cho c\u00f4 b\u00f3 rau n\u00e0y."
+      reply: "Anh b\u1edbt th\u00ec t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: s\u00e1ng nay l\u00f2 g\u1ea1ch kh\u00f4ng \u0111\u1ecf l\u1eeda, l\u1ea7n \u0111\u1ea7u c\u1ea3 tu\u1ea7n. \u00d4ng Sev \u0111\u00f3ng c\u1eeda, b\u1ea3o \u0111i ch\u1ee3.\n*Sable nh\u00fan vai.*\nC\u00f2n tin cu\u1ed1i th\u00ec m\u01b0\u1eddi l\u0103m xu."
+      replyVariants: 
+      - condition: 13
+        param: "@ask"
+        text: "Anh b\u1edbt th\u00ec t\u00f4i t\u1eb7ng th\u00eam: s\u00e1ng nay l\u00f2 g\u1ea1ch kh\u00f4ng \u0111\u1ecf l\u1eeda, l\u1ea7n \u0111\u1ea7u c\u1ea3 tu\u1ea7n. \u00d4ng Sev \u0111\u00f3ng c\u1eeda, b\u1ea3o \u0111i ch\u1ee3.\n*Sable nh\u00fan vai.*"
+    ask:
+      tomas: "Tin cu\u1ed1i l\u00e0 g\u00ec?"
+      tomasVariants: []
+      reply: "M\u01b0\u1eddi l\u0103m xu. \u0110\u1eaft, nh\u01b0ng \u0111\u00e1ng.\n*Tomas \u0111\u1ebfm m\u01b0\u1eddi l\u0103m xu. Sable g\u00f3i ch\u00fang v\u00e0o kh\u0103n tay, bu\u1ed9c ch\u1eb7t, r\u1ed3i m\u1edbi gh\u00e9 s\u00e1t qu\u1ea7y.*\nS\u00e1ng nay t\u00f4i \u0111i qua l\u00f2 g\u1ea1ch, th\u1ea5y \u00f4ng Sev \u0111\u00f3ng d\u1ea5u th\u01b0 b\u1eb1ng m\u1ed9t {{con d\u1ea5u kh\u1eafc chim b\u00e1ch thanh|K20}}. Th\u1ea5y t\u00f4i l\u00e0 \u00f4ng \u1ea5y gi\u1ea5u ngay v\u00e0o t\u00fai \u00e1o."
+      replyVariants: []
+    press:
+      tomas: "C\u00f4 ch\u1eafc l\u00e0 chim b\u00e1ch thanh ch\u1ee9?"
+      tomasVariants: []
+      reply: "T\u00f4i b\u00e1n tin c\u1ea3 \u0111\u1eddi, chim g\u00ec m\u00e0 t\u00f4i ch\u1eb3ng nh\u1eadn ra.\n*Sable k\u00e9o g\u00f9i l\u00ean vai.*\nM\u00e0 anh h\u1ecfi k\u1ef9 th\u1ebf, ch\u1eafc anh c\u0169ng \u0111ang ch\u1edd \u0111\u00fang c\u00e1i tin n\u00e0y, ph\u1ea3i kh\u00f4ng?"
+      replyVariants: []
+    farewell:
+      tomas: "C\u1ea3m \u01a1n c\u00f4 c\u1ea3 tu\u1ea7n."
+      tomasVariants: []
+      reply: "\u0110\u1eebng c\u1ea3m \u01a1n. L\u1ea7n sau g\u1eb7p l\u1ea1i, tin s\u1ebd c\u00f2n \u0111\u1eaft h\u01a1n."
+      replyVariants: []
+    exit: "Sable len v\u00e0o \u0111\u00e1m \u0111\u00f4ng, ng\u00e2n nga kh\u00fac h\u00e1t ch\u1ee3. L\u1ea7n n\u00e0y c\u00f4 kh\u00f4ng quay \u0111\u1ea7u."
+    exitVariants: []
   - customer: {fileID: 11400000, guid: 7c6e42a34471486bb790148cdbf172ec, type: 2}
     requiredMomentum: 0
     entrance: "Gi\u1eefa ti\u1ebfng \u1ed3n c\u1ee7a ch\u1ee3 phi\u00ean, Emel \u0111\u1ee9ng ch\u1edd t\u1edbi l\u01b0\u1ee3t m\u00ecnh nh\u01b0 m\u1ed9t ng\u01b0\u1eddi kh\u00e1ch b\u00ecnh th\u01b0\u1eddng."

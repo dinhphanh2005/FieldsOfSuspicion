@@ -12,7 +12,6 @@ public class GameState
     public int money = EconomyRules.StartMoney;
     public int stock = EconomyRules.StartStock;
     public int energy = EconomyRules.MaxEnergy;
-    public int actionPoints = EconomyRules.MaxActionPoints;
     public ShopPriceLevel shopPriceLevel = ShopPriceLevel.Fair;
     public int customerBaseMomentum;
     public int salesToday;
@@ -50,7 +49,6 @@ public class GameState
     {
         day++;
         energy = EconomyRules.MaxEnergy;
-        actionPoints = EconomyRules.MaxActionPoints;
         shopOpenedToday = false;
         salesToday = 0;
         capturedToday.Clear();
