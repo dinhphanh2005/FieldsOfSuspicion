@@ -38,7 +38,7 @@ public static class TitlePreview
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1280, 720);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
             var root = UIFactory.MakeRect(canvasGo.transform, "Title_Screen", Vector2.zero, Vector2.one);
             var view = root.gameObject.AddComponent<TitleView>();

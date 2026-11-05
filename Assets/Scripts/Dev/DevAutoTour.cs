@@ -319,7 +319,8 @@ public class DevAutoTour : MonoBehaviour
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.black;
         cam.cullingMask = ~0;
-        var rt = new RenderTexture(1280, 720, 24);
+        int w = Screen.width, h = Screen.height;
+        var rt = new RenderTexture(w, h, 24);
         cam.targetTexture = rt;
         var oldMode = canvas.renderMode;
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -329,8 +330,8 @@ public class DevAutoTour : MonoBehaviour
         cam.Render();
         var prev = RenderTexture.active;
         RenderTexture.active = rt;
-        var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
-        tex.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
+        var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+        tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
         tex.Apply();
         RenderTexture.active = prev;
         canvas.renderMode = oldMode;

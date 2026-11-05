@@ -24,6 +24,7 @@ public class ShopView : MonoBehaviour
     ScrollRect scroll;
     Choice[] choices;
     Button notebookBtn;
+    Button eveningBtn;
     TextMeshProUGUI barHint;
 
     Mode mode;
@@ -65,7 +66,7 @@ public class ShopView : MonoBehaviour
         notebookBtn = UIFactory.BarButton(bar, "Sổ tay", () => dm.OpenNotebook());
         barHint = UIFactory.BarHint(bar, DefaultHint);
         UIFactory.BarSpacer(bar);
-        UIFactory.BarButton(bar, "Sang buổi tối", () => dm.EndPhase(), primary: true);
+        eveningBtn = UIFactory.BarButton(bar, "Sang buổi tối", () => dm.EndPhase(), primary: true);
     }
 
     void BuildQueue(RectTransform stage)
@@ -280,6 +281,8 @@ public class ShopView : MonoBehaviour
         RefreshChoices();
         RefreshQueue();
         RefreshNotebookButton();
+        // Chỉ cho sang buổi tối khi đã nghỉ hoặc đã đóng tiệm, để không bỏ qua lựa chọn buổi chiều.
+        eveningBtn.gameObject.SetActive(mode == Mode.Closed || (mode == Mode.Open && Visit == null));
         dialogue.ForceMeshUpdate();
         UIFactory.ScrollToBottom(scroll);
         if (isActiveAndEnabled) StartCoroutine(ScrollNextFrame());

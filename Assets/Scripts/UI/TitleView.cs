@@ -46,7 +46,8 @@ public class TitleView : MonoBehaviour
 
         UIFactory.MakeBox(root, UIFactory.Hex("2B2019"));
         UIFactory.AddGrain(root, 0.18f);
-        var frame = UIFactory.Place(root, "Board_Frame", 56, 40, 1168, 640);
+        var safe = UIFactory.MakeSafe(root, "Safe", UIFactory.RefWidth, UIFactory.RefHeight);
+        var frame = UIFactory.Place(safe, "Board_Frame", 56, 40, 1168, 640);
         UIFactory.MakeSurface(frame, UIFactory.Hex("5B3D28"), 10);
         UIFactory.AddShadow(frame, 14);
         var cork = UIFactory.MakeRect(frame, "Cork", Vector2.zero, Vector2.one, 16);

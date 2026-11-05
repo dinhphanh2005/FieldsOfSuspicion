@@ -89,12 +89,24 @@ public static class UIFactory
         return rt;
     }
 
+    public const float RefWidth = 1280;
+    public const float RefHeight = 720;
+
+    // Canvas dùng chế độ Expand nên màn 16:10 hay 4:3 rộng/cao hơn 1280x720; nội dung đặt trong khung cố định ở giữa để không lệch hay tràn.
+    public static RectTransform MakeSafe(Transform parent, string name, float w, float h)
+    {
+        var rt = MakeRect(parent, name, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+        rt.sizeDelta = new Vector2(w, h);
+        rt.anchoredPosition = Vector2.zero;
+        return rt;
+    }
+
     public static RectTransform MakeStage(Transform panel)
     {
         var rt = MakeRect(panel, "Stage", Vector2.zero, Vector2.one);
         rt.offsetMin = new Vector2(0, BarHeight);
         rt.offsetMax = new Vector2(0, -HudHeight);
-        return rt;
+        return MakeSafe(rt, "Stage_Safe", RefWidth, RefHeight - BarHeight - HudHeight);
     }
 
     public static Image MakeBox(RectTransform rt, Color color, bool raycast = true)

@@ -155,7 +155,7 @@ public class BoardView : MonoBehaviour
 
     void BuildFarmPanel(RectTransform stage)
     {
-        farmPanel = UIFactory.MakeRect(stage, "Farm_Overlay", Vector2.zero, Vector2.one);
+        farmPanel = UIFactory.MakeRect(stage.parent, "Farm_Overlay", Vector2.zero, Vector2.one);
         UIFactory.MakeBox(farmPanel, new Color(0.08f, 0.07f, 0.06f, 0.78f));
         var card = UIFactory.MakeRect(farmPanel, "Farm_Card", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         card.sizeDelta = new Vector2(920, 470);

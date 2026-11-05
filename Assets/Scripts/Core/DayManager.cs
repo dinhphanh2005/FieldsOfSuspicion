@@ -62,6 +62,8 @@ public class DayManager : MonoBehaviour
 
     void Awake()
     {
+        foreach (var scaler in FindObjectsByType<CanvasScaler>(FindObjectsSortMode.None))
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         days = Clean(days); intel = Clean(intel); cases = Clean(cases); endings = Clean(endings); crops = Clean(crops);
 
         var catalog = Resources.Load<ContentCatalog>("FoSContentCatalog");
