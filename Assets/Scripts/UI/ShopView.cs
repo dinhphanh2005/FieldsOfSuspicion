@@ -43,6 +43,7 @@ public class ShopView : MonoBehaviour
     int index;          // khách thứ mấy trong ngày
     int askCount;       // 0 chưa hỏi, 1 đã hỏi chuyện, 2 đã hỏi dồn
     bool traded;        // đã bán hoặc bớt giá
+    bool goodwill;      // đã bớt giá cho khách này hôm nay → hỏi dồn bị cộng nghi ngờ ít hơn 1
     bool leaving;       // khách đã chào về
     readonly List<string> log = new List<string>();   // các đoạn thô (còn {{...}}), hiện nối tiếp nhau
     int fresh;          // log[fresh..] là lượt mới nhất (in đậm), trước đó in mờ
@@ -205,7 +206,7 @@ public class ShopView : MonoBehaviour
 
     void StayClosed()
     {
-        // Nghỉ chiều nay: không tốn năng lượng (trước đây cộng thêm năng lượng, làm vượt mức thật)
+        // Nghỉ chiều nay: không mất năng lượng, để dành cho đường dài an toàn ban đêm (nhưng không nghe được tin gì)
         mode = Mode.Closed;
         log.Clear();
         fresh = 0;
@@ -217,6 +218,7 @@ public class ShopView : MonoBehaviour
     {
         askCount = 0;
         traded = false;
+        goodwill = false;
         leaving = false;
         log.Clear();
         fresh = 0;
@@ -286,7 +288,8 @@ public class ShopView : MonoBehaviour
     // Người bán tin (Sable, hỏi chuyện mất tiền) thì không cần.
     static bool NeedsVegFirst(CustomerVisit v) => v.askCost == 0 && v.sellQuantity != 0;
     bool AskLocked => Visit != null && NeedsVegFirst(Visit) && !traded;
-    bool CanAsk => Visit != null && !AskLocked && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
+    bool Tired => S.energy < EconomyRules.TalkEnergy;
+    bool CanAsk => Visit != null && !AskLocked && !Tired && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
 
     static string Narration(string text) => $"<i><color=#{NarrationColor}>{text}</color></i>";
 
@@ -370,8 +373,9 @@ public class ShopView : MonoBehaviour
             ? (v.discountAccepted ? "Bớt giá" : "Đề nghị bớt giá") + (!traded && discountCount > 0 ? $" · {discountCount} bó" : "")
             : v.discountActionLabel;
         SetChoice(1, discountLabel, discountRevenue > 0 ? $"+{discountRevenue} xu" : "", CanDiscount);
-        SetChoice(2, AskLocked ? "Hỏi chuyện · giao rau trước" : askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn",
-                  AskLocked ? "" : askCount == 0 ? (v.askCost > 0 ? $"−{v.askCost} xu" : "") : "dễ bị để ý", CanAsk);
+        string askLabel = askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn · dễ bị để ý";
+        SetChoice(2, AskLocked ? askLabel + " · giao rau trước" : Tired ? askLabel + " · hết năng lượng" : askLabel,
+                  AskLocked || Tired ? "" : askCount == 0 && v.askCost > 0 ? $"−{v.askCost} xu" : "−1 năng lượng", CanAsk);
         SetChoice(3, "Tiễn khách");
     }
 
@@ -426,6 +430,7 @@ public class ShopView : MonoBehaviour
         if (v.discountPrice > 0) S.salesToday += quantity;
         S.money += revenue;
         string outcome = quantity > 0 ? (revenue > 0 ? $"{quantity} bó rau · +{revenue} xu" : $"tặng {quantity} bó rau") : "không xuất rau · không thu tiền";
+        if (v.discountAccepted && v.discountPrice > 0) goodwill = true;   // lấy lòng: lần hỏi dồn sau đó nhẹ đi 1 điểm
         Say(v.discount, outcome);
         AfterAction();
     }
@@ -444,15 +449,19 @@ public class ShopView : MonoBehaviour
         var v = Visit;
         if (askCount == 0)
         {
-            if (S.money < v.askCost) return;
+            if (S.money < v.askCost || Tired) return;
             S.money -= v.askCost;
+            S.energy -= EconomyRules.TalkEnergy;
             askCount = 1;
             Say(v.ask, v.askCost > 0 ? $"−{v.askCost} xu" : null);
         }
         else if (askCount == 1)
         {
+            if (Tired) return;
             askCount = 2;
-            S.AddSuspicion(v.customer.channel, v.pressSuspicion, $"hỏi dồn {Speaker}");
+            S.energy -= EconomyRules.TalkEnergy;
+            // Bớt giá rồi mới hỏi dồn thì khách dễ bỏ qua hơn: bớt 1 điểm (Emel ngày chợ phiên 2 → 1, người khác 1 → 0)
+            S.AddSuspicion(v.customer.channel, v.pressSuspicion - (goodwill ? 1 : 0), $"hỏi dồn {Speaker}");
             Say(v.press, $"{Speaker} có vẻ bắt đầu để ý tới cậu");
         }
         AfterAction();
@@ -478,7 +487,7 @@ public class ShopView : MonoBehaviour
         if (mode == Mode.Prompt)
         {
             QueueRow("Chưa mở tiệm", count > 0 ? $"{count} người hay ghé" : "", false);
-            queueFoot.text = $"Mở tiệm tốn {EconomyRules.OpenShopEnergy} năng lượng. Tiền bán rau để trả tiền nhà: {EconomyRules.Rent} xu mỗi đêm.";
+            queueFoot.text = $"Mở tiệm −{EconomyRules.OpenShopEnergy} năng lượng, mỗi câu hỏi −1. Tối nay mỗi bước đi −1 (còn {S.energy}).\nTiền bán rau để trả tiền nhà: {EconomyRules.Rent} xu mỗi đêm.";
             return;
         }
         if (mode == Mode.Closed)
@@ -498,7 +507,7 @@ public class ShopView : MonoBehaviour
         }
         var v = Visit;
         queueFoot.text = v != null
-            ? $"{(v.sellQuantity > 0 ? $"Khách lấy {v.sellQuantity} bó" : v.sellQuantity < 0 ? "Khách lấy hết kho" : "Khách không mua rau")} · {v.sellPrice} xu/bó\nTrong kho {S.stock} bó rau · tiền nhà đêm nay {EconomyRules.Rent} xu."
+            ? $"{(v.sellQuantity > 0 ? $"Khách lấy {v.sellQuantity} bó" : v.sellQuantity < 0 ? "Khách lấy hết kho" : "Khách không mua rau")} · {v.sellPrice} xu/bó · kho {S.stock} bó\nCòn {S.energy} năng lượng: tối nay đi {Mathf.Min(4, S.energy)} bước không mệt, quá thì dễ bị để ý."
             : $"Hết khách. Trong kho còn {S.stock} bó rau.";
     }
 

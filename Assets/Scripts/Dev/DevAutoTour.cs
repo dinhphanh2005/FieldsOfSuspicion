@@ -178,6 +178,9 @@ public class DevAutoTour : MonoBehaviour
             {
                 // Đường Shrike: mua tin của Sable N2 để có manh mối "kho thóc bỏ trống" (mồi nhử)
                 if (plan == "shrike" && day == 2 && k == 2) acts = new[] { "ask" };
+                // Kiểm tra năng lượng: hỏi dồn mọi khách (bán thường / bớt giá trước)
+                if (plan == "pressall") acts = new[] { "sell", "ask", "press" };
+                if (plan == "pressdisc") acts = new[] { "discount", "ask", "press" };
                 foreach (var a in acts)
                 {
                     bool ok = a == "ask" ? Click("Hỏi chuyện") : a == "press" ? Click("Hỏi dồn")

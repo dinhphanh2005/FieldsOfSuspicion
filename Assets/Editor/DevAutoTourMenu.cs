@@ -74,6 +74,22 @@ public static class DevAutoTourMenu
         EditorApplication.isPlaying = true;
     }
 
+    [MenuItem("FoS/Dev/Tự chơi: hỏi dồn mọi khách")]
+    static void Run_pressall()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("pressall");
+        EditorApplication.isPlaying = true;
+    }
+
+    [MenuItem("FoS/Dev/Tự chơi: bớt giá rồi hỏi dồn mọi khách")]
+    static void Run_pressdisc()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("pressdisc");
+        EditorApplication.isPlaying = true;
+    }
+
     [MenuItem("FoS/Dev/Tự chơi theo Shrike (kiểm tra Bại lộ)")]
     static void RunShrike()
     {

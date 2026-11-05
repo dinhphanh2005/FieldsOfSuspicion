@@ -1,12 +1,16 @@
 // Tiền, rau, năng lượng, tiền nhà. Số tạm — chỉnh khi playtest.
 public static class EconomyRules
 {
+    // Năng lượng (05/11): nói chuyện và đi đêm dùng chung một nguồn sức.
+    // Chiều hỏi nhiều thì tối chỉ còn sức đi đường ngắn (thường nguy hiểm hơn); nghỉ chiều thì tối đi xa được.
     public const int MaxEnergy = 10;        // hồi đầy mỗi sáng
     public const int MaxActionPoints = 4;   // điểm thao tác ruộng mỗi sáng
     public const int HarvestEnergy = 3;     // giữ tương thích bản lưu cũ; ruộng dùng AP
     public const int HarvestYield = 3;      // 05/11: rau là cớ để khách nói chuyện → chăm ruộng thì không bao giờ hết rau (2 thì hụt ở N5)
-    public const int OpenShopEnergy = 4;    // mở tiệm buổi chiều
+    public const int OpenShopEnergy = 2;    // mở tiệm buổi chiều
+    public const int TalkEnergy = 1;        // mỗi lần Hỏi chuyện / Hỏi dồn
     public const int StepEnergy = 1;        // mỗi bước đi ban đêm
+    public const int OverexertSuspicion = 2;// mỗi bước đi khi đã hết năng lượng: kiệt sức, lề mề, dễ bị bắt gặp
 
     public const int StartMoney = 20;
     public const int StartStock = 4;        // bó cà rốt có sẵn ngày đầu

@@ -338,7 +338,10 @@ public class NightView : MonoBehaviour
     }
 
     // Số bước tối đa đêm nay: 4, nhưng không quá số năng lượng còn lại
-    int StepLimit => Mathf.Min(MaxSteps, S.energy / EconomyRules.StepEnergy);
+    // Luôn đi được tối đa 4 bước (đưa tin là việc chính). Hết năng lượng vẫn đi, nhưng mỗi bước quá sức +2 nghi ngờ.
+    int StepLimit => MaxSteps;
+    int FreeSteps => S.energy / EconomyRules.StepEnergy;
+    int OverSteps => Mathf.Max(0, route.Count - 1 - FreeSteps);
 
     bool CanAdd(string id) =>
         Last != "oak" && route.Count - 1 < StepLimit && !route.Contains(id) && OpenEdge(Last, id) != null;
@@ -368,12 +371,15 @@ public class NightView : MonoBehaviour
             UIFactory.SetColor(kv.Value, kv.Key == selectedCase ? UIFactory.Hex("F6DFA0") : UIFactory.Paper);
 
         int steps = route.Count - 1;
-        mapSub.text = $"Từ Nhà tới Hốc cây sồi · tối đa {StepLimit} bước (còn {S.energy} năng lượng)";
+        mapSub.text = FreeSteps >= StepLimit
+            ? $"Từ Nhà tới Hốc cây sồi · tối đa {StepLimit} bước (còn {S.energy} năng lượng)"
+            : $"Còn {S.energy} năng lượng: từ bước thứ {FreeSteps + 1} là <color=#E0B04B>đi quá sức, mỗi bước +{EconomyRules.OverexertSuspicion} nghi ngờ</color>";
         routeTitle.text = $"LỘ TRÌNH · {steps}/{StepLimit} BƯỚC";
         var names = route.ConvertAll(id => FindNode(id).name);
         routeText.text = $"<color=#E0B04B>{string.Join("  ›  ", names)}</color>\n<size=85%><color=#9C8C7B>" +
             (Last == "oak"
-                ? $"Đã tới hốc cây sồi. Đi hết {steps * EconomyRules.StepEnergy} năng lượng."
+                ? $"Đã tới hốc cây sồi. Đi hết {Mathf.Min(steps, FreeSteps) * EconomyRules.StepEnergy} năng lượng." +
+                  (OverSteps > 0 ? $" <color=#E0B04B>Đi quá sức {OverSteps} bước: +{OverSteps * EconomyRules.OverexertSuspicion} nghi ngờ.</color>" : "")
                 : $"Bấm các điểm nối tiếp nhau. Mỗi bước −{EconomyRules.StepEnergy} năng lượng; bấm lại điểm cuối để lùi.") +
             "</color></size>";
 
@@ -396,7 +402,9 @@ public class NightView : MonoBehaviour
         foreach (var es in RouteEdges())
             S.AddSuspicion(es.actual == RouteRisk.High ? SuspicionChannel.Emel : SuspicionChannel.Patrol,
                            SuspicionRules.Points(es.actual), $"đi qua {FindNode(es.edge.a).name} – {FindNode(es.edge.b).name}");
-        S.energy -= (route.Count - 1) * EconomyRules.StepEnergy;
+        if (OverSteps > 0)
+            S.AddSuspicion(SuspicionChannel.Patrol, OverSteps * EconomyRules.OverexertSuspicion, $"đi quá sức {OverSteps} bước");
+        S.energy = Mathf.Max(0, S.energy - (route.Count - 1) * EconomyRules.StepEnergy);
 
         var c = dm.FindCase(selectedCase);
         GameAudio.Sfx("drop");
