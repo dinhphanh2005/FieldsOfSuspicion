@@ -4,7 +4,7 @@ public static class EconomyRules
     public const int MaxEnergy = 10;        // hồi đầy mỗi sáng
     public const int MaxActionPoints = 4;   // điểm thao tác ruộng mỗi sáng
     public const int HarvestEnergy = 3;     // giữ tương thích bản lưu cũ; ruộng dùng AP
-    public const int HarvestYield = 2;      // chỉnh 04/11: 4 bó/ô làm rau ứ kho, tiền cuối ván > 300 xu      // giữ tương thích bản lưu cũ
+    public const int HarvestYield = 3;      // 05/11: rau là cớ để khách nói chuyện → chăm ruộng thì không bao giờ hết rau (2 thì hụt ở N5)
     public const int OpenShopEnergy = 4;    // mở tiệm buổi chiều
     public const int StepEnergy = 1;        // mỗi bước đi ban đêm
 

@@ -37,14 +37,14 @@ MonoBehaviour:
     askCost: 0
     sellPrice: 7
     discountPrice: 4
-    sellQuantity: -1
+    sellQuantity: 3
     discountQuantity: 1
     discountActionLabel: ""
     discountAccepted: 1
     pressSuspicion: 2
     sell:
       tomas: "Ch\u1ecb l\u1ea5y bao nhi\u00eau \u1ea1?"
-      reply: "H\u1ebft ch\u1ed7 n\u00e0y. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n."
+      reply: "Ba b\u00f3. C\u1eadu b\u00e1n cho t\u00f4i c\u1ea3 tu\u1ea7n r\u1ed3i, coi nh\u01b0 t\u00f4i c\u1ea3m \u01a1n."
       replyVariants: []
     discount:
       tomas: "H\u00f4m nay ch\u1ee3 phi\u00ean, em b\u1edbt cho ch\u1ecb."

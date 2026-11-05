@@ -240,6 +240,14 @@ public class ShopView : MonoBehaviour
         string entrance = Conditions.Pick(S, v.entrance, v.entranceVariants);
         if (!string.IsNullOrEmpty(entrance)) log.Add(Narration(entrance));
         log.Add($"<b>{Speaker}:</b> {Conditions.Pick(S, v.greeting, v.greetingVariants)}");
+        if (NeedsVegFirst(v) && S.stock <= 0)
+        {
+            // Rau là cái cớ để khách đứng lại nói chuyện: kho trống thì khách về luôn, hôm đó mất tin
+            log.Add(Narration("Tomas lục khắp kho: không còn bó rau nào."));
+            log.Add($"<b>{Speaker}:</b> Hết rau rồi à? Thôi, để hôm khác vậy.");
+            log.Add(Narration($"{Speaker} quay ra cửa, đi tìm hàng rau khác."));   // không dùng câu rời đi mặc định: câu đó tả khách ôm rau
+            leaving = true;
+        }
         Render();
     }
 
@@ -268,12 +276,17 @@ public class ShopView : MonoBehaviour
         Render();
     }
 
-    bool HasStockFor(int quantity) => quantity < 0 ? S.stock > 0 : quantity == 0 || S.stock >= quantity;
-    int QuantityAvailable(int requested) => requested < 0 ? S.stock : requested;
-    bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);   // -1 = mua hết kho
+    bool HasStockFor(int quantity) => quantity == 0 || S.stock > 0;
+    // Kho thiếu thì bán hết chỗ còn lại (-1 = khách lấy hết kho)
+    int QuantityAvailable(int requested) => requested < 0 ? S.stock : Mathf.Min(requested, S.stock);
+    bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);
     bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(DiscountQuantity(Visit));
     bool CanTrade => CanSell || CanDiscount;
-    bool CanAsk => Visit != null && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
+    // Khách tới mua rau (Emel, Perrin) chỉ đứng lại nói chuyện khi đã được giao rau.
+    // Người bán tin (Sable, hỏi chuyện mất tiền) thì không cần.
+    static bool NeedsVegFirst(CustomerVisit v) => v.askCost == 0 && v.sellQuantity != 0;
+    bool AskLocked => Visit != null && NeedsVegFirst(Visit) && !traded;
+    bool CanAsk => Visit != null && !AskLocked && askCount < 2 && (askCount > 0 || S.money >= Visit.askCost) && (askCount == 0 || Visit.press != null && !string.IsNullOrEmpty(Visit.press.reply));
 
     static string Narration(string text) => $"<i><color=#{NarrationColor}>{text}</color></i>";
 
@@ -345,9 +358,10 @@ public class ShopView : MonoBehaviour
             return;
         }
 
-        string sellLabel = traded ? "Đã giao dịch" : v.sellQuantity == 0 ? "Khách không mua rau" :
-            v.sellQuantity < 0 ? $"Bán hết kho ({S.stock} bó)" : $"Bán {v.sellQuantity} bó";
         int sellCount = QuantityAvailable(v.sellQuantity);
+        string sellLabel = traded ? "Đã giao dịch" : v.sellQuantity == 0 ? "Khách không mua rau" :
+            v.sellQuantity < 0 ? $"Bán hết kho ({S.stock} bó)" :
+            sellCount < v.sellQuantity ? $"Bán {sellCount} bó · thiếu {v.sellQuantity - sellCount}" : $"Bán {v.sellQuantity} bó";
         int sellRevenue = v.sellPrice * Mathf.Max(0, sellCount);
         SetChoice(0, sellLabel, sellRevenue > 0 ? $"+{sellRevenue} xu" : "", CanSell);
         int discountCount = QuantityAvailable(DiscountQuantity(v));
@@ -356,8 +370,8 @@ public class ShopView : MonoBehaviour
             ? (v.discountAccepted ? "Bớt giá" : "Đề nghị bớt giá") + (!traded && discountCount > 0 ? $" · {discountCount} bó" : "")
             : v.discountActionLabel;
         SetChoice(1, discountLabel, discountRevenue > 0 ? $"+{discountRevenue} xu" : "", CanDiscount);
-        SetChoice(2, askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn",
-                  askCount == 0 ? (v.askCost > 0 ? $"−{v.askCost} xu" : "") : "dễ bị để ý", CanAsk);
+        SetChoice(2, AskLocked ? "Hỏi chuyện · giao rau trước" : askCount == 0 ? "Hỏi chuyện" : "Hỏi dồn",
+                  AskLocked ? "" : askCount == 0 ? (v.askCost > 0 ? $"−{v.askCost} xu" : "") : "dễ bị để ý", CanAsk);
         SetChoice(3, "Tiễn khách");
     }
 

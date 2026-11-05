@@ -66,6 +66,14 @@ public static class DevAutoTourMenu
         EditorApplication.isPlaying = true;
     }
 
+    [MenuItem("FoS/Dev/Tự chơi: không trồng rau (kiểm tra hết rau)")]
+    static void Run_nofarm()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("nofarm");
+        EditorApplication.isPlaying = true;
+    }
+
     [MenuItem("FoS/Dev/Tự chơi theo Shrike (kiểm tra Bại lộ)")]
     static void RunShrike()
     {

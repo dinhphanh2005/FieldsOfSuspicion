@@ -122,6 +122,7 @@ public class DevAutoTour : MonoBehaviour
             Click("Giải sẵn lệnh"); yield return Wait(); yield return Shot($"N{day}_board_decoded");
             // Giữ chế độ giải sẵn cả tuần: thẻ dài nhất (lệnh + lời giải) là trường hợp dễ tràn nhất
         }
+        if (plan == "nofarm") { ClickPrimary(); yield return Wait(); yield break; }   // không đụng tới ruộng: kiểm tra hết rau
         Click("Ruộng");
         yield return Wait();
         // Thu hoạch ô chín, gieo ô trống
@@ -137,20 +138,21 @@ public class DevAutoTour : MonoBehaviour
     // Lượt hỏi theo ngày: k = khách thứ k trong ngày → danh sách hành động
     static readonly Dictionary<string, string[]> Script = new Dictionary<string, string[]>
     {
-        ["1_0"] = new[] { "ask", "sell" },
-        ["2_0"] = new[] { "ask", "sell" },
-        ["2_1"] = new[] { "ask", "discount" },
+        // Giao rau trước, hỏi chuyện sau (khách mua rau chỉ nói chuyện khi đã được giao rau)
+        ["1_0"] = new[] { "sell", "ask" },
+        ["2_0"] = new[] { "sell", "ask" },
+        ["2_1"] = new[] { "discount", "ask" },
         ["2_2"] = new[] { "sell" },
-        ["3_0"] = new[] { "ask", "sell" },
-        ["3_1"] = new[] { "ask", "sell" },
-        ["4_0"] = new[] { "ask", "discount" },
-        ["4_1"] = new[] { "ask", "sell" },
+        ["3_0"] = new[] { "sell", "ask" },
+        ["3_1"] = new[] { "sell", "ask" },
+        ["4_0"] = new[] { "discount", "ask" },
+        ["4_1"] = new[] { "sell", "ask" },
         ["4_2"] = new[] { "discount" },
-        ["5_0"] = new[] { "ask", "sell" },
-        ["5_1"] = new[] { "ask", "sell" },
-        ["6_0"] = new[] { "ask", "sell" },
+        ["5_0"] = new[] { "sell", "ask" },
+        ["5_1"] = new[] { "sell", "ask" },
+        ["6_0"] = new[] { "sell", "ask" },
         ["6_1"] = new[] { "ask", "sell" },
-        ["7_0"] = new[] { "ask", "sell", "press" },
+        ["7_0"] = new[] { "sell", "ask", "press" },
     };
 
     IEnumerator Afternoon(int day)
