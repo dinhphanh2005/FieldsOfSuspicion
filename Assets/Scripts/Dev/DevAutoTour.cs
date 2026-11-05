@@ -259,6 +259,15 @@ public class DevAutoTour : MonoBehaviour
         if (p.answers.Length > 0) ClickNamed("Report_" + p.caseId);
         yield return Wait(0.3f);
         yield return Shot($"N{day}_night_ready");
+        if (ActiveButtons().Any(b => Plain(b.GetComponentInChildren<TMP_Text>()?.text).Contains("Gấp sổ lại")))
+        {
+            Log("  (báo cáo còn thiếu ô nên sổ tay mở lại: ở nhà tối nay)");
+            Click("Gấp sổ lại");
+            yield return Wait();
+            Click("Ở nhà tối nay");
+            yield return Wait();
+            yield break;
+        }
         ClickPrimary();
         yield return Wait();
     }

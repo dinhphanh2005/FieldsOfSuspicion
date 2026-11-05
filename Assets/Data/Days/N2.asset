@@ -46,7 +46,7 @@ MonoBehaviour:
       reply: "\u00d4i, c\u1eadu t\u1ed1t b\u1ee5ng qu\u00e1.\n*Perrin c\u1ea9n th\u1eadn g\u00f3i b\u00f3 rau v\u00e0o chi\u1ebfc kh\u0103n s\u1ea1ch.*\nTh\u1ebf th\u00ec t\u00f4i gh\u00e9 th\u01b0\u1eddng xuy\u00ean. Nh\u00e0 t\u00f4i d\u1ea1o n\u00e0y nhi\u1ec1u chuy\u1ec7n, c\u00f3 ti\u1ec7m g\u1ea7n m\u00e0 r\u1ebb th\u1ebf n\u00e0y th\u00ec \u0111\u1ee1 bi\u1ebft bao."
       replyVariants: []
     ask:
-      tomas: "D\u1ea1o n\u00e0y b\u00ean nh\u00e0 Vaule c\u00f3 chuy\u1ec7n g\u00ec kh\u00f4ng b\u00e1c?"
+      tomas: "D\u1ea1o n\u00e0y b\u00ean nh\u00e0 Vaule c\u00f3 chuy\u1ec7n g\u00ec vui kh\u00f4ng b\u00e1c?"
       tomasVariants: []
       reply: "Vui th\u00ec ch\u1eb3ng th\u1ea5y. \u00d4ng ch\u1ee7 c\u1ee9 ng\u1ed3i m\u1ed9t m\u00ecnh trong th\u01b0 ph\u00f2ng. \u00c0, \u00f4ng d\u1eb7n t\u00f4i \u0111i ch\u1ee3 s\u1edbm, v\u00ec \u0111\u01b0\u1eddng c\u00e1i s\u1ebd k\u00edn xe l\u00ednh v\u00e0o {{s\u00e1ng th\u1ee9 Ba|K04}}, l\u00fac \u0111o\u00e0n xe g\u00ec \u0111\u00f3 c\u1ee7a \u0111\u1ed3n v\u1ec1 t\u1edbi n\u01a1i.\n*N\u00f3i t\u1edbi \u00f4ng ch\u1ee7, Perrin b\u1ea5t gi\u00e1c h\u1ea1 gi\u1ecdng.*"
       replyVariants: []

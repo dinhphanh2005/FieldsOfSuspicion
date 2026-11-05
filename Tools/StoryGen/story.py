@@ -234,7 +234,7 @@ DAYS.append(dict(day=2, news=['N2_KiemTraGiay', 'N2_GiaThoc'], board=['N2_ChoPhi
                 '*Perrin lật từng củ cà rốt, soi kỹ như soi đồ bạc.*\nĐẹp đấy. Ông chủ tôi khó tính lắm, nhưng thế này chắc không chê được. Dạo này ông ấy ăn uống thất thường, tôi phải chiều từng món.'),
          discount=L('Cháu chào bác. Lần đầu bác ghé, cháu bớt cho bác.',
                     'Ôi, cậu tốt bụng quá.\n*Perrin cẩn thận gói bó rau vào chiếc khăn sạch.*\nThế thì tôi ghé thường xuyên. Nhà tôi dạo này nhiều chuyện, có tiệm gần mà rẻ thế này thì đỡ biết bao.'),
-         ask=L('Dạo này bên nhà Vaule có chuyện gì không bác?',
+         ask=L('Dạo này bên nhà Vaule có chuyện gì vui không bác?',
                'Vui thì chẳng thấy. Ông chủ cứ ngồi một mình trong thư phòng. À, ông dặn tôi đi chợ sớm, vì đường cái sẽ kín xe lính vào {{sáng thứ Ba|K04}}, lúc đoàn xe gì đó của đồn về tới nơi.\n*Nói tới ông chủ, Perrin bất giác hạ giọng.*'),
          press=L('Ông Vaule lo chuyện gì mà ngồi một mình mãi thế bác?',
                  '*Perrin nhìn quanh tiệm một lượt, dù trong tiệm chẳng có ai.*\nChuyện nhà chủ, người làm như tôi đâu dám kể... Chỉ biết từ hồi bà chủ mất, ông ấy hay viết thư gửi lên đồn. Viết xong lại đốt bản nháp, chẳng để lại tờ nào.'),
