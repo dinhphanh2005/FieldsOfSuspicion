@@ -22,6 +22,7 @@ public static class Conditions
             case ShowCondition.WrongLastNight:        return lastNightCase && !drop.correct;
             case ShowCondition.CaseCorrect:           return s.deliveredDrops.Exists(d => d.caseId == param && d.correct);
             case ShowCondition.CaseNeverDelivered:    return !s.CaseDelivered(param);
+            case ShowCondition.SaidThisVisit:         return s.SaidThisVisit.Contains(param);
             default:                                  return false;
         }
     }

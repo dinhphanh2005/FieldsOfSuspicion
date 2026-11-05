@@ -56,6 +56,9 @@ public class GameState
         capturedToday.Clear();
     }
 
+    [NonSerialized] HashSet<string> saidThisVisit;
+    public HashSet<string> SaidThisVisit => saidThisVisit ??= new HashSet<string>();
+
     public bool HasFragment(string id) => !string.IsNullOrEmpty(id) && fragments.Contains(id);
 
     public bool AddFragment(string id)

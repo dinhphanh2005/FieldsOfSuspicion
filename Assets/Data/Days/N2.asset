@@ -49,7 +49,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "\u00d4ng Vaule lo chuy\u1ec7n g\u00ec m\u00e0 ng\u1ed3i m\u1ed9t m\u00ecnh m\u00e3i th\u1ebf b\u00e1c?"
-      reply: "C\u1eadu t\u00f2 m\u00f2 th\u1eadt \u0111\u1ea5y... Chuy\u1ec7n nh\u00e0 ch\u1ee7, ng\u01b0\u1eddi l\u00e0m nh\u01b0 t\u00f4i \u0111\u00e2u d\u00e1m k\u1ec3."
+      reply: "Chuy\u1ec7n nh\u00e0 ch\u1ee7, ng\u01b0\u1eddi l\u00e0m nh\u01b0 t\u00f4i \u0111\u00e2u d\u00e1m k\u1ec3. C\u1eadu \u0111\u1eebng h\u1ecfi n\u1eefa nh\u00e9."
       replyVariants: []
     farewell:
       tomas: "H\u1eb9n b\u00e1c l\u1ea7n sau \u1ea1."
@@ -77,7 +77,7 @@ MonoBehaviour:
       replyVariants: []
     discount:
       tomas: "Ch\u1ecb l\u1ea5y nhi\u1ec1u, em b\u1edbt cho ch\u1ecb."
-      reply: "L\u1ea1i b\u1edbt? C\u1eadu \u0111\u1ecbnh l\u1ea5y l\u00f2ng l\u00ednh \u0111\u1ed3n \u00e0? ...Th\u00f4i \u0111\u01b0\u1ee3c, coi nh\u01b0 t\u00f4i n\u1ee3 c\u1eadu. T\u1ed1i nay c\u1ea3 \u0111\u1ed9i ph\u1ea3i th\u1ee9c t\u1edbi {{n\u1eeda \u0111\u00eam|K03}}, c\u00f3 b\u00f3 rau ngon c\u0169ng \u0111\u1ee1."
+      reply: "B\u1edbt cho t\u00f4i \u00e0? C\u1eadu \u0111\u1ecbnh l\u1ea5y l\u00f2ng l\u00ednh \u0111\u1ed3n \u0111\u1ea5y h\u1ea3? ...Th\u00f4i \u0111\u01b0\u1ee3c, coi nh\u01b0 t\u00f4i n\u1ee3 c\u1eadu. T\u1ed1i nay c\u1ea3 \u0111\u1ed9i ph\u1ea3i th\u1ee9c t\u1edbi {{n\u1eeda \u0111\u00eam|K03}}, c\u00f3 b\u00f3 rau ngon c\u0169ng \u0111\u1ee1."
       replyVariants: []
     ask:
       tomas: "T\u1ed1i nay \u0111\u1ed3n c\u00f3 vi\u1ec7c g\u00ec m\u00e0 b\u1eadn th\u1ebf ch\u1ecb?"
@@ -85,8 +85,11 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "Xe qua l\u00fac m\u1ea5y gi\u1edd h\u1ea3 ch\u1ecb?"
-      reply: "C\u1eadu h\u1ecfi k\u1ef9 th\u1ebf l\u00e0m g\u00ec? ...T\u1edbi {{n\u1eeda \u0111\u00eam|K03}} l\u00e0 xong. Gi\u1edd th\u00ec c\u1eadu tr\u1ed3ng rau hay \u0111\u1ebfm xe \u0111\u1ea5y?"
-      replyVariants: []
+      reply: "Sao c\u1eadu l\u1ea1i mu\u1ed1n bi\u1ebft gi\u1edd xe ch\u1ea1y? ...T\u1edbi {{n\u1eeda \u0111\u00eam|K03}} l\u00e0 xong. Gi\u1edd th\u00ec c\u1eadu tr\u1ed3ng rau hay \u0111\u1ebfm xe \u0111\u1ea5y?"
+      replyVariants: 
+      - condition: 13
+        param: "K03"
+        text: "T\u00f4i v\u1eeba n\u00f3i r\u1ed3i c\u00f2n g\u00ec, t\u1edbi n\u1eeda \u0111\u00eam. C\u1eadu nh\u1edb gi\u1edd xe ch\u1ea1y k\u1ef9 th\u1ebf \u0111\u1ec3 l\u00e0m g\u00ec? C\u1eadu tr\u1ed3ng rau hay \u0111\u1ebfm xe \u0111\u1ea5y?"
     farewell:
       tomas: "Ch\u1ecb tr\u1ef1c \u0111\u00eam v\u1ea5t v\u1ea3 r\u1ed3i."
       reply: "\u1eea. C\u1ea7u cho \u0111\u00eam nay y\u00ean."

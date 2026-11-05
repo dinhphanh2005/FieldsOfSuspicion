@@ -20,6 +20,7 @@ public enum ShowCondition
     WrongLastNight,
     CaseCorrect,
     CaseNeverDelivered,
+    SaidThisVisit,
 }
 
 public enum RouteRisk { Safe, Low, Medium, High }

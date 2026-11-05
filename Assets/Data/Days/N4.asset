@@ -45,7 +45,7 @@ MonoBehaviour:
       reply: "Hai b\u00f3. Kh\u00e1ch s\u1eafp t\u1edbi r\u1ed3i."
       replyVariants: []
     discount:
-      tomas: "B\u00e1c gh\u00e9 nhi\u1ec1u, ch\u00e1u b\u1edbt cho b\u00e1c."
+      tomas: "B\u00e1c l\u00e0 kh\u00e1ch quen r\u1ed3i, ch\u00e1u b\u1edbt cho b\u00e1c."
       reply: "C\u1eadu \u0111\u00fang l\u00e0 ng\u01b0\u1eddi t\u1ed1t. Coi nh\u01b0 t\u00f4i tr\u1ea3 \u01a1n: \u00f4ng ch\u1ee7 b\u1ea3o ph\u1ea3i d\u1ecdn xong m\u1ecdi th\u1ee9 tr\u01b0\u1edbc {{t\u1ed1i th\u1ee9 N\u0103m|K11}}. V\u1eady l\u00e0 mai \u0111\u1ea5y, ch\u1ee9 ch\u1eb3ng ph\u1ea3i cu\u1ed1i tu\u1ea7n nh\u01b0 t\u00f4i t\u01b0\u1edfng."
       replyVariants: []
     ask:
@@ -54,8 +54,11 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "Kh\u00e1ch \u1edf l\u1ea1i l\u00e2u kh\u00f4ng b\u00e1c?"
-      reply: "C\u1eadu t\u00f2 m\u00f2 th\u1eadt \u0111\u1ea5y... Nghe b\u1ea3o ch\u1ec9 \u0103n b\u1eefa {{t\u1ed1i th\u1ee9 N\u0103m|K11}} r\u1ed3i \u0111i ngay trong \u0111\u00eam."
-      replyVariants: []
+      reply: "H\u00f4m nay c\u1eadu h\u1ecfi l\u1eafm th\u1ebf... Nghe b\u1ea3o ch\u1ec9 \u0103n b\u1eefa {{t\u1ed1i th\u1ee9 N\u0103m|K11}} r\u1ed3i \u0111i ngay trong \u0111\u00eam."
+      replyVariants: 
+      - condition: 13
+        param: "K11"
+        text: "Kh\u00f4ng l\u00e2u \u0111\u00e2u. \u0102n xong b\u1eefa t\u1ed1i l\u00e0 \u0111i ngay trong \u0111\u00eam, nghe b\u1ea3o v\u1eady. C\u1eadu h\u1ecfi nhi\u1ec1u th\u1ebf, \u00f4ng ch\u1ee7 t\u00f4i m\u00e0 nghe th\u1ea5y th\u00ec kh\u1ed5."
     farewell:
       tomas: "B\u00e1c v\u1ec1 c\u1ea9n th\u1eadn, \u0111\u01b0\u1eddng ven s\u00f4ng ng\u1eadp \u0111\u1ea5y."
       reply: "Bi\u1ebft r\u1ed3i. L\u1ea1i ph\u1ea3i \u0111i v\u00f2ng qua ch\u1ee3."
@@ -90,7 +93,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "\u0110\u1ea1i \u00fay h\u1eb9n \u0103n t\u1ed1i v\u1edbi ai v\u1eady ch\u1ecb?"
-      reply: "C\u1eadu h\u1ecfi k\u1ef9 th\u1ebf l\u00e0m g\u00ec? Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec t\u00f4i kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi, c\u1eadu l\u1ea1i c\u00e0ng kh\u00f4ng."
+      reply: "Chuy\u1ec7n c\u1ee7a \u0111\u1ea1i \u00fay th\u00ec \u0111\u1ebfn t\u00f4i c\u00f2n kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ecfi, c\u1eadu l\u1ea1i c\u00e0ng kh\u00f4ng."
       replyVariants: []
     farewell:
       tomas: "Ch\u1ecb v\u1ec1 k\u1ebbo \u01b0\u1edbt."
@@ -118,7 +121,7 @@ MonoBehaviour:
       replyVariants: []
     discount:
       tomas: "C\u00f4 c\u1ee9 l\u1ea5y m\u1ed9t b\u00f3, k\u1ec3 t\u00f4i nghe chuy\u1ec7n g\u00ec \u0111i."
-      reply: "Chuy\u1ec7n n\u00e0y th\u00ec t\u00f4i k\u1ec3 kh\u00f4ng l\u1ea5y ti\u1ec1n: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i. C\u00f2n tin n\u1eb7ng th\u00ec t\u00e1m xu."
+      reply: "M\u1ed9t b\u00f3 rau \u0111\u1ed5i m\u1ed9t tin nh\u1eb9: t\u1eeb t\u1ed1i qua c\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}}. Ai qua \u0111\u00f3 sau gi\u1edd gi\u1edbi nghi\u00eam l\u00e0 b\u1ecb gi\u1eef l\u1ea1i. C\u00f2n tin n\u1eb7ng th\u00ec t\u00e1m xu."
       replyVariants: []
     ask:
       tomas: "Tin g\u00ec m\u00e0 n\u1eb7ng th\u1ebf?"
@@ -126,7 +129,7 @@ MonoBehaviour:
       replyVariants: []
     press:
       tomas: "C\u00f4 nghe ai n\u00f3i?"
-      reply: "Anh h\u1ecfi nhi\u1ec1u qu\u00e1 \u0111\u1ea5y. H\u00f4m nay anh h\u1ecfi c\u00f2n nhi\u1ec1u h\u01a1n c\u1ea3 l\u00ednh \u0111\u1ed3n. \u0110\u1ecbnh tranh m\u1ed1i c\u1ee7a t\u00f4i \u00e0?"
+      reply: "Ngu\u1ed3n tin l\u00e0 n\u1ed3i c\u01a1m c\u1ee7a t\u00f4i, anh n\u00f4ng d\u00e2n. H\u00f4m nay anh h\u1ecfi c\u00f2n nhi\u1ec1u h\u01a1n c\u1ea3 l\u00ednh \u0111\u1ed3n \u0111\u1ea5y."
       replyVariants: []
     farewell:
       tomas: "H\u1eb9n c\u00f4 h\u00f4m kh\u00e1c."

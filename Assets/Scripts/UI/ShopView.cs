@@ -202,6 +202,7 @@ public class ShopView : MonoBehaviour
         traded = false;
         goodwill = false;
         leaving = false;
+        S.SaidThisVisit.Clear();
         log.Clear();
         fresh = 0;
 
@@ -237,8 +238,11 @@ public class ShopView : MonoBehaviour
     void Say(DialogueLine line, string note = null)
     {
         fresh = log.Count;
+        string reply = Conditions.Pick(S, line.reply, line.replyVariants);
+        // Ghi lại manh mối khách vừa nói để lựa chọn sau trong cùng lượt khách không lặp lại đúng tin đó.
+        foreach (var id in IntelMarkup.ClueIds(reply)) S.SaidThisVisit.Add(id);
         log.Add($"<b>Tomas:</b> {line.tomas}");
-        log.Add($"<b>{Speaker}:</b> {Conditions.Pick(S, line.reply, line.replyVariants)}" +
+        log.Add($"<b>{Speaker}:</b> {reply}" +
                 (note != null ? $"  <size=85%><color=#{NarrationColor}>({note})</color></size>" : ""));
     }
 
