@@ -227,6 +227,7 @@ public class NightView : MonoBehaviour
             var rule = rules?.Find(r => Same(r.a, r.b, es.edge.a, es.edge.b));
             if (rule != null)
             {
+                // Rủi ro thật luôn được áp dụng; bản đồ chỉ hiện nó khi người chơi đã có manh mối hiddenUntil.
                 bool known = string.IsNullOrEmpty(rule.hiddenUntil) || S.HasFragment(rule.hiddenUntil);
                 es.actual = rule.risk;
                 es.closed = rule.closed;
@@ -372,6 +373,7 @@ public class NightView : MonoBehaviour
         foreach (var es in RouteEdges())
             S.AddSuspicion(es.actual == RouteRisk.High ? SuspicionChannel.Emel : SuspicionChannel.Patrol,
                            SuspicionRules.Points(es.actual), $"đi qua {FindNode(es.edge.a).name} – {FindNode(es.edge.b).name}");
+        // Hết năng lượng vẫn cho đi vì đưa tin là việc chính, nhưng mỗi bước quá sức bị lính tuần để ý.
         if (OverSteps > 0)
             S.AddSuspicion(SuspicionChannel.Patrol, OverSteps * EconomyRules.OverexertSuspicion, $"đi quá sức {OverSteps} bước");
         S.energy = Mathf.Max(0, S.energy - (route.Count - 1) * EconomyRules.StepEnergy);

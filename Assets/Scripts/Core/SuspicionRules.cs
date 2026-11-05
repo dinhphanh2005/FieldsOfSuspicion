@@ -4,6 +4,7 @@ public static class SuspicionRules
     public const int Medium = 2;
     public const int High = 4;
 
+    // Chỉ cộng nghi ngờ của 3 đêm gần nhất; chạm BurnThreshold là bại lộ. Đêm cũ tự rơi khỏi cửa sổ nên người chơi gỡ lại được sau một đêm liều.
     public const int WindowNights = 3;
     public const int BurnThreshold = 12;
 

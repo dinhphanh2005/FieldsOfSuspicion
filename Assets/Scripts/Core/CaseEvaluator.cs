@@ -14,6 +14,7 @@ public static class CaseEvaluator
     public static bool SlotCorrect(CaseSO c, int slot, string answer) =>
         c && slot >= 0 && slot < c.slots.Count && !string.IsNullOrEmpty(answer) && c.slots[slot].correct.Contains(answer);
 
+    // Hồ sơ đúng khi mọi ô đều điền và mỗi ô khớp một manh mối trong danh sách đáp án.
     public static bool IsCorrect(CaseSO c, IReadOnlyList<string> answers) =>
         IsComplete(c, answers) && Enumerable.Range(0, c.slots.Count).All(i => SlotCorrect(c, i, answers[i]));
 

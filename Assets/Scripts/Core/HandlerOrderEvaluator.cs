@@ -10,6 +10,7 @@ public static class HandlerOrderEvaluator
         string sent = drop != null ? drop.caseId : null;
         string accused = drop != null && drop.answers.Count > 0 ? drop.answers[0] : null;
 
+        // Hai lệnh dán hôm thứ Bảy nói về báo cáo đêm cuối nên phải chờ tới đêm cuối mới chấm.
         if (state.day == GameState.LastDay)
         {
             var yesterday = allDays == null ? null : allDays.FirstOrDefault(d => d && d.day == state.day - 1);
@@ -29,6 +30,7 @@ public static class HandlerOrderEvaluator
             if (!message || message.handler == Handler.None || !state.WasMessageShown(message.name)) continue;
             string answer = Normalize(message.answer);
             if (answer == "MAI BAO TEN" || answer == "ROOK PHAN") continue;
+            // Đối chiếu lệnh đã giải với việc người chơi thật sự làm trong ngày.
             bool followed = answer switch
             {
                 "MO TIEM"    => state.shopOpenedToday,

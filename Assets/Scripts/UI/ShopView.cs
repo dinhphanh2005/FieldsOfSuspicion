@@ -260,6 +260,7 @@ public class ShopView : MonoBehaviour
     bool CanSell => !traded && Visit != null && Visit.sellQuantity != 0 && HasStockFor(Visit.sellQuantity);
     bool CanDiscount => !traded && Visit != null && Visit.discount != null && HasStockFor(DiscountQuantity(Visit));
     bool CanTrade => CanSell || CanDiscount;
+    // Khách mua rau phải được giao rau trước mới chịu nói chuyện: rau là cái cớ để moi tin.
     static bool NeedsVegFirst(CustomerVisit v) => v.askCost == 0 && v.sellQuantity != 0;
     bool AskLocked => Visit != null && NeedsVegFirst(Visit) && !traded;
     bool Tired => S.energy < EconomyRules.TalkEnergy;
@@ -400,6 +401,7 @@ public class ShopView : MonoBehaviour
         if (v.discountPrice > 0) S.salesToday += quantity;
         S.money += revenue;
         string outcome = quantity > 0 ? (revenue > 0 ? $"{quantity} bó rau · +{revenue} xu" : $"tặng {quantity} bó rau") : "không xuất rau · không thu tiền";
+        // Bớt giá có thu tiền là lấy lòng: lần hỏi dồn sau đó nhẹ đi 1 điểm.
         if (v.discountAccepted && v.discountPrice > 0) goodwill = true;
         Say(v.discount, outcome);
         AfterAction();

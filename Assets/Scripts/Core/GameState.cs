@@ -94,6 +94,7 @@ public class GameState
 
     public DropRecord TonightDrop => deliveredDrops.Find(d => d.day == day);
 
+    // Nghi ngờ trong ngày được gom theo từng kênh, đến CloseNight mới chốt thành điểm của một đêm.
     public void AddSuspicion(SuspicionChannel channel, int points, string reason)
     {
         if (points <= 0) return;
@@ -119,6 +120,7 @@ public class GameState
         pendingByChannel = new int[pendingByChannel.Length];
     }
 
+    // Cửa sổ trượt: tổng các đêm cuối, không phải tổng cả tuần (SuspicionTotal chỉ để so sánh).
     public int SuspicionWindow => SumLast(nightlySuspicion, SuspicionRules.WindowNights);
 
     public int ChannelWindow(SuspicionChannel c)

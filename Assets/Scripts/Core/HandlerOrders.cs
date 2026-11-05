@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 public static class HandlerOrders
 {
+    // Lệnh mật là chữ đầu các câu trên thẻ bảng tin ghép lại; bảng này chỉ dùng cho chế độ giải sẵn.
     static readonly Dictionary<string, string> Meanings = new Dictionary<string, string>
     {
         { "MO TIEM",     "chiều nay mở tiệm bán hàng." },

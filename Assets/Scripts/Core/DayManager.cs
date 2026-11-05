@@ -349,6 +349,7 @@ public class DayManager : MonoBehaviour
         }
     }
 
+    // Cuối mỗi đêm: trả tiền nhà, chốt nghi ngờ, chấm lệnh mật rồi mới xét kết thúc.
     void Resolve()
     {
         PayRent();

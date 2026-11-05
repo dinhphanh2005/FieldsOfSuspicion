@@ -1,5 +1,6 @@
 public static class EconomyRules
 {
+    // Năng lượng dùng chung cho hỏi chuyện buổi chiều và từng bước đi buổi tối: hỏi nhiều thì tối phải chọn đường ngắn hơn.
     public const int MaxEnergy = 10;
     public const int MaxActionPoints = 4;
     public const int HarvestEnergy = 3;
