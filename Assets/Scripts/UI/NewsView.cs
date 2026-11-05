@@ -176,7 +176,7 @@ public class NewsView : MonoBehaviour
             if (!string.IsNullOrEmpty(main.sub))
             {
                 UIFactory.Size(UIFactory.MakeRect(newsContent, "Gap", Vector2.zero, Vector2.one), 10);
-                var lead = UIFactory.AddLine(newsContent, main.sub, 18, UIFactory.Ink, TextAlignmentOptions.Top);
+                var lead = ClueLine(newsContent, main.sub, 18, TextAlignmentOptions.Top);
                 lead.lineSpacing = 8;
                 lead.margin = new Vector4(30, 0, 30, 0);
             }
@@ -210,9 +210,23 @@ public class NewsView : MonoBehaviour
                 v.padding = new RectOffset(18, 18, 0, 0);
                 UIFactory.AddLine(col, side[i].headline, 18, UIFactory.Ink, TextAlignmentOptions.TopLeft, title: true);
                 if (!string.IsNullOrEmpty(side[i].sub))
-                    UIFactory.AddLine(col, side[i].sub, 15, UIFactory.Ink).lineSpacing = 6;
+                    ClueLine(col, side[i].sub, 15, TextAlignmentOptions.TopLeft).lineSpacing = 6;
             }
         }
         return main;
+    }
+
+    // Tin có cụm gạch chân thì người chơi tự bấm để ghi vào sổ, giống lời khách ở tiệm.
+    TextMeshProUGUI ClueLine(RectTransform parent, string raw, float size, TextAlignmentOptions align)
+    {
+        var t = UIFactory.AddLine(parent, IntelMarkup.ToRichText(raw, state), size, UIFactory.Ink, align);
+        if (!raw.Contains("{{")) return t;
+        t.raycastTarget = true;
+        t.gameObject.AddComponent<ClickableText>().LinkClicked += id =>
+        {
+            dm.CaptureIntel(id);
+            t.text = IntelMarkup.ToRichText(raw, state);
+        };
+        return t;
     }
 }

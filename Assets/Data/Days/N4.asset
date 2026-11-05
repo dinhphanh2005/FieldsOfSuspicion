@@ -42,7 +42,7 @@ MonoBehaviour:
     discountAccepted: 1
     pressSuspicion: 1
     sell:
-      tomas: "H\u00e0nh th\u00ec ch\u00e1u kh\u00f4ng c\u00f3, c\u00f2n c\u00e0 r\u1ed1t th\u00ec b\u00e1c l\u1ea5y nh\u01b0 h\u00f4m qua nh\u00e9?"
+      tomas: "H\u00e0nh th\u00ec ch\u00e1u kh\u00f4ng c\u00f3, c\u00f2n c\u00e0 r\u1ed1t th\u00ec b\u00e1c l\u1ea5y hai b\u00f3 nh\u00e9?"
       tomasVariants: []
       reply: "Hai b\u00f3. Kh\u00e1ch s\u1eafp t\u1edbi r\u1ed3i, c\u1ea3 nh\u00e0 cu\u1ed1ng h\u1ebft c\u1ea3 l\u00ean.\n*Perrin nh\u00e9t b\u00f3 rau v\u00e0o gi\u1ecf, \u0111\u00e8 l\u00ean m\u1ea5y c\u1ee7 h\u00e0nh.*"
       replyVariants: []

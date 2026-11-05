@@ -235,17 +235,18 @@ public class NotebookView : MonoBehaviour
         {
             var gridRt = UIFactory.MakeRect(caseDetail, "Chips", Vector2.zero, Vector2.one);
             var grid = gridRt.gameObject.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(204, 40);
-            grid.spacing = new Vector2(8, 8);
+            grid.cellSize = new Vector2(310, 38);
+            grid.spacing = new Vector2(10, 6);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grid.constraintCount = 3;
+            grid.constraintCount = 2;
             foreach (var o in options)
             {
                 string id = o.id;
                 bool chosen = answers[activeSlot] == id;
                 var chip = UIFactory.MakeButton(gridRt, "Chip_" + id, o.keyword, () => Choose(c, id), 15);
                 var t = chip.GetComponentInChildren<TextMeshProUGUI>();
-                t.enableAutoSizing = true; t.fontSizeMin = 11; t.fontSizeMax = 15;
+                t.enableAutoSizing = true; t.fontSizeMin = 12; t.fontSizeMax = 15;
+                t.textWrappingMode = TextWrappingModes.NoWrap;
                 UIFactory.SetColor(chip, chosen ? UIFactory.Gold : UIFactory.Hex("F4ECD8"));
             }
             var clear = UIFactory.MakeButton(gridRt, "Chip_Clear", "<i>để trống</i>", () => Choose(c, ""), 14);

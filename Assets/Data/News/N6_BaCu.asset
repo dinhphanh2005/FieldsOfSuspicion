@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: N6_BaCu
   m_EditorClassIdentifier: 
   headline: "B\u00e0 c\u1ee5 x\u00f3m B\u1eafc n\u00f3i chuy\u1ec7n v\u1edbi l\u00ednh tu\u1ea7n"
-  sub: "L\u00fac ch\u1eadp t\u1ed1i, l\u00ednh tu\u1ea7n g\u1eb7p m\u1ed9t b\u00e0 c\u1ee5 x\u00f3m B\u1eafc \u0111\u1ee9ng n\u00f3i chuy\u1ec7n v\u1edbi h\u1ecd kh\u00e1 l\u00e2u. B\u00e0 b\u1ea3o \u0111ang \u0111i t\u00ecm con g\u00e0 m\u00e1i l\u1ea1c."
+  sub: "L\u00fac ch\u1eadp t\u1ed1i, l\u00ednh tu\u1ea7n g\u1eb7p {{m\u1ed9t b\u00e0 c\u1ee5 x\u00f3m B\u1eafc \u0111\u1ee9ng n\u00f3i chuy\u1ec7n v\u1edbi h\u1ecd kh\u00e1 l\u00e2u|K18}}. B\u00e0 b\u1ea3o \u0111ang \u0111i t\u00ecm con g\u00e0 m\u00e1i l\u1ea1c."
   isSide: 1
   priority: 2
   condition: 0
   param: ""
-  grantsIntel: "K18"
+  grantsIntel: ""
   isLetter: 0
   letterNote: ""

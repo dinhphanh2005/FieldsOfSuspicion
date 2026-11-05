@@ -45,7 +45,7 @@ public class HudView : MonoBehaviour
         var sep = UIFactory.Place(root, "HUD_Sep", 352, 12, 1, 20);
         UIFactory.MakeBox(sep, UIFactory.FrameLine, false);
 
-        var ir = UIFactory.Place(root, "HUD_Info", 372, 0, 640, UIFactory.HudHeight);
+        var ir = UIFactory.Place(root, "HUD_Info", 372, 0, 680, UIFactory.HudHeight);
         info = UIFactory.MakeText(ir, "", 14, UIFactory.Light, TextAlignmentOptions.MidlineLeft);
         info.textWrappingMode = TextWrappingModes.NoWrap;
         info.enableAutoSizing = true;
@@ -88,19 +88,6 @@ public class HudView : MonoBehaviour
         detail = UIFactory.AddLine(detailBox, "", 15, UIFactory.Light);
         detail.lineSpacing = 6;
         detailBox.gameObject.SetActive(false);
-
-        var menu = UIFactory.MakeRect(root, "HUD_Menu", new Vector2(1, 0.5f), new Vector2(1, 0.5f));
-        menu.pivot = new Vector2(1, 0.5f);
-        menu.sizeDelta = new Vector2(104, 30);
-        menu.anchoredPosition = new Vector2(-200, 0);
-        var menuImg = UIFactory.MakeBox(menu, UIFactory.FrameLine);
-        UIFactory.Round(menuImg, 15);
-        var menuBtn = menu.gameObject.AddComponent<Button>();
-        menuBtn.targetGraphic = menuImg;
-        UIFactory.ApplyColors(menuBtn);
-        menuBtn.onClick.AddListener(() => SetPaused(true));
-        var ml = UIFactory.MakeText(UIFactory.MakeRect(menu, "Label", Vector2.zero, Vector2.one), "Menu  <size=80%><color=#9C8C7B>Esc</color></size>", 14, UIFactory.Light, TextAlignmentOptions.Center);
-        ml.textWrappingMode = TextWrappingModes.NoWrap;
 
         BuildPause();
     }

@@ -273,7 +273,9 @@ public static class UIFactory
         ApplyColors(btn);
         btn.onClick.AddListener(() => GameAudio.Sfx("click", 0.7f));
         if (onClick != null) btn.onClick.AddListener(onClick);
-        var labelRect = MakeRect(rt, "Label", Vector2.zero, Vector2.one, 6);
+        var labelRect = MakeRect(rt, "Label", Vector2.zero, Vector2.one);
+        labelRect.offsetMin = new Vector2(16, 5);
+        labelRect.offsetMax = new Vector2(-16, -5);
         MakeText(labelRect, label, fontSize, Ink, TextAlignmentOptions.Center);
         var feel = rt.gameObject.AddComponent<ButtonFeel>();
         feel.content = labelRect;

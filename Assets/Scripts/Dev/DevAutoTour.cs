@@ -100,6 +100,8 @@ public class DevAutoTour : MonoBehaviour
     {
         for (int page = 0; page < 6 && dm.CurrentPhase == Phase.News; page++)
         {
+            CaptureAllLinks();
+            yield return Wait(0.2f);
             yield return Shot($"N{day}_news_{page}");
             if (!ClickPrimary()) break;
             yield return Wait();

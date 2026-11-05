@@ -109,6 +109,7 @@ def check():
     obtainable = set()
     for _, _, t in texts: obtainable |= set(re.findall(r'\{\{.+?\|(\w+)\}\}', t or ''))
     for n in S.NEWS: obtainable |= {x.strip() for x in (n.get('grants') or '').split(',') if x.strip()}
+    for n in S.NEWS: obtainable |= set(re.findall(r'\{\{.+?\|(\w+)\}\}', n.get('sub') or ''))
     for c in S.CLUES:
         if c['id'] not in obtainable: errors.append(f"Manh mối {c['id']} không có cách nào lấy được")
     return errors

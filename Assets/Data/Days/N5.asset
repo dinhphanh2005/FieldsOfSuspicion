@@ -32,7 +32,7 @@ MonoBehaviour:
     greetingVariants: 
     - condition: 8
       param: ""
-      text: "Tomas. L\u00ednh tu\u1ea7n n\u00f3i t\u1ed1i qua th\u1ea5y b\u00f3ng ng\u01b0\u1eddi \u0111i v\u1ec1 ph\u00eda nh\u00e0 c\u1eadu. T\u00f4i n\u00f3i tr\u01b0\u1edbc \u0111\u1ec3 c\u1eadu bi\u1ebft."
+      text: "Tomas. L\u00ednh tu\u1ea7n n\u00f3i m\u1ea5y \u0111\u00eam nay c\u00f3 b\u00f3ng ng\u01b0\u1eddi \u0111i l\u1ea1i quanh nh\u00e0 c\u1eadu. T\u00f4i n\u00f3i tr\u01b0\u1edbc \u0111\u1ec3 c\u1eadu bi\u1ebft."
     - condition: 7
       param: ""
       text: "Ch\u00e0o c\u1eadu. D\u1ea1o n\u00e0y \u0111\u00eam n\u00e0o c\u0169ng c\u00f3 ng\u01b0\u1eddi \u0111i l\u1ea1i ngo\u00e0i \u0111\u01b0\u1eddng. C\u1eadu n\u00ean \u0111\u00f3ng c\u1eeda s\u1edbm."

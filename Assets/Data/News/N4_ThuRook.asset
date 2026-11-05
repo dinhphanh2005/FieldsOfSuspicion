@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: N4_ThuRook
   m_EditorClassIdentifier: 
   headline: "M\u1ea9u gi\u1ea5y k\u1eb9p trong t\u1edd b\u00e1o"
-  sub: "Kh\u00f4ng \u0111\u1ec1 t\u00ean, n\u00e9t ch\u1eef quen c\u1ee7a V\u0103n ph\u00f2ng: \u201cC\u1eadu l\u00e0m \u0111\u00fang l\u1ec7nh, t\u1ed1t. C\u1ea7u B\u1eafc c\u00f3 tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam t\u1eeb t\u1ed1i qua. Tr\u00e1nh \u0111i. R.\u201d"
+  sub: "Kh\u00f4ng \u0111\u1ec1 t\u00ean, n\u00e9t ch\u1eef quen c\u1ee7a V\u0103n ph\u00f2ng: \u201cC\u1eadu l\u00e0m \u0111\u00fang l\u1ec7nh, t\u1ed1t. C\u1ea7u B\u1eafc c\u00f3 {{tr\u1ea1m g\u00e1c su\u1ed1t \u0111\u00eam|K13}} t\u1eeb t\u1ed1i qua. Tr\u00e1nh \u0111i. R.\u201d"
   isSide: 1
   priority: 6
   condition: 14
   param: "Rook:2"
-  grantsIntel: "K13"
+  grantsIntel: ""
   isLetter: 0
   letterNote: ""
