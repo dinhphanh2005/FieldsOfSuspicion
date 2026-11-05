@@ -225,6 +225,10 @@ public class DevAutoTour : MonoBehaviour
         if (dm.CurrentPhase != Phase.Night) yield break;
         yield return Shot($"N{day}_night");
         var p = plan == "shrike" ? ShrikePlan[day] : plan == "broke" ? (null, null, null) : NightPlan[day];
+        // Các đường kết thúc khác: giống đường Rook, chỉ khác báo cáo cuối đêm N7
+        if (day == 7 && plan == "defection") p = ("C4", new[] { "K_ROOK", "K18" }, new[] { "river", "oak" });      // tố nhầm Rook → Đào tẩu
+        if (day == 7 && plan == "weak")      p = ("C4", new[] { "K_SHRIKE", "K19" }, new[] { "river", "oak" });    // tố đúng, bằng chứng yếu
+        if (day == 7 && plan == "cold")      p = (null, null, null);                                               // không gửi → Bị bỏ rơi
         if (p.caseId == null) { Click("Ở nhà tối nay"); yield return Wait(); yield break; }
 
         // Soạn báo cáo trong sổ tay, chọn manh mối bằng cách bấm nút như người chơi

@@ -42,6 +42,30 @@ public static class DevAutoTourMenu
         EditorApplication.isPlaying = true;
     }
 
+    [MenuItem("FoS/Dev/Tự chơi: tố nhầm Rook (Đào tẩu)")]
+    static void Run_defection()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("defection");
+        EditorApplication.isPlaying = true;
+    }
+
+    [MenuItem("FoS/Dev/Tự chơi: tố Shrike, bằng chứng yếu")]
+    static void Run_weak()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("weak");
+        EditorApplication.isPlaying = true;
+    }
+
+    [MenuItem("FoS/Dev/Tự chơi: không gửi báo cáo cuối (Bị bỏ rơi)")]
+    static void Run_cold()
+    {
+        if (EditorApplication.isPlaying) { UnityEngine.Debug.Log("[Tour] Hãy dừng Play trước khi chạy tự chơi."); return; }
+        Arm("cold");
+        EditorApplication.isPlaying = true;
+    }
+
     [MenuItem("FoS/Dev/Tự chơi theo Shrike (kiểm tra Bại lộ)")]
     static void RunShrike()
     {
